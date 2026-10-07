@@ -61,6 +61,50 @@ function requireAdmin(req, res, next) {
     next();
 }
 
+// ================================
+// ADMIN LOGIN
+// ================================
+
+app.post(
+    "/api/admin/login",
+    async (req, res) => {
+
+        const username =
+            String(req.body.username || "").trim();
+
+        const password =
+            String(req.body.password || "");
+
+        if (
+            username !== process.env.ADMIN_USERNAME ||
+            password !== process.env.ADMIN_PASSWORD
+        ) {
+
+            return res.status(401).json({
+                success: false,
+                message: "Sai username hoặc password."
+            });
+        }
+
+        const token =
+            generateAdminToken();
+
+        adminTokens.set(
+            token,
+            {
+                expiresAt:
+                    Date.now() +
+                    8 * 60 * 60 * 1000
+            }
+        );
+
+        return res.json({
+            success: true,
+            token
+        });
+    }
+);
+
 // =====================================================
 // EXPRESS
 // =====================================================
