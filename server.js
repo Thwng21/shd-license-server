@@ -319,7 +319,44 @@ app.use(
         path.join(__dirname, "admin")
     )
 );
+app.post(
+    "/api/admin/login",
+    async (req, res) => {
 
+        const {
+            username,
+            password
+        } = req.body;
+
+        if (
+            username !== process.env.ADMIN_USERNAME ||
+            password !== process.env.ADMIN_PASSWORD
+        ) {
+
+            return res.status(401).json({
+                success: false,
+                message: "Sai username hoặc password."
+            });
+        }
+
+        const token =
+            generateAdminToken();
+
+        adminTokens.set(
+            token,
+            {
+                expiresAt:
+                    Date.now() +
+                    8 * 60 * 60 * 1000
+            }
+        );
+
+        return res.json({
+            success: true,
+            token
+        });
+    }
+);
 
 app.post(
     "/api/admin/login",
