@@ -1,14 +1,65 @@
 require("dotenv").config();
+const crypto = require("crypto");
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
-const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
 const app = express();
 
 const PORT = 3000;
+// ================================
+// ADMIN AUTH
+// ================================
+
+const adminTokens = new Map();
+
+function generateAdminToken() {
+
+    return crypto
+        .randomBytes(32)
+        .toString("hex");
+}
+function requireAdmin(req, res, next) {
+
+    const auth =
+        req.headers.authorization || "";
+
+    if (!auth.startsWith("Bearer ")) {
+
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
+    }
+
+    const token =
+        auth.substring(7);
+
+    const session =
+        adminTokens.get(token);
+
+    if (!session) {
+
+        return res.status(401).json({
+            success: false,
+            message: "Invalid admin token"
+        });
+    }
+
+    if (Date.now() > session.expiresAt) {
+
+        adminTokens.delete(token);
+
+        return res.status(401).json({
+            success: false,
+            message: "Admin session expired"
+        });
+    }
+
+    next();
+}
 
 // =====================================================
 // EXPRESS
@@ -258,6 +309,309 @@ app.post("/api/shd/v6", async (req, res) => {
 // =====================================================
 
 const args = process.argv.slice(2);
+// ================================
+// ADMIN ROUTES
+// ================================
+
+app.use(
+    "/admin",
+    express.static(
+        path.join(__dirname, "admin")
+    )
+);
+
+
+app.post(
+    "/api/admin/login",
+    async (req, res) => {
+
+        const {
+            username,
+            password
+        } = req.body;
+
+        if (
+            username !==
+                process.env.ADMIN_USERNAME ||
+            password !==
+                process.env.ADMIN_PASSWORD
+        ) {
+
+            return res.status(401).json({
+                success: false,
+                message: "Sai username hoặc password."
+            });
+        }
+
+        const token =
+            generateAdminToken();
+
+        adminTokens.set(
+            token,
+            {
+                expiresAt:
+                    Date.now() +
+                    8 * 60 * 60 * 1000
+            }
+        );
+
+        return res.json({
+            success: true,
+            token
+        });
+    }
+);
+
+
+app.get(
+    "/api/admin/licenses",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const result =
+                await pool.query(`
+                    SELECT
+                        id,
+                        license_key,
+                        expires_at,
+                        status,
+                        created_at
+                    FROM licenses
+                    ORDER BY id DESC
+                `);
+
+            res.json({
+                success: true,
+                licenses: result.rows
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Database error"
+            });
+        }
+    }
+);
+
+
+app.post(
+    "/api/admin/create",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const days =
+                Number(req.body.days);
+
+            if (
+                !Number.isInteger(days) ||
+                days <= 0
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Số ngày không hợp lệ."
+                });
+            }
+
+            const result =
+                await createLicense(days);
+
+            res.json({
+                success: true,
+                license:
+                    result.licenseKey,
+                expiresAt:
+                    result.expiresAt
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Không thể tạo license."
+            });
+        }
+    }
+);
+
+
+app.post(
+    "/api/admin/disable",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const {
+                license
+            } = req.body;
+
+            const result =
+                await pool.query(
+                    `
+                    UPDATE licenses
+                    SET status = 'DISABLED'
+                    WHERE license_key = $1
+                    RETURNING *
+                    `,
+                    [license]
+                );
+
+            if (
+                result.rowCount === 0
+            ) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "License không tồn tại."
+                });
+            }
+
+            res.json({
+                success: true
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Database error"
+            });
+        }
+    }
+);
+
+
+app.post(
+    "/api/admin/enable",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const {
+                license
+            } = req.body;
+
+            const result =
+                await pool.query(
+                    `
+                    UPDATE licenses
+                    SET status = 'ACTIVE'
+                    WHERE license_key = $1
+                    RETURNING *
+                    `,
+                    [license]
+                );
+
+            if (
+                result.rowCount === 0
+            ) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "License không tồn tại."
+                });
+            }
+
+            res.json({
+                success: true
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Database error"
+            });
+        }
+    }
+);
+
+
+app.post(
+    "/api/admin/extend",
+    requireAdmin,
+    async (req, res) => {
+
+        try {
+
+            const {
+                license,
+                days
+            } = req.body;
+
+            const numberOfDays =
+                Number(days);
+
+            if (
+                !Number.isInteger(numberOfDays) ||
+                numberOfDays <= 0
+            ) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Số ngày không hợp lệ."
+                });
+            }
+
+            const result =
+                await pool.query(
+                    `
+                    UPDATE licenses
+                    SET expires_at =
+                        expires_at +
+                        ($1 * INTERVAL '1 day')
+                    WHERE license_key = $2
+                    RETURNING expires_at
+                    `,
+                    [
+                        numberOfDays,
+                        license
+                    ]
+                );
+
+            if (
+                result.rowCount === 0
+            ) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "License không tồn tại."
+                });
+            }
+
+            res.json({
+                success: true,
+                expiresAt:
+                    result.rows[0].expires_at
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            res.status(500).json({
+                success: false,
+                message: "Database error"
+            });
+        }
+    }
+);
 
 // =====================================================
 // CREATE LICENSE

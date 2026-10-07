@@ -1,6 +1,6 @@
 (async () => {
 
-    const LICENSE_SERVER = "http://localhost:3000";
+    const LICENSE_SERVER = "https://shd-license-server.onrender.com";
 
     let license = localStorage.getItem("__SHD_LICENSE__");
 
