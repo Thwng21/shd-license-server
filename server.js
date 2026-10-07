@@ -6,12 +6,18 @@ const { Pool } = require("pg");
 const fs = require("fs");
 const path = require("path");
 
+// =====================================================
+// EXPRESS
+// =====================================================
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 // ================================
 // ADMIN AUTH
 // ================================
+
 
 const adminTokens = new Map();
 
@@ -70,10 +76,10 @@ app.post(
     async (req, res) => {
 
         const username =
-            String(req.body.username || "").trim();
+            String(req.body?.username || "").trim();
 
         const password =
-            String(req.body.password || "");
+            String(req.body?.password || "");
 
         if (
             username !== process.env.ADMIN_USERNAME ||
@@ -105,12 +111,7 @@ app.post(
     }
 );
 
-// =====================================================
-// EXPRESS
-// =====================================================
 
-app.use(cors());
-app.use(express.json());
 
 // =====================================================
 // POSTGRESQL
@@ -363,85 +364,8 @@ app.use(
         path.join(__dirname, "admin")
     )
 );
-app.post(
-    "/api/admin/login",
-    async (req, res) => {
 
-        const {
-            username,
-            password
-        } = req.body;
 
-        if (
-            username !== process.env.ADMIN_USERNAME ||
-            password !== process.env.ADMIN_PASSWORD
-        ) {
-
-            return res.status(401).json({
-                success: false,
-                message: "Sai username hoặc password."
-            });
-        }
-
-        const token =
-            generateAdminToken();
-
-        adminTokens.set(
-            token,
-            {
-                expiresAt:
-                    Date.now() +
-                    8 * 60 * 60 * 1000
-            }
-        );
-
-        return res.json({
-            success: true,
-            token
-        });
-    }
-);
-
-app.post(
-    "/api/admin/login",
-    async (req, res) => {
-
-        const {
-            username,
-            password
-        } = req.body;
-
-        if (
-            username !==
-                process.env.ADMIN_USERNAME ||
-            password !==
-                process.env.ADMIN_PASSWORD
-        ) {
-
-            return res.status(401).json({
-                success: false,
-                message: "Sai username hoặc password."
-            });
-        }
-
-        const token =
-            generateAdminToken();
-
-        adminTokens.set(
-            token,
-            {
-                expiresAt:
-                    Date.now() +
-                    8 * 60 * 60 * 1000
-            }
-        );
-
-        return res.json({
-            success: true,
-            token
-        });
-    }
-);
 
 
 app.get(
