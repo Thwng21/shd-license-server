@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SHD V6</title>
+    <title>SHD Tools</title>
 
     <style>
         * {
@@ -37,7 +37,7 @@
         ========================= */
 
         .header {
-            margin-bottom: 24px;
+            margin-bottom: 18px;
         }
 
         .header h1 {
@@ -58,7 +58,98 @@
 
 
         /* =========================
-           MAIN LAYOUT
+           TOOL NAVIGATION
+        ========================= */
+
+        .tool-nav {
+            display: flex;
+
+            width: 100%;
+
+            margin-bottom: 18px;
+
+            background: #151922;
+
+            border: 1px solid #242936;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .tool-button {
+            position: relative;
+
+            flex: 1;
+
+            padding: 13px 18px;
+
+            background: transparent;
+
+            color: #64748b;
+
+            border: none;
+            border-right: 1px solid #242936;
+
+            border-radius: 0;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease,
+                color 0.15s ease;
+        }
+
+        .tool-button:last-child {
+            border-right: none;
+        }
+
+        .tool-button:hover {
+            background: #1a1e27;
+            color: #cbd5e1;
+        }
+
+        .tool-button.active {
+            background: #1b2333;
+            color: #60a5fa;
+        }
+
+        .tool-button.active::after {
+            content: "";
+
+            position: absolute;
+
+            left: 20%;
+            right: 20%;
+            bottom: 0;
+
+            height: 2px;
+
+            background: #3b82f6;
+        }
+
+        .tool-status {
+            display: block;
+
+            margin-top: 3px;
+
+            font-size: 10px;
+
+            font-weight: 400;
+
+            color: #475569;
+        }
+
+        .tool-button.active .tool-status {
+            color: #60a5fa;
+        }
+
+
+        /* =========================
+           MAIN
         ========================= */
 
         .main {
@@ -119,7 +210,7 @@
 
 
         /* =========================
-           CODE
+           LOADER
         ========================= */
 
         #loaderCode {
@@ -177,6 +268,8 @@
             width: 7px;
             height: 7px;
 
+            flex-shrink: 0;
+
             border-radius: 50%;
 
             background: #22c55e;
@@ -189,13 +282,13 @@
 
         .buttons {
             display: flex;
+
             gap: 8px;
 
             margin-top: 14px;
         }
 
         button {
-            border: none;
             outline: none;
 
             padding: 9px 14px;
@@ -216,11 +309,15 @@
 
         .btn-primary {
             background: #2563eb;
+
             color: white;
+
+            border: 1px solid #2563eb;
         }
 
         .btn-secondary {
             background: #202530;
+
             color: #cbd5e1;
 
             border: 1px solid #2c3240;
@@ -264,6 +361,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+
+            flex-shrink: 0;
 
             border-radius: 6px;
 
@@ -399,6 +498,57 @@
 
 
         /* =========================
+           COMING SOON
+        ========================= */
+
+        .coming-soon {
+            display: none;
+
+            min-height: 480px;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            color: #64748b;
+        }
+
+        .coming-soon-icon {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 12px;
+
+            border-radius: 10px;
+
+            background: #202530;
+
+            color: #64748b;
+
+            font-size: 18px;
+        }
+
+        .coming-soon h3 {
+            margin: 0;
+
+            color: #cbd5e1;
+
+            font-size: 14px;
+        }
+
+        .coming-soon p {
+            margin: 7px 0 0;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
            FOOTER
         ========================= */
 
@@ -429,6 +579,7 @@
                 grid-column: 1 / -1;
 
                 display: flex;
+
                 align-items: center;
                 justify-content: center;
 
@@ -447,6 +598,14 @@
 
             .container {
                 padding: 18px;
+            }
+
+            .tool-button {
+                padding: 12px 8px;
+            }
+
+            .tool-status {
+                display: none;
             }
 
             .main {
@@ -477,40 +636,88 @@
 
 <div class="container">
 
-    <!-- HEADER -->
+
+    <!-- =================================
+         HEADER
+    ================================== -->
 
     <div class="header">
 
         <h1>
-            SHD V6
+            SHD Tools
         </h1>
 
         <p>
-            SHD Automation Tool
+            Automation tools
         </p>
 
     </div>
 
 
-    <!-- MAIN -->
+    <!-- =================================
+         TOOL NAVIGATION
+    ================================== -->
+
+    <div class="tool-nav">
+
+        <button
+            class="tool-button active"
+            data-tool="shd"
+        >
+            SHD
+
+            <span class="tool-status">
+                Đang hoạt động
+            </span>
+        </button>
+
+
+        <button
+            class="tool-button"
+            data-tool="gin"
+        >
+            GIN
+
+            <span class="tool-status">
+                Sắp có
+            </span>
+        </button>
+
+
+        <button
+            class="tool-button"
+            data-tool="pan"
+        >
+            PAN
+
+            <span class="tool-status">
+                Sắp có
+            </span>
+        </button>
+
+    </div>
+
+
+    <!-- =================================
+         MAIN
+    ================================== -->
 
     <div class="main">
 
 
         <!-- =================================
-             LEFT
-             LOADER
+             TOOL CONTENT
         ================================== -->
 
         <div class="card">
 
             <div class="card-header">
 
-                <h2>
-                    Loader
+                <h2 id="toolTitle">
+                    SHD Loader
                 </h2>
 
-                <p>
+                <p id="toolDescription">
                     Loader mới nhất từ SHD License Server
                 </p>
 
@@ -519,45 +726,79 @@
 
             <div class="card-body">
 
-                <textarea
-                    id="loaderCode"
-                    readonly
-                    placeholder="Đang tải Loader..."
-                ></textarea>
+
+                <!-- SHD -->
+
+                <div id="shdContent">
+
+                    <textarea
+                        id="loaderCode"
+                        readonly
+                        placeholder="Đang tải Loader..."
+                    ></textarea>
 
 
-                <div class="status">
+                    <div class="status">
 
-                    <span
-                        id="statusDot"
-                        class="status-dot"
-                    ></span>
+                        <span
+                            id="statusDot"
+                            class="status-dot"
+                        ></span>
 
-                    <span id="status">
-                        Đang tải Loader...
-                    </span>
+                        <span id="status">
+                            Đang tải Loader...
+                        </span>
+
+                    </div>
+
+
+                    <div class="buttons">
+
+                        <button
+                            id="copyLoader"
+                            class="btn-primary"
+                        >
+                            Copy Loader
+                        </button>
+
+
+                        <button
+                            id="copyBookmarklet"
+                            class="btn-secondary"
+                        >
+                            Copy Bookmarklet
+                        </button>
+
+                    </div>
 
                 </div>
 
 
-                <div class="buttons">
+                <!-- COMING SOON -->
 
-                    <button
-                        id="copyLoader"
-                        class="btn-primary"
-                    >
-                        Copy Loader
-                    </button>
+                <div
+                    id="comingSoon"
+                    class="coming-soon"
+                >
 
+                    <div>
 
-                    <button
-                        id="copyBookmarklet"
-                        class="btn-secondary"
-                    >
-                        Copy Bookmarklet
-                    </button>
+                        <div class="coming-soon-icon">
+                            ⚙
+                        </div>
+
+                        <h3 id="comingSoonTitle">
+                            GIN
+                        </h3>
+
+                        <p>
+                            Tool đang được phát triển.
+                        </p>
+
+                    </div>
 
                 </div>
+
 
             </div>
 
@@ -566,7 +807,6 @@
 
 
         <!-- =================================
-             CENTER
              GUIDE
         ================================== -->
 
@@ -578,7 +818,7 @@
                     Hướng dẫn sử dụng
                 </h2>
 
-                <p>
+                <p id="guideDescription">
                     Có 2 cách để chạy SHD V6
                 </p>
 
@@ -587,7 +827,10 @@
 
             <div class="card-body">
 
-                <div class="guide">
+                <div
+                    id="guide"
+                    class="guide"
+                >
 
 
                     <!-- METHOD 1 -->
@@ -625,7 +868,7 @@
                             <strong>Bước 3:</strong>
                             Mở
                             <strong>Developer Console</strong>
-                            bằng phím
+                            bằng
                             <code>F12</code>
                             hoặc
                             <code>Ctrl + Shift + J</code>.
@@ -706,6 +949,32 @@
 
                 </div>
 
+
+                <!-- GIN/PAN GUIDE -->
+
+                <div
+                    id="comingSoonGuide"
+                    class="coming-soon"
+                >
+
+                    <div>
+
+                        <div class="coming-soon-icon">
+                            ?
+                        </div>
+
+                        <h3>
+                            Hướng dẫn đang được cập nhật
+                        </h3>
+
+                        <p>
+                            Tool này chưa được phát hành.
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
@@ -713,7 +982,6 @@
 
 
         <!-- =================================
-             RIGHT
              DONATE
         ================================== -->
 
@@ -725,25 +993,29 @@
                     Donate
                 </h2>
 
+
                 <p class="donate-subtitle">
-                    Nếu SHD V6 hữu ích,<br>
+                    Nếu SHD Tools hữu ích,<br>
                     bạn có thể ủng hộ mình.
                 </p>
 
 
                 <img
                     class="qr"
-                    src="https://img.vietqr.io/image/VPB-210520042026-compact2.png"
+                    src="https://img.vietqr.io/image/VPB-210520042006-compact2.png"
                     alt="QR Donate VPBank"
                 >
+
 
                 <p class="bank">
                     VPBank
                 </p>
 
+
                 <div class="account">
-                    210520042026
+                    210520042006
                 </div>
+
 
                 <p class="donate-note">
                     Quét QR bằng ứng dụng ngân hàng
@@ -758,8 +1030,10 @@
     </div>
 
 
+    <!-- FOOTER -->
+
     <div class="footer">
-        SHD V6 License System
+        SHD Tools License System
     </div>
 
 </div>
@@ -768,32 +1042,79 @@
 
 <script>
 
-    /* =========================
-       LOAD LOADER
-    ========================= */
+    /* =================================
+       ELEMENTS
+    ================================== */
+
+    const loaderCode =
+        document.getElementById(
+            "loaderCode"
+        );
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+    const statusDot =
+        document.getElementById(
+            "statusDot"
+        );
+
+    const toolTitle =
+        document.getElementById(
+            "toolTitle"
+        );
+
+    const toolDescription =
+        document.getElementById(
+            "toolDescription"
+        );
+
+    const guideDescription =
+        document.getElementById(
+            "guideDescription"
+        );
+
+    const shdContent =
+        document.getElementById(
+            "shdContent"
+        );
+
+    const comingSoon =
+        document.getElementById(
+            "comingSoon"
+        );
+
+    const comingSoonTitle =
+        document.getElementById(
+            "comingSoonTitle"
+        );
+
+    const guide =
+        document.getElementById(
+            "guide"
+        );
+
+    const comingSoonGuide =
+        document.getElementById(
+            "comingSoonGuide"
+        );
+
+
+    /* =================================
+       LOAD SHD LOADER
+    ================================== */
 
     async function loadLoader() {
-
-        const loaderCode =
-            document.getElementById(
-                "loaderCode"
-            );
-
-        const status =
-            document.getElementById(
-                "status"
-            );
-
-        const statusDot =
-            document.getElementById(
-                "statusDot"
-            );
-
 
         try {
 
             status.textContent =
                 "Đang tải Loader...";
+
+            statusDot.style.background =
+                "#f59e0b";
 
 
             const response =
@@ -827,7 +1148,6 @@
             status.textContent =
                 "Loader đã sẵn sàng";
 
-
             statusDot.style.background =
                 "#22c55e";
 
@@ -840,7 +1160,6 @@
             status.textContent =
                 "Không thể tải Loader";
 
-
             statusDot.style.background =
                 "#ef4444";
 
@@ -849,10 +1168,145 @@
     }
 
 
+    /* =================================
+       TOOL SWITCH
+    ================================== */
 
-    /* =========================
+    document
+        .querySelectorAll(".tool-button")
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const tool =
+                            button.dataset.tool;
+
+
+                        document
+                            .querySelectorAll(
+                                ".tool-button"
+                            )
+                            .forEach(
+                                item => {
+
+                                    item.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+                            );
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        if (tool === "shd") {
+
+                            showSHD();
+
+                        }
+
+
+                        if (tool === "gin") {
+
+                            showComingSoon(
+                                "GIN"
+                            );
+
+                        }
+
+
+                        if (tool === "pan") {
+
+                            showComingSoon(
+                                "PAN"
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =================================
+       SHOW SHD
+    ================================== */
+
+    function showSHD() {
+
+        toolTitle.textContent =
+            "SHD Loader";
+
+        toolDescription.textContent =
+            "Loader mới nhất từ SHD License Server";
+
+        guideDescription.textContent =
+            "Có 2 cách để chạy SHD V6";
+
+
+        shdContent.style.display =
+            "block";
+
+        comingSoon.style.display =
+            "none";
+
+
+        guide.style.display =
+            "flex";
+
+        comingSoonGuide.style.display =
+            "none";
+
+    }
+
+
+    /* =================================
+       SHOW COMING SOON
+    ================================== */
+
+    function showComingSoon(tool) {
+
+        toolTitle.textContent =
+            tool;
+
+        toolDescription.textContent =
+            "Tool đang được phát triển";
+
+
+        comingSoonTitle.textContent =
+            tool;
+
+
+        shdContent.style.display =
+            "none";
+
+        comingSoon.style.display =
+            "flex";
+
+
+        guide.style.display =
+            "none";
+
+        comingSoonGuide.style.display =
+            "flex";
+
+        guideDescription.textContent =
+            "Thông tin tool";
+
+    }
+
+
+    /* =================================
        COPY LOADER
-    ========================= */
+    ================================== */
 
     document
         .getElementById("copyLoader")
@@ -861,9 +1315,7 @@
             async () => {
 
                 const code =
-                    document.getElementById(
-                        "loaderCode"
-                    ).value;
+                    loaderCode.value;
 
 
                 if (!code) {
@@ -877,23 +1329,35 @@
                 }
 
 
-                await navigator.clipboard.writeText(
-                    code
-                );
+                try {
+
+                    await navigator.clipboard.writeText(
+                        code
+                    );
 
 
-                alert(
-                    "Đã copy Loader."
-                );
+                    alert(
+                        "Đã copy Loader."
+                    );
+
+                } catch (error) {
+
+                    console.error(error);
+
+
+                    alert(
+                        "Không thể copy Loader."
+                    );
+
+                }
 
             }
         );
 
 
-
-    /* =========================
+    /* =================================
        COPY BOOKMARKLET
-    ========================= */
+    ================================== */
 
     document
         .getElementById("copyBookmarklet")
@@ -902,9 +1366,7 @@
             async () => {
 
                 const code =
-                    document.getElementById(
-                        "loaderCode"
-                    ).value;
+                    loaderCode.value;
 
 
                 if (!code) {
@@ -925,25 +1387,37 @@
                     );
 
 
-                await navigator.clipboard.writeText(
-                    bookmarklet
-                );
+                try {
+
+                    await navigator.clipboard.writeText(
+                        bookmarklet
+                    );
 
 
-                alert(
-                    "Đã copy Bookmarklet.\n\n" +
-                    "Hãy tạo Bookmark mới và " +
-                    "dán nội dung này vào ô URL."
-                );
+                    alert(
+                        "Đã copy Bookmarklet.\n\n" +
+                        "Tạo Bookmark mới và " +
+                        "dán nội dung vào ô URL."
+                    );
+
+                } catch (error) {
+
+                    console.error(error);
+
+
+                    alert(
+                        "Không thể copy Bookmarklet."
+                    );
+
+                }
 
             }
         );
 
 
-
-    /* =========================
+    /* =================================
        START
-    ========================= */
+    ================================== */
 
     loadLoader();
 
