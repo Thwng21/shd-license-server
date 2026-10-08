@@ -1,77 +1,165 @@
 const API = "/api/admin";
 
-let token = sessionStorage.getItem("admin_token");
+let allLicenses = [];
 
 
-function showDashboard() {
+// =====================================================
+// TOKEN
+// =====================================================
 
-    document.getElementById("loginPage").style.display = "none";
+function getToken() {
 
-    document.getElementById("dashboard").style.display = "block";
-
-    loadLicenses();
+    return sessionStorage.getItem(
+        "admin_token"
+    );
 }
 
 
-function showLogin() {
+// =====================================================
+// API REQUEST
+// =====================================================
 
-    document.getElementById("loginPage").style.display = "block";
+async function apiRequest(
+    url,
+    options = {}
+) {
 
-    document.getElementById("dashboard").style.display = "none";
+    const token = getToken();
+
+    const headers = {
+
+        "Content-Type":
+            "application/json",
+
+        ...(options.headers || {})
+    };
+
+
+    if (token) {
+
+        headers.Authorization =
+            `Bearer ${token}`;
+    }
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                ...options,
+                headers
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (response.status === 401) {
+
+        sessionStorage.removeItem(
+            "admin_token"
+        );
+
+        showLogin();
+
+        throw new Error(
+            data.message ||
+            "Phiên đăng nhập hết hạn."
+        );
+    }
+
+
+    return data;
 }
 
+
+// =====================================================
+// LOGIN
+// =====================================================
 
 async function login() {
 
     const username =
-        document.getElementById("username").value.trim();
+        document
+            .getElementById("username")
+            .value
+            .trim();
 
     const password =
-        document.getElementById("password").value;
+        document
+            .getElementById("password")
+            .value;
+
 
     const error =
-        document.getElementById("loginError");
+        document.getElementById(
+            "loginError"
+        );
 
     error.textContent = "";
 
+
+    if (!username || !password) {
+
+        error.textContent =
+            "Vui lòng nhập username và password.";
+
+        return;
+    }
+
+
     try {
 
-        const response = await fetch(
-            `${API}/login`,
-            {
-                method: "POST",
+        const response =
+            await fetch(
+                `${API}/login`,
+                {
+                    method: "POST",
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-                body: JSON.stringify({
-                    username,
-                    password
-                })
-            }
-        );
+                    body: JSON.stringify({
+                        username,
+                        password
+                    })
+                }
+            );
 
-        const data = await response.json();
 
-        if (!data.success) {
+        const data =
+            await response.json();
+
+
+        if (!response.ok ||
+            !data.success) {
 
             error.textContent =
-                data.message || "Đăng nhập thất bại.";
+                data.message ||
+                "Đăng nhập thất bại.";
 
             return;
         }
 
-        token = data.token;
 
         sessionStorage.setItem(
             "admin_token",
-            token
+            data.token
         );
+
 
         showDashboard();
 
-    } catch (error) {
+        await loadLicenses();
+
+
+    } catch (err) {
+
+        console.error(err);
 
         error.textContent =
             "Không thể kết nối server.";
@@ -79,47 +167,57 @@ async function login() {
 }
 
 
+// =====================================================
+// SHOW DASHBOARD
+// =====================================================
+
+function showDashboard() {
+
+    document
+        .getElementById("loginPage")
+        .style.display = "none";
+
+
+    document
+        .getElementById("dashboard")
+        .style.display = "block";
+}
+
+
+// =====================================================
+// SHOW LOGIN
+// =====================================================
+
+function showLogin() {
+
+    document
+        .getElementById("loginPage")
+        .style.display = "block";
+
+
+    document
+        .getElementById("dashboard")
+        .style.display = "none";
+}
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
 function logout() {
 
-    sessionStorage.removeItem("admin_token");
-
-    token = null;
+    sessionStorage.removeItem(
+        "admin_token"
+    );
 
     showLogin();
 }
 
 
-async function apiRequest(
-    url,
-    options = {}
-) {
-
-    options.headers = {
-
-        ...(options.headers || {}),
-
-        "Authorization":
-            `Bearer ${token}`,
-
-        "Content-Type":
-            "application/json"
-    };
-
-    const response =
-        await fetch(url, options);
-
-    if (response.status === 401) {
-
-        logout();
-
-        throw new Error(
-            "Phiên đăng nhập đã hết hạn."
-        );
-    }
-
-    return response.json();
-}
-
+// =====================================================
+// LOAD LICENSES
+// =====================================================
 
 async function loadLicenses() {
 
@@ -130,283 +228,754 @@ async function loadLicenses() {
                 `${API}/licenses`
             );
 
+
         if (!data.success) {
 
-            alert(data.message);
+            alert(
+                data.message ||
+                "Không thể tải License."
+            );
 
             return;
         }
 
-        renderLicenses(data.licenses);
+
+        allLicenses =
+            data.licenses || [];
+
+
+        updateStats(
+            allLicenses
+        );
+
+
+        filterLicenses();
+
 
     } catch (error) {
 
         console.error(error);
-
-        alert(error.message);
     }
 }
 
 
-function renderLicenses(licenses) {
+// =====================================================
+// UPDATE STATS
+// =====================================================
 
-    const table =
-        document.getElementById("licenseTable");
+function updateStats(
+    licenses
+) {
 
-    table.innerHTML = "";
-
-    let active = 0;
-    let disabled = 0;
-    let expired = 0;
-
-    const now = new Date();
-
-    licenses.forEach(license => {
-
-        let status =
-            license.status;
-
-        if (
-            status === "ACTIVE" &&
-            new Date(license.expires_at) < now
-        ) {
-
-            status = "EXPIRED";
-
-            expired++;
-
-        } else if (
-            status === "ACTIVE"
-        ) {
-
-            active++;
-
-        } else if (
-            status === "DISABLED"
-        ) {
-
-            disabled++;
-        }
+    const now =
+        new Date();
 
 
-        let badgeClass =
-            status.toLowerCase();
-
-
-        const row =
-            document.createElement("tr");
-
-        row.innerHTML = `
-
-            <td>${license.id}</td>
-
-            <td>
-                <strong>${license.license_key}</strong>
-            </td>
-
-            <td>
-                <span class="badge ${badgeClass}">
-                    ${status}
-                </span>
-            </td>
-
-            <td>
-                ${formatDate(license.expires_at)}
-            </td>
-
-            <td>
-                ${formatDate(license.created_at)}
-            </td>
-
-            <td>
-
-                ${
-                    status === "ACTIVE"
-                    ?
-                    `
-                    <button
-                        class="danger"
-                        onclick="disableLicense('${license.license_key}')"
-                    >
-                        Disable
-                    </button>
-                    `
-                    :
-                    `
-                    <button
-                        class="success"
-                        onclick="enableLicense('${license.license_key}')"
-                    >
-                        Enable
-                    </button>
-                    `
-                }
-
-                <button
-                    class="warning"
-                    onclick="extendLicense('${license.license_key}')"
-                >
-                    + Ngày
-                </button>
-
-            </td>
-        `;
-
-        table.appendChild(row);
-    });
-
-
-    document.getElementById("total").textContent =
+    const total =
         licenses.length;
 
-    document.getElementById("active").textContent =
-        active;
 
-    document.getElementById("disabled").textContent =
-        disabled;
+    const active =
+        licenses.filter(
+            license =>
+                license.status ===
+                "ACTIVE" &&
+                new Date(
+                    license.expires_at
+                ) >= now
+        ).length;
 
-    document.getElementById("expired").textContent =
-        expired;
+
+    const disabled =
+        licenses.filter(
+            license =>
+                license.status ===
+                "DISABLED"
+        ).length;
+
+
+    const expired =
+        licenses.filter(
+            license =>
+                license.status ===
+                    "ACTIVE" &&
+                new Date(
+                    license.expires_at
+                ) < now
+        ).length;
+
+
+    document
+        .getElementById("total")
+        .textContent = total;
+
+
+    document
+        .getElementById("active")
+        .textContent = active;
+
+
+    document
+        .getElementById("disabled")
+        .textContent = disabled;
+
+
+    document
+        .getElementById("expired")
+        .textContent = expired;
 }
 
 
-async function createLicense() {
+// =====================================================
+// SEARCH + FILTER
+// =====================================================
 
-    const days =
-        prompt(
-            "License có thời hạn bao nhiêu ngày?",
-            "30"
-        );
+function filterLicenses() {
 
-    if (!days) return;
+    const keyword =
+        document
+            .getElementById(
+                "searchInput"
+            )
+            .value
+            .trim()
+            .toLowerCase();
 
-    const result =
-        await apiRequest(
-            `${API}/create`,
-            {
-                method: "POST",
 
-                body: JSON.stringify({
-                    days: Number(days)
-                })
+    const status =
+        document
+            .getElementById(
+                "statusFilter"
+            )
+            .value;
+
+
+    const now =
+        new Date();
+
+
+    const filtered =
+        allLicenses.filter(
+            license => {
+
+
+                // SEARCH
+
+                const matchKeyword =
+                    license.license_key
+                        .toLowerCase()
+                        .includes(
+                            keyword
+                        );
+
+
+                // STATUS
+
+                let matchStatus = true;
+
+
+                if (
+                    status ===
+                    "ACTIVE"
+                ) {
+
+                    matchStatus =
+                        license.status ===
+                        "ACTIVE" &&
+                        new Date(
+                            license.expires_at
+                        ) >= now;
+                }
+
+
+                else if (
+                    status ===
+                    "DISABLED"
+                ) {
+
+                    matchStatus =
+                        license.status ===
+                        "DISABLED";
+                }
+
+
+                else if (
+                    status ===
+                    "EXPIRED"
+                ) {
+
+                    matchStatus =
+                        license.status ===
+                            "ACTIVE" &&
+                        new Date(
+                            license.expires_at
+                        ) < now;
+                }
+
+
+                return (
+                    matchKeyword &&
+                    matchStatus
+                );
             }
         );
 
-    if (!result.success) {
 
-        alert(result.message);
+    renderLicenses(
+        filtered
+    );
+}
+
+
+// =====================================================
+// RENDER LICENSE TABLE
+// =====================================================
+
+function renderLicenses(
+    licenses
+) {
+
+    const table =
+        document.getElementById(
+            "licenseTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (
+        licenses.length === 0
+    ) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="
+                        text-align:center;
+                        color:#777;
+                        padding:30px;
+                    "
+                >
+                    Không tìm thấy License.
+                </td>
+
+            </tr>
+
+        `;
 
         return;
     }
 
-    alert(
-        "License mới:\n\n" +
-        result.license
-    );
 
-    loadLicenses();
+    licenses.forEach(
+        license => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const statusInfo =
+                getStatusInfo(
+                    license
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${license.id}
+                </td>
+
+
+                <td>
+
+                    <strong>
+                        ${license.license_key}
+                    </strong>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="badge
+                        ${statusInfo.className}"
+                    >
+                        ${statusInfo.label}
+                    </span>
+
+                </td>
+
+
+                <td>
+                    ${formatDate(
+                        license.expires_at
+                    )}
+                </td>
+
+
+                <td>
+                    ${formatDate(
+                        license.created_at
+                    )}
+                </td>
+
+
+                <td>
+
+                    ${
+                        license.status ===
+                        "DISABLED"
+
+                        ? `
+                            <button
+                                class="success"
+                                onclick="enableLicense(
+                                    '${license.license_key}'
+                                )"
+                            >
+                                Enable
+                            </button>
+                        `
+
+                        : `
+                            <button
+                                class="danger"
+                                onclick="disableLicense(
+                                    '${license.license_key}'
+                                )"
+                            >
+                                Disable
+                            </button>
+                        `
+                    }
+
+
+                    <button
+                        class="warning"
+                        onclick="extendLicense(
+                            '${license.license_key}'
+                        )"
+                    >
+                        Gia hạn
+                    </button>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+        }
+    );
 }
 
 
-async function disableLicense(license) {
+// =====================================================
+// GET STATUS
+// =====================================================
+
+function getStatusInfo(
+    license
+) {
 
     if (
-        !confirm(
-            `Disable license?\n\n${license}`
-        )
-    ) return;
+        license.status ===
+        "DISABLED"
+    ) {
 
-    const result =
-        await apiRequest(
-            `${API}/disable`,
-            {
-                method: "POST",
+        return {
 
-                body: JSON.stringify({
-                    license
-                })
-            }
-        );
+            label: "Disabled",
 
-    alert(
-        result.success
-            ? "Đã disable license."
-            : result.message
-    );
+            className:
+                "disabled"
+        };
+    }
 
-    loadLicenses();
+
+    if (
+        new Date(
+            license.expires_at
+        ) < new Date()
+    ) {
+
+        return {
+
+            label: "Expired",
+
+            className:
+                "expired"
+        };
+    }
+
+
+    return {
+
+        label: "Active",
+
+        className:
+            "active"
+    };
 }
 
 
-async function enableLicense(license) {
+// =====================================================
+// FORMAT DATE
+// =====================================================
 
-    const result =
-        await apiRequest(
-            `${API}/enable`,
-            {
-                method: "POST",
+function formatDate(
+    date
+) {
 
-                body: JSON.stringify({
-                    license
-                })
-            }
-        );
+    if (!date) {
 
-    alert(
-        result.success
-            ? "Đã enable license."
-            : result.message
+        return "-";
+    }
+
+
+    return new Date(
+        date
+    ).toLocaleString(
+        "vi-VN"
     );
-
-    loadLicenses();
 }
 
 
-async function extendLicense(license) {
+// =====================================================
+// CREATE LICENSE
+// =====================================================
+
+async function createLicense() {
+
+    const input =
+        prompt(
+            "Nhập số ngày sử dụng:"
+        );
+
+
+    if (input === null) {
+
+        return;
+    }
+
 
     const days =
+        Number(input);
+
+
+    if (
+        !Number.isInteger(days) ||
+        days <= 0
+    ) {
+
+        alert(
+            "Số ngày không hợp lệ."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                `${API}/create`,
+                {
+                    method: "POST",
+
+                    body:
+                        JSON.stringify({
+                            days
+                        })
+                }
+            );
+
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Không thể tạo License."
+            );
+
+            return;
+        }
+
+
+        alert(
+
+            "License đã được tạo!\n\n" +
+
+            "License: " +
+            data.license +
+            "\n\n" +
+
+            "Expires: " +
+            formatDate(
+                data.expiresAt
+            )
+        );
+
+
+        await loadLicenses();
+
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+
+// =====================================================
+// DISABLE LICENSE
+// =====================================================
+
+async function disableLicense(
+    license
+) {
+
+    const confirmDisable =
+        confirm(
+            `Disable License?\n\n${license}`
+        );
+
+
+    if (!confirmDisable) {
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                `${API}/disable`,
+                {
+                    method: "POST",
+
+                    body:
+                        JSON.stringify({
+                            license
+                        })
+                }
+            );
+
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Không thể disable."
+            );
+
+            return;
+        }
+
+
+        await loadLicenses();
+
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+
+// =====================================================
+// ENABLE LICENSE
+// =====================================================
+
+async function enableLicense(
+    license
+) {
+
+    const confirmEnable =
+        confirm(
+            `Enable License?\n\n${license}`
+        );
+
+
+    if (!confirmEnable) {
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                `${API}/enable`,
+                {
+                    method: "POST",
+
+                    body:
+                        JSON.stringify({
+                            license
+                        })
+                }
+            );
+
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Không thể enable."
+            );
+
+            return;
+        }
+
+
+        await loadLicenses();
+
+
+    } catch (error) {
+
+        console.error(error);
+    }
+}
+
+
+// =====================================================
+// EXTEND LICENSE
+// =====================================================
+
+async function extendLicense(
+    license
+) {
+
+    const input =
         prompt(
-            "Gia hạn thêm bao nhiêu ngày?",
-            "30"
+            `Gia hạn License:\n\n${license}\n\nNhập số ngày:`
         );
 
-    if (!days) return;
 
-    const result =
-        await apiRequest(
-            `${API}/extend`,
-            {
-                method: "POST",
+    if (input === null) {
 
-                body: JSON.stringify({
-                    license,
-                    days: Number(days)
-                })
-            }
+        return;
+    }
+
+
+    const days =
+        Number(input);
+
+
+    if (
+        !Number.isInteger(days) ||
+        days <= 0
+    ) {
+
+        alert(
+            "Số ngày không hợp lệ."
         );
 
-    alert(
-        result.success
-            ? `Đã gia hạn thêm ${days} ngày.`
-            : result.message
-    );
+        return;
+    }
 
-    loadLicenses();
+
+    try {
+
+        const data =
+            await apiRequest(
+                `${API}/extend`,
+                {
+                    method: "POST",
+
+                    body:
+                        JSON.stringify({
+
+                            license,
+
+                            days
+
+                        })
+                }
+            );
+
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Không thể gia hạn."
+            );
+
+            return;
+        }
+
+
+        alert(
+
+            "Gia hạn thành công!\n\n" +
+
+            "License: " +
+            license +
+            "\n\n" +
+
+            "Expires: " +
+            formatDate(
+                data.expiresAt
+            )
+        );
+
+
+        await loadLicenses();
+
+
+    } catch (error) {
+
+        console.error(error);
+    }
 }
 
 
-function formatDate(date) {
+// =====================================================
+// AUTO LOGIN
+// =====================================================
 
-    return new Date(date)
-        .toLocaleString("vi-VN");
-}
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        const token =
+            getToken();
 
 
-if (token) {
+        if (!token) {
 
-    showDashboard();
+            return;
+        }
 
-} else {
 
-    showLogin();
-}
+        showDashboard();
+
+
+        try {
+
+            await loadLicenses();
+
+        } catch (error) {
+
+            console.error(error);
+
+            logout();
+        }
+
+    }
+);
