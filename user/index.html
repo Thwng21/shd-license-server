@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,340 +15,939 @@
             margin: 0;
             min-height: 100vh;
 
-            font-family: Arial, sans-serif;
+            background: #0f1117;
+            color: #e5e7eb;
 
-            background: #f5f6fa;
-            color: #222;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
         }
 
         .container {
-            width: 100%;
-            max-width: 850px;
-            padding: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 32px;
         }
 
-        .card {
-            background: white;
-
-            border-radius: 16px;
-
-            padding: 35px;
-
-            box-shadow:
-                0 10px 40px rgba(0, 0, 0, 0.08);
-        }
+        /* =========================
+           HEADER
+        ========================= */
 
         .header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 32px;
+
+            font-size: 24px;
+            font-weight: 700;
+
+            color: #f8fafc;
         }
 
         .header p {
-            color: #777;
-            margin-top: 8px;
+            margin: 6px 0 0;
+
+            font-size: 13px;
+            color: #64748b;
         }
 
-        .loader-code {
+
+        /* =========================
+           MAIN LAYOUT
+        ========================= */
+
+        .main {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.45fr)
+                minmax(300px, 0.8fr)
+                260px;
+
+            gap: 18px;
+
+            align-items: stretch;
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .card {
+            background: #151922;
+
+            border: 1px solid #242936;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 17px 18px;
+
+            border-bottom: 1px solid #242936;
+        }
+
+        .card-header h2 {
+            margin: 0;
+
+            font-size: 14px;
+            font-weight: 650;
+
+            color: #f1f5f9;
+        }
+
+        .card-header p {
+            margin: 5px 0 0;
+
+            font-size: 12px;
+            line-height: 1.5;
+
+            color: #64748b;
+        }
+
+        .card-body {
+            padding: 18px;
+        }
+
+
+        /* =========================
+           CODE
+        ========================= */
+
+        #loaderCode {
             width: 100%;
-            min-height: 320px;
-
-            padding: 20px;
-
-            border-radius: 10px;
-            border: 1px solid #ddd;
-
-            background: #111827;
-            color: #e5e7eb;
-
-            font-family: monospace;
-            font-size: 13px;
-            line-height: 1.6;
+            height: 480px;
 
             resize: vertical;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            border: 1px solid #292e3a;
+
+            background: #0b0d12;
+
+            color: #cbd5e1;
+
+            font-family:
+                "JetBrains Mono",
+                "Fira Code",
+                Consolas,
+                monospace;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+            outline: none;
         }
 
-        .copy-button {
-            width: 100%;
+        #loaderCode:focus {
+            border-color: #3b82f6;
+        }
 
-            margin-top: 15px;
 
-            padding: 14px;
+        /* =========================
+           STATUS
+        ========================= */
 
-            border: 0;
-            border-radius: 9px;
+        .status {
+            display: flex;
+            align-items: center;
 
-            background: #111827;
-            color: white;
+            gap: 8px;
 
-            font-size: 16px;
-            font-weight: bold;
+            margin-top: 12px;
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+
+            margin-top: 14px;
+        }
+
+        button {
+            border: none;
+            outline: none;
+
+            padding: 9px 14px;
+
+            border-radius: 7px;
+
+            font-size: 12px;
+            font-weight: 600;
 
             cursor: pointer;
+
+            transition: 0.15s;
         }
 
-        .copy-button:hover {
-            background: #000;
+        button:hover {
+            opacity: 0.85;
         }
 
-        .copy-button.copied {
-            background: #16a34a;
+        .btn-primary {
+            background: #2563eb;
+            color: white;
         }
 
-        .instructions {
-            margin-top: 30px;
+        .btn-secondary {
+            background: #202530;
+            color: #cbd5e1;
+
+            border: 1px solid #2c3240;
+        }
+
+
+        /* =========================
+           GUIDE
+        ========================= */
+
+        .guide {
+            display: flex;
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+        .method {
+            padding: 15px;
+
+            background: #10131a;
+
+            border: 1px solid #252a35;
+
+            border-radius: 9px;
+        }
+
+        .method-title {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            margin-bottom: 10px;
+        }
+
+        .method-number {
+            width: 24px;
+            height: 24px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 6px;
+
+            background: #1d4ed8;
+
+            color: white;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .method-title h3 {
+            margin: 0;
+
+            font-size: 13px;
+            font-weight: 650;
+
+            color: #e2e8f0;
+        }
+
+        .method p {
+            margin: 6px 0;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            line-height: 1.65;
+        }
+
+        .method strong {
+            color: #e2e8f0;
+        }
+
+        .method code {
+            display: inline-block;
+
+            padding: 2px 5px;
+
+            border-radius: 4px;
+
+            background: #1a1e27;
+
+            color: #93c5fd;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================
+           DONATE
+        ========================= */
+
+        .donate-card {
+            background: #151922;
+
+            border: 1px solid #242936;
+
+            border-radius: 12px;
 
             padding: 20px;
 
-            border-radius: 10px;
-
-            background: #f9fafb;
-            border: 1px solid #eee;
+            text-align: center;
         }
 
-        .instructions h3 {
-            margin-top: 0;
+        .donate-title {
+            margin: 0;
+
+            font-size: 14px;
+
+            font-weight: 650;
+
+            color: #f1f5f9;
         }
 
-        .instructions li {
-            margin: 10px 0;
+        .donate-subtitle {
+            margin: 7px 0 18px;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            line-height: 1.5;
         }
 
-        .note {
+        .qr {
+            width: 190px;
+            height: 190px;
+
+            display: block;
+
+            margin: 0 auto 17px;
+
+            padding: 8px;
+
+            background: white;
+
+            border-radius: 8px;
+        }
+
+        .bank {
+            margin: 0;
+
+            font-size: 13px;
+
+            color: #cbd5e1;
+        }
+
+        .account {
+            margin-top: 7px;
+
+            font-family:
+                "JetBrains Mono",
+                Consolas,
+                monospace;
+
+            font-size: 14px;
+
+            font-weight: 650;
+
+            color: #60a5fa;
+        }
+
+        .donate-note {
+            margin: 12px 0 0;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
             margin-top: 20px;
 
             text-align: center;
 
-            color: #777;
-            font-size: 13px;
+            color: #475569;
+
+            font-size: 11px;
         }
 
-        @media (max-width: 600px) {
 
-            .card {
-                padding: 20px;
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1150px) {
+
+            .main {
+                grid-template-columns:
+                    minmax(0, 1fr)
+                    minmax(280px, 0.8fr);
             }
 
-            .header h1 {
-                font-size: 26px;
+            .donate-card {
+                grid-column: 1 / -1;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                gap: 30px;
+
+                text-align: left;
+            }
+
+            .donate-card .qr {
+                margin: 0;
+            }
+        }
+
+
+        @media (max-width: 800px) {
+
+            .container {
+                padding: 18px;
+            }
+
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .donate-card {
+                grid-column: auto;
+
+                display: block;
+
+                text-align: center;
+            }
+
+            .donate-card .qr {
+                margin: 0 auto 17px;
+            }
+
+            #loaderCode {
+                height: 350px;
             }
         }
     </style>
 </head>
 
+
 <body>
 
-    <div class="container">
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            SHD V6
+        </h1>
+
+        <p>
+            SHD Automation Tool
+        </p>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+
+        <!-- =================================
+             LEFT
+             LOADER
+        ================================== -->
 
         <div class="card">
 
-            <div class="header">
-                <h1>SHD V6</h1>
+            <div class="card-header">
+
+                <h2>
+                    Loader
+                </h2>
 
                 <p>
-                    Công cụ tự động hóa
+                    Loader mới nhất từ SHD License Server
                 </p>
-            </div>
-
-            <textarea
-                id="loaderCode"
-                class="loader-code"
-                readonly
-                placeholder="Đang tải Loader...">
-            </textarea>
-
-            <button
-                id="copyButton"
-                class="copy-button"
-                onclick="copyLoader()">
-
-                📋 Copy Loader
-
-            </button>
-
-            <div class="instructions">
-
-                <h3>
-                    Hướng dẫn sử dụng
-                </h3>
-
-                <ol>
-
-                    <li>
-                        Nhấn <strong>Copy Loader</strong>
-                    </li>
-
-                    <li>
-                        Mở website cần sử dụng SHD V6
-                    </li>
-
-                    <li>
-                        Nhấn <strong>F12</strong>
-                    </li>
-
-                    <li>
-                        Chọn tab <strong>Console</strong>
-                    </li>
-
-                    <li>
-                        Dán Loader vào Console
-                    </li>
-
-                    <li>
-                        Nhập License SHD V6 khi được yêu cầu
-                    </li>
-
-                </ol>
 
             </div>
 
-            <div class="note">
 
-                Loader luôn được lấy từ License Server.
+            <div class="card-body">
+
+                <textarea
+                    id="loaderCode"
+                    readonly
+                    placeholder="Đang tải Loader..."
+                ></textarea>
+
+
+                <div class="status">
+
+                    <span
+                        id="statusDot"
+                        class="status-dot"
+                    ></span>
+
+                    <span id="status">
+                        Đang tải Loader...
+                    </span>
+
+                </div>
+
+
+                <div class="buttons">
+
+                    <button
+                        id="copyLoader"
+                        class="btn-primary"
+                    >
+                        Copy Loader
+                    </button>
+
+
+                    <button
+                        id="copyBookmarklet"
+                        class="btn-secondary"
+                    >
+                        Copy Bookmarklet
+                    </button>
+
+                </div>
 
             </div>
 
         </div>
 
+
+
+        <!-- =================================
+             CENTER
+             GUIDE
+        ================================== -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h2>
+                    Hướng dẫn sử dụng
+                </h2>
+
+                <p>
+                    Có 2 cách để chạy SHD V6
+                </p>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="guide">
+
+
+                    <!-- METHOD 1 -->
+
+                    <div class="method">
+
+                        <div class="method-title">
+
+                            <div class="method-number">
+                                1
+                            </div>
+
+                            <h3>
+                                Cách 1 — Chạy bằng Console
+                            </h3>
+
+                        </div>
+
+
+                        <p>
+                            <strong>Bước 1:</strong>
+                            Nhấn
+                            <strong>Copy Loader</strong>
+                            ở bên trái.
+                        </p>
+
+
+                        <p>
+                            <strong>Bước 2:</strong>
+                            Mở website cần sử dụng SHD V6.
+                        </p>
+
+
+                        <p>
+                            <strong>Bước 3:</strong>
+                            Mở
+                            <strong>Developer Console</strong>
+                            bằng phím
+                            <code>F12</code>
+                            hoặc
+                            <code>Ctrl + Shift + J</code>.
+                        </p>
+
+
+                        <p>
+                            <strong>Bước 4:</strong>
+                            Paste Loader vào Console
+                            và nhấn Enter.
+                        </p>
+
+
+                        <p>
+                            Nếu đây là lần đầu sử dụng,
+                            hệ thống sẽ yêu cầu nhập
+                            <strong>License SHD V6</strong>.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- METHOD 2 -->
+
+                    <div class="method">
+
+                        <div class="method-title">
+
+                            <div class="method-number">
+                                2
+                            </div>
+
+                            <h3>
+                                Cách 2 — Chạy bằng Bookmarklet
+                            </h3>
+
+                        </div>
+
+
+                        <p>
+                            <strong>Bước 1:</strong>
+                            Nhấn
+                            <strong>Copy Bookmarklet</strong>.
+                        </p>
+
+
+                        <p>
+                            <strong>Bước 2:</strong>
+                            Tạo một Bookmark mới
+                            trên trình duyệt.
+                        </p>
+
+
+                        <p>
+                            <strong>Bước 3:</strong>
+                            Dán nội dung đã copy
+                            vào phần
+                            <strong>URL / Địa chỉ</strong>
+                            của Bookmark.
+                        </p>
+
+
+                        <p>
+                            <strong>Bước 4:</strong>
+                            Truy cập website cần sử dụng
+                            rồi nhấn Bookmark đó.
+                        </p>
+
+
+                        <p>
+                            Bookmarklet sẽ tự chạy Loader
+                            và kiểm tra License.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             RIGHT
+             DONATE
+        ================================== -->
+
+        <div class="donate-card">
+
+            <div>
+
+                <h2 class="donate-title">
+                    Donate
+                </h2>
+
+                <p class="donate-subtitle">
+                    Nếu SHD V6 hữu ích,<br>
+                    bạn có thể ủng hộ mình.
+                </p>
+
+
+                <img
+                    class="qr"
+                    src="https://img.vietqr.io/image/VPB-210520042026-compact2.png"
+                    alt="QR Donate VPBank"
+                >
+
+                <p class="bank">
+                    VPBank
+                </p>
+
+                <div class="account">
+                    210520042026
+                </div>
+
+                <p class="donate-note">
+                    Quét QR bằng ứng dụng ngân hàng
+                    để chuyển khoản.
+                </p>
+
+            </div>
+
+        </div>
+
+
     </div>
 
 
-    <script>
+    <div class="footer">
+        SHD V6 License System
+    </div>
 
-        let LOADER = "";
+</div>
 
 
-        // ==============================
-        // LOAD LOADER
-        // ==============================
 
-        async function loadLoader() {
+<script>
 
-            try {
+    /* =========================
+       LOAD LOADER
+    ========================= */
 
-                const response =
-                    await fetch("/loader.js");
+    async function loadLoader() {
 
-                if (!response.ok) {
+        const loaderCode =
+            document.getElementById(
+                "loaderCode"
+            );
 
-                    throw new Error(
-                        "Không thể tải Loader"
+        const status =
+            document.getElementById(
+                "status"
+            );
+
+        const statusDot =
+            document.getElementById(
+                "statusDot"
+            );
+
+
+        try {
+
+            status.textContent =
+                "Đang tải Loader...";
+
+
+            const response =
+                await fetch(
+                    "/loader.js?t=" +
+                    Date.now(),
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const code =
+                await response.text();
+
+
+            loaderCode.value =
+                code;
+
+
+            status.textContent =
+                "Loader đã sẵn sàng";
+
+
+            statusDot.style.background =
+                "#22c55e";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            status.textContent =
+                "Không thể tải Loader";
+
+
+            statusDot.style.background =
+                "#ef4444";
+
+        }
+
+    }
+
+
+
+    /* =========================
+       COPY LOADER
+    ========================= */
+
+    document
+        .getElementById("copyLoader")
+        .addEventListener(
+            "click",
+            async () => {
+
+                const code =
+                    document.getElementById(
+                        "loaderCode"
+                    ).value;
+
+
+                if (!code) {
+
+                    alert(
+                        "Loader chưa được tải."
                     );
+
+                    return;
 
                 }
 
-                LOADER =
-                    await response.text();
 
-
-                document
-                    .getElementById("loaderCode")
-                    .value = LOADER;
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                document
-                    .getElementById("loaderCode")
-                    .value =
-                        "Không thể tải Loader.\n\n" +
-                        error.message;
-
-            }
-
-        }
-
-
-        // ==============================
-        // COPY LOADER
-        // ==============================
-
-        async function copyLoader() {
-
-            const button =
-                document.getElementById(
-                    "copyButton"
+                await navigator.clipboard.writeText(
+                    code
                 );
 
-
-            if (!LOADER) {
 
                 alert(
-                    "Loader chưa được tải."
+                    "Đã copy Loader."
                 );
-
-                return;
 
             }
+        );
 
 
-            try {
 
-                await navigator.clipboard
-                    .writeText(LOADER);
+    /* =========================
+       COPY BOOKMARKLET
+    ========================= */
 
+    document
+        .getElementById("copyBookmarklet")
+        .addEventListener(
+            "click",
+            async () => {
 
-                button.textContent =
-                    "✓ Đã Copy Loader";
-
-                button.classList.add(
-                    "copied"
-                );
-
-
-                setTimeout(() => {
-
-                    button.textContent =
-                        "📋 Copy Loader";
-
-                    button.classList.remove(
-                        "copied"
-                    );
-
-                }, 2000);
-
-
-            } catch (error) {
-
-                const textarea =
+                const code =
                     document.getElementById(
                         "loaderCode"
+                    ).value;
+
+
+                if (!code) {
+
+                    alert(
+                        "Loader chưa được tải."
+                    );
+
+                    return;
+
+                }
+
+
+                const bookmarklet =
+                    "javascript:" +
+                    encodeURIComponent(
+                        `(async()=>{${code}})()`
                     );
 
 
-                textarea.select();
-
-                document.execCommand(
-                    "copy"
+                await navigator.clipboard.writeText(
+                    bookmarklet
                 );
 
 
-                button.textContent =
-                    "✓ Đã Copy Loader";
+                alert(
+                    "Đã copy Bookmarklet.\n\n" +
+                    "Hãy tạo Bookmark mới và " +
+                    "dán nội dung này vào ô URL."
+                );
 
             }
+        );
 
-        }
 
 
-        // ==============================
-        // START
-        // ==============================
+    /* =========================
+       START
+    ========================= */
 
-        loadLoader();
+    loadLoader();
 
-    </script>
+</script>
 
 </body>
-
 </html>
