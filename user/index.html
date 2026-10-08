@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SHD V6</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background: #f5f6fa;
+            color: #222;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header p {
+            color: #777;
+            margin-top: 8px;
+        }
+
+        .loader-code {
+            width: 100%;
+            min-height: 320px;
+
+            padding: 20px;
+
+            border-radius: 10px;
+            border: 1px solid #ddd;
+
+            background: #111827;
+            color: #e5e7eb;
+
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.6;
+
+            resize: vertical;
+        }
+
+        .copy-button {
+            width: 100%;
+
+            margin-top: 15px;
+
+            padding: 14px;
+
+            border: 0;
+            border-radius: 9px;
+
+            background: #111827;
+            color: white;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .copy-button:hover {
+            background: #000;
+        }
+
+        .copy-button.copied {
+            background: #16a34a;
+        }
+
+        .instructions {
+            margin-top: 30px;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            background: #f9fafb;
+            border: 1px solid #eee;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+        }
+
+        .note {
+            margin-top: 20px;
+
+            text-align: center;
+
+            color: #777;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <div class="header">
+                <h1>SHD V6</h1>
+
+                <p>
+                    Công cụ tự động hóa
+                </p>
+            </div>
+
+            <textarea
+                id="loaderCode"
+                class="loader-code"
+                readonly
+                placeholder="Đang tải Loader...">
+            </textarea>
+
+            <button
+                id="copyButton"
+                class="copy-button"
+                onclick="copyLoader()">
+
+                📋 Copy Loader
+
+            </button>
+
+            <div class="instructions">
+
+                <h3>
+                    Hướng dẫn sử dụng
+                </h3>
+
+                <ol>
+
+                    <li>
+                        Nhấn <strong>Copy Loader</strong>
+                    </li>
+
+                    <li>
+                        Mở website cần sử dụng SHD V6
+                    </li>
+
+                    <li>
+                        Nhấn <strong>F12</strong>
+                    </li>
+
+                    <li>
+                        Chọn tab <strong>Console</strong>
+                    </li>
+
+                    <li>
+                        Dán Loader vào Console
+                    </li>
+
+                    <li>
+                        Nhập License SHD V6 khi được yêu cầu
+                    </li>
+
+                </ol>
+
+            </div>
+
+            <div class="note">
+
+                Loader luôn được lấy từ License Server.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let LOADER = "";
+
+
+        // ==============================
+        // LOAD LOADER
+        // ==============================
+
+        async function loadLoader() {
+
+            try {
+
+                const response =
+                    await fetch("/loader.js");
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Không thể tải Loader"
+                    );
+
+                }
+
+                LOADER =
+                    await response.text();
+
+
+                document
+                    .getElementById("loaderCode")
+                    .value = LOADER;
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                document
+                    .getElementById("loaderCode")
+                    .value =
+                        "Không thể tải Loader.\n\n" +
+                        error.message;
+
+            }
+
+        }
+
+
+        // ==============================
+        // COPY LOADER
+        // ==============================
+
+        async function copyLoader() {
+
+            const button =
+                document.getElementById(
+                    "copyButton"
+                );
+
+
+            if (!LOADER) {
+
+                alert(
+                    "Loader chưa được tải."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                await navigator.clipboard
+                    .writeText(LOADER);
+
+
+                button.textContent =
+                    "✓ Đã Copy Loader";
+
+                button.classList.add(
+                    "copied"
+                );
+
+
+                setTimeout(() => {
+
+                    button.textContent =
+                        "📋 Copy Loader";
+
+                    button.classList.remove(
+                        "copied"
+                    );
+
+                }, 2000);
+
+
+            } catch (error) {
+
+                const textarea =
+                    document.getElementById(
+                        "loaderCode"
+                    );
+
+
+                textarea.select();
+
+                document.execCommand(
+                    "copy"
+                );
+
+
+                button.textContent =
+                    "✓ Đã Copy Loader";
+
+            }
+
+        }
+
+
+        // ==============================
+        // START
+        // ==============================
+
+        loadLoader();
+
+    </script>
+
+</body>
+
+</html>
