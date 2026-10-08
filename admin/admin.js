@@ -110,6 +110,15 @@ async function login() {
     }
 
 
+    const loginBtn =
+        document.getElementById("loginBtn") ||
+        document.querySelector("#loginPage button");
+
+    if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Đang kiểm tra...";
+    }
+
     try {
 
         const response =
@@ -163,6 +172,11 @@ async function login() {
 
         error.textContent =
             "Không thể kết nối server.";
+    } finally {
+        if (loginBtn) {
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Đăng nhập";
+        }
     }
 }
 
@@ -275,6 +289,14 @@ function updateStats(
         licenses.length;
 
 
+    const pendingCount =
+        licenses.filter(
+            license =>
+                license.status === "PENDING" ||
+                license.status === "WAITING_CONFIRM"
+        ).length;
+
+
     const active =
         licenses.filter(
             license =>
@@ -308,6 +330,12 @@ function updateStats(
     document
         .getElementById("total")
         .textContent = total;
+
+
+    const pendingEl = document.getElementById("pendingStat");
+    if (pendingEl) {
+        pendingEl.textContent = pendingCount;
+    }
 
 
     document
@@ -375,6 +403,16 @@ function filterLicenses() {
 
 
                 if (
+                    status ===
+                    "PENDING"
+                ) {
+
+                    matchStatus =
+                        license.status === "PENDING" ||
+                        license.status === "WAITING_CONFIRM";
+                }
+
+                else if (
                     status ===
                     "ACTIVE"
                 ) {
@@ -453,7 +491,7 @@ function renderLicenses(
             <tr>
 
                 <td
-                    colspan="6"
+                    colspan="7"
                     style="
                         text-align:center;
                         color:#777;
@@ -486,6 +524,62 @@ function renderLicenses(
                 );
 
 
+            const months = license.months || 1;
+            const amount = Number(license.amount || (months * 50000));
+            const packageText = `${months} tháng (${amount.toLocaleString('vi-VN')}đ)`;
+
+            const isPending = license.status === "PENDING" || license.status === "WAITING_CONFIRM";
+
+            let actionButtons = "";
+
+            if (isPending) {
+                actionButtons = `
+                    <button
+                        class="success"
+                        onclick="approveOrder('${license.license_key}')"
+                    >
+                        ✓ Duyệt
+                    </button>
+                    <button
+                        class="danger"
+                        onclick="rejectOrder('${license.license_key}')"
+                    >
+                        ✕ Từ chối
+                    </button>
+                `;
+            } else if (license.status === "DISABLED") {
+                actionButtons = `
+                    <button
+                        class="success"
+                        onclick="enableLicense('${license.license_key}')"
+                    >
+                        Enable
+                    </button>
+                    <button
+                        class="warning"
+                        onclick="extendLicense('${license.license_key}')"
+                    >
+                        Gia hạn
+                    </button>
+                `;
+            } else {
+                actionButtons = `
+                    <button
+                        class="danger"
+                        onclick="disableLicense('${license.license_key}')"
+                    >
+                        Disable
+                    </button>
+                    <button
+                        class="warning"
+                        onclick="extendLicense('${license.license_key}')"
+                    >
+                        Gia hạn
+                    </button>
+                `;
+            }
+
+
             row.innerHTML = `
 
                 <td>
@@ -515,6 +609,13 @@ function renderLicenses(
 
 
                 <td>
+                    <span style="font-weight: 500; color: #4b5563;">
+                        ${packageText}
+                    </span>
+                </td>
+
+
+                <td>
                     ${formatDate(
                         license.expires_at
                     )}
@@ -529,44 +630,7 @@ function renderLicenses(
 
 
                 <td>
-
-                    ${
-                        license.status ===
-                        "DISABLED"
-
-                        ? `
-                            <button
-                                class="success"
-                                onclick="enableLicense(
-                                    '${license.license_key}'
-                                )"
-                            >
-                                Enable
-                            </button>
-                        `
-
-                        : `
-                            <button
-                                class="danger"
-                                onclick="disableLicense(
-                                    '${license.license_key}'
-                                )"
-                            >
-                                Disable
-                            </button>
-                        `
-                    }
-
-
-                    <button
-                        class="warning"
-                        onclick="extendLicense(
-                            '${license.license_key}'
-                        )"
-                    >
-                        Gia hạn
-                    </button>
-
+                    ${actionButtons}
                 </td>
 
             `;
@@ -587,6 +651,51 @@ function renderLicenses(
 function getStatusInfo(
     license
 ) {
+
+    if (
+        license.status ===
+        "WAITING_CONFIRM"
+    ) {
+
+        return {
+
+            label: "⏳ Đã thanh toán (Chờ duyệt)",
+
+            className:
+                "waiting"
+        };
+    }
+
+
+    if (
+        license.status ===
+        "PENDING"
+    ) {
+
+        return {
+
+            label: "Chờ thanh toán",
+
+            className:
+                "pending"
+        };
+    }
+
+
+    if (
+        license.status ===
+        "REJECTED"
+    ) {
+
+        return {
+
+            label: "Đã từ chối",
+
+            className:
+                "rejected"
+        };
+    }
+
 
     if (
         license.status ===
@@ -941,6 +1050,61 @@ async function extendLicense(
     } catch (error) {
 
         console.error(error);
+    }
+}
+
+// =====================================================
+// APPROVE ORDER (DUYỆT & KÍCH HOẠT)
+// =====================================================
+
+async function approveOrder(license) {
+    const confirmApprove = confirm(`Duyệt và KÍCH HOẠT License này?\n\n${license}`);
+    if (!confirmApprove) return;
+
+    try {
+        const data = await apiRequest(`${API}/approve`, {
+            method: "POST",
+            body: JSON.stringify({ license })
+        });
+
+        if (!data.success) {
+            alert(data.message || "Không thể duyệt License.");
+            return;
+        }
+
+        alert(`✓ Đã kích hoạt License thành công!\n\nLicense: ${license}\nHạn dùng: ${formatDate(data.license?.expires_at)}`);
+        await loadLicenses();
+    } catch (error) {
+        console.error(error);
+        alert("Lỗi khi duyệt: " + error.message);
+    }
+}
+
+
+// =====================================================
+// REJECT ORDER (TỪ CHỐI ĐƠN MUA)
+// =====================================================
+
+async function rejectOrder(license) {
+    const confirmReject = confirm(`Từ chối đơn mua License này?\n\n${license}`);
+    if (!confirmReject) return;
+
+    try {
+        const data = await apiRequest(`${API}/reject`, {
+            method: "POST",
+            body: JSON.stringify({ license })
+        });
+
+        if (!data.success) {
+            alert(data.message || "Không thể từ chối License.");
+            return;
+        }
+
+        alert(`Đã từ chối đơn mua License: ${license}`);
+        await loadLicenses();
+    } catch (error) {
+        console.error(error);
+        alert("Lỗi khi từ chối: " + error.message);
     }
 }
 

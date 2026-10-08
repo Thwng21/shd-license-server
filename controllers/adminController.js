@@ -3,7 +3,9 @@ const {
 } = require("../config/database");
 
 const {
-    createLicense
+    createLicense,
+    approveLicense,
+    rejectLicense
 } = require("../services/licenseService");
 
 const {
@@ -13,31 +15,16 @@ const {
 // ================================
 // ADMIN LOGIN
 // ================================
-
 async function login(req, res) {
+    const username = String(req.body?.username || "").trim();
+    const password = String(req.body?.password || "");
 
-    const username =
-        String(
-            req.body?.username || ""
-        ).trim();
-
-    const password =
-        String(
-            req.body?.password || ""
-        );
-
-    const token =
-        loginAdmin(
-            username,
-            password
-        );
+    const token = loginAdmin(username, password);
 
     if (!token) {
-
         return res.status(401).json({
             success: false,
-            message:
-                "Sai username hoặc password."
+            message: "Sai username hoặc password."
         });
     }
 
@@ -50,24 +37,22 @@ async function login(req, res) {
 // ================================
 // GET LICENSES
 // ================================
-
 async function getLicenses(req, res) {
-
     try {
-
-        const result =
-            await pool.query(
-                `
-                SELECT
-                    id,
-                    license_key,
-                    expires_at,
-                    status,
-                    created_at
-                FROM licenses
-                ORDER BY id DESC
-                `
-            );
+        const result = await pool.query(
+            `
+            SELECT
+                id,
+                license_key,
+                expires_at,
+                status,
+                created_at,
+                months,
+                amount
+            FROM licenses
+            ORDER BY id DESC
+            `
+        );
 
         return res.json({
             success: true,
@@ -75,9 +60,7 @@ async function getLicenses(req, res) {
         });
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("getLicenses error:", error);
         return res.status(500).json({
             success: false,
             message: "Database error"
@@ -88,45 +71,87 @@ async function getLicenses(req, res) {
 // ================================
 // CREATE LICENSE
 // ================================
-
 async function create(req, res) {
-
     try {
+        const days = Number(req.body?.days);
 
-        const days =
-            Number(req.body?.days);
-
-        if (
-            !Number.isInteger(days) ||
-            days <= 0
-        ) {
-
+        if (!Number.isInteger(days) || days <= 0) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Số ngày không hợp lệ."
+                message: "Số ngày không hợp lệ."
             });
         }
 
-        const result =
-            await createLicense(days);
+        const result = await createLicense(days);
 
         return res.json({
             success: true,
-            license:
-                result.licenseKey,
-            expiresAt:
-                result.expiresAt
+            license: result.licenseKey,
+            expiresAt: result.expiresAt
         });
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("create license error:", error);
         return res.status(500).json({
             success: false,
-            message:
-                "Không thể tạo license."
+            message: "Không thể tạo license."
+        });
+    }
+}
+
+// ================================
+// APPROVE LICENSE (DUYỆT ĐƠN MUA)
+// ================================
+async function approve(req, res) {
+    try {
+        const licenseKey = String(req.body?.license || req.body?.licenseKey || "").trim();
+        if (!licenseKey) {
+            return res.status(400).json({
+                success: false,
+                message: "Vui lòng cung cấp mã License cần duyệt."
+            });
+        }
+
+        const updated = await approveLicense(licenseKey);
+
+        return res.json({
+            success: true,
+            message: "Đã duyệt và kích hoạt License thành công!",
+            license: updated
+        });
+    } catch (error) {
+        console.error("approve error:", error);
+        return res.status(400).json({
+            success: false,
+            message: error.message || "Không thể duyệt License."
+        });
+    }
+}
+
+// ================================
+// REJECT LICENSE (TỪ CHỐI ĐƠN MUA)
+// ================================
+async function reject(req, res) {
+    try {
+        const licenseKey = String(req.body?.license || req.body?.licenseKey || "").trim();
+        if (!licenseKey) {
+            return res.status(400).json({
+                success: false,
+                message: "Vui lòng cung cấp mã License cần từ chối."
+            });
+        }
+
+        await rejectLicense(licenseKey);
+
+        return res.json({
+            success: true,
+            message: "Đã từ chối License."
+        });
+    } catch (error) {
+        console.error("reject error:", error);
+        return res.status(400).json({
+            success: false,
+            message: error.message || "Không thể từ chối License."
         });
     }
 }
@@ -134,33 +159,24 @@ async function create(req, res) {
 // ================================
 // DISABLE LICENSE
 // ================================
-
 async function disable(req, res) {
-
     try {
+        const license = String(req.body?.license || "").trim();
 
-        const license =
-            String(
-                req.body?.license || ""
-            ).trim();
-
-        const result =
-            await pool.query(
-                `
-                UPDATE licenses
-                SET status = 'DISABLED'
-                WHERE license_key = $1
-                RETURNING *
-                `,
-                [license]
-            );
+        const result = await pool.query(
+            `
+            UPDATE licenses
+            SET status = 'DISABLED'
+            WHERE license_key = $1
+            RETURNING *
+            `,
+            [license]
+        );
 
         if (result.rowCount === 0) {
-
             return res.status(404).json({
                 success: false,
-                message:
-                    "License không tồn tại."
+                message: "License không tồn tại."
             });
         }
 
@@ -169,9 +185,7 @@ async function disable(req, res) {
         });
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("disable error:", error);
         return res.status(500).json({
             success: false,
             message: "Database error"
@@ -182,33 +196,24 @@ async function disable(req, res) {
 // ================================
 // ENABLE LICENSE
 // ================================
-
 async function enable(req, res) {
-
     try {
+        const license = String(req.body?.license || "").trim();
 
-        const license =
-            String(
-                req.body?.license || ""
-            ).trim();
-
-        const result =
-            await pool.query(
-                `
-                UPDATE licenses
-                SET status = 'ACTIVE'
-                WHERE license_key = $1
-                RETURNING *
-                `,
-                [license]
-            );
+        const result = await pool.query(
+            `
+            UPDATE licenses
+            SET status = 'ACTIVE'
+            WHERE license_key = $1
+            RETURNING *
+            `,
+            [license]
+        );
 
         if (result.rowCount === 0) {
-
             return res.status(404).json({
                 success: false,
-                message:
-                    "License không tồn tại."
+                message: "License không tồn tại."
             });
         }
 
@@ -217,9 +222,7 @@ async function enable(req, res) {
         });
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("enable error:", error);
         return res.status(500).json({
             success: false,
             message: "Database error"
@@ -230,66 +233,45 @@ async function enable(req, res) {
 // ================================
 // EXTEND LICENSE
 // ================================
-
 async function extend(req, res) {
-
     try {
+        const license = String(req.body?.license || "").trim();
+        const numberOfDays = Number(req.body?.days);
 
-        const license =
-            String(
-                req.body?.license || ""
-            ).trim();
-
-        const numberOfDays =
-            Number(req.body?.days);
-
-        if (
-            !Number.isInteger(numberOfDays) ||
-            numberOfDays <= 0
-        ) {
-
+        if (!Number.isInteger(numberOfDays) || numberOfDays <= 0) {
             return res.status(400).json({
                 success: false,
-                message:
-                    "Số ngày không hợp lệ."
+                message: "Số ngày không hợp lệ."
             });
         }
 
-        const result =
-            await pool.query(
-                `
-                UPDATE licenses
-                SET expires_at =
-                    expires_at +
-                    ($1 * INTERVAL '1 day')
-                WHERE license_key = $2
-                RETURNING expires_at
-                `,
-                [
-                    numberOfDays,
-                    license
-                ]
-            );
+        const result = await pool.query(
+            `
+            UPDATE licenses
+            SET expires_at =
+                GREATEST(expires_at, NOW()) +
+                ($1 * INTERVAL '1 day'),
+                status = 'ACTIVE'
+            WHERE license_key = $2
+            RETURNING expires_at
+            `,
+            [numberOfDays, license]
+        );
 
         if (result.rowCount === 0) {
-
             return res.status(404).json({
                 success: false,
-                message:
-                    "License không tồn tại."
+                message: "License không tồn tại."
             });
         }
 
         return res.json({
             success: true,
-            expiresAt:
-                result.rows[0].expires_at
+            expiresAt: result.rows[0].expires_at
         });
 
     } catch (error) {
-
-        console.error(error);
-
+        console.error("extend error:", error);
         return res.status(500).json({
             success: false,
             message: "Database error"
@@ -301,6 +283,8 @@ module.exports = {
     login,
     getLicenses,
     create,
+    approve,
+    reject,
     disable,
     enable,
     extend

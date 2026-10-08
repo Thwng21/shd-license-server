@@ -351,6 +351,27 @@
             color: #92400e;
         }
 
+        .pending {
+
+            background: #fed7aa;
+
+            color: #c2410c;
+        }
+
+        .waiting {
+
+            background: #fef08a;
+
+            color: #854d0e;
+        }
+
+        .rejected {
+
+            background: #f1f5f9;
+
+            color: #64748b;
+        }
+
         /* =========================
            ERROR
         ========================= */
@@ -450,15 +471,18 @@
         id="username"
         type="text"
         placeholder="Username"
+        onkeydown="if(event.key==='Enter') login()"
     >
 
     <input
         id="password"
         type="password"
         placeholder="Password"
+        onkeydown="if(event.key==='Enter') login()"
     >
 
     <button
+        id="loginBtn"
         class="primary"
         style="width:100%;"
         onclick="login()"
@@ -508,7 +532,7 @@
              STATS
         ================================================== -->
 
-        <div class="stats">
+        <div class="stats" style="grid-template-columns: repeat(5, 1fr);">
 
             <div class="card">
 
@@ -524,13 +548,29 @@
             </div>
 
 
-            <div class="card">
+            <div class="card" style="border-top: 3px solid #f97316;">
+
+                Chờ duyệt
+
+                <div
+                    id="pendingStat"
+                    class="number"
+                    style="color: #ea580c;"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card" style="border-top: 3px solid #16a34a;">
 
                 Active
 
                 <div
                     id="active"
                     class="number"
+                    style="color: #16a34a;"
                 >
                     0
                 </div>
@@ -598,6 +638,10 @@
                         Tất cả
                     </option>
 
+                    <option value="PENDING">
+                        ⏳ Chờ duyệt / Đã thanh toán
+                    </option>
+
                     <option value="ACTIVE">
                         Active
                     </option>
@@ -662,6 +706,10 @@
                         </th>
 
                         <th>
+                            Gói / Tiền
+                        </th>
+
+                        <th>
                             Expires
                         </th>
 
@@ -695,7 +743,7 @@
      JAVASCRIPT
 ===================================================== -->
 
-<script src="/admin/admin.js"></script>
+<script src="/admin/admin.js?v=2.0"></script>
 
 </body>
 

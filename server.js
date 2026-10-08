@@ -57,11 +57,18 @@ app.get("/", (req, res) => {
 });
 
 // ================================
-// LOADER
+// DYNAMIC LOADER
+// ================================
+const fs = require("fs");
 app.get("/loader.js", (req, res) => {
-    res.sendFile(
-        path.join(__dirname, "loader.js")
-    );
+    const requestedTool = String(req.query.tool || "shd").toLowerCase().trim();
+    const loaderFilePath = path.join(__dirname, "loader.js");
+    let content = fs.readFileSync(loaderFilePath, "utf8");
+    if (requestedTool) {
+        content = content.replace(/const DEFAULT_TOOL = ".*?";/, `const DEFAULT_TOOL = "${requestedTool}";`);
+    }
+    res.setHeader("Content-Type", "application/javascript; charset=utf-8");
+    res.send(content);
 });
 
 // ================================
