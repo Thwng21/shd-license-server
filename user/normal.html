@@ -384,7 +384,8 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-    const UNLOCK_KEY = "__UNLOCK_TOKEN__";
+    // 1. CHỈ LƯU TOKEN TRONG BỘ NHỚ (MẤT KHI F5)
+    let memoryUnlockToken = null; 
     let currentUnlockTool = null;
 
     function showToast(message, type = "info") {
@@ -397,6 +398,7 @@
         setTimeout(() => { toast.style.opacity = "0"; setTimeout(() => toast.remove(), 300); }, 3500);
     }
 
+    // CHUYỂN TAB
     document.querySelectorAll(".tab-button").forEach(btn => {
         btn.onclick = () => {
             document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
@@ -406,6 +408,7 @@
         };
     });
 
+    // XỬ LÝ HÌNH ẢNH
     document.querySelectorAll("[data-lightbox]").forEach(img => {
         img.onclick = () => { document.getElementById("lightboxImg").src = img.src; document.getElementById("lightbox").classList.add("open"); };
         img.onerror = () => img.style.display = "none";
@@ -421,6 +424,7 @@
     });
     function closeLightbox() { document.getElementById("lightbox").classList.remove("open"); }
 
+    // MỞ MODAL NHẬP CODE
     function openUnlockModal(tool) {
         currentUnlockTool = tool;
         document.getElementById("unlockToolName").textContent = tool.toUpperCase();
@@ -431,22 +435,38 @@
     }
     function closeUnlockModal() { document.getElementById("unlockModal").classList.remove("open"); }
 
+    // XÁC NHẬN MỞ KHÓA (GỬI KÈM TOOL ID ĐỂ PHÂN QUYỀN)
     async function confirmUnlock() {
         const code = document.getElementById("unlockCodeInput").value.trim();
         const errEl = document.getElementById("unlockError");
         if (!code) { errEl.textContent = "Vui lòng nhập mã."; return; }
+        
         try {
-            const res = await fetch("/api/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
+            const res = await fetch("/api/unlock", { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json" }, 
+                body: JSON.stringify({ code, toolId: currentUnlockTool }) 
+            });
             const data = await res.json();
-            if (!data.success) { errEl.textContent = data.message || "Mã không đúng."; return; }
-            sessionStorage.setItem(UNLOCK_KEY, data.token);
+            
+            if (!data.success) { 
+                errEl.textContent = data.message || "Mã không đúng."; 
+                return; 
+            }
+            
+            // LƯU TOKEN VÀO BIẾN BỘ NHỚ (KHÔNG LƯU VÀO STORAGE)
+            memoryUnlockToken = data.token;
+            
             const tool = currentUnlockTool;
             closeUnlockModal();
             unlockUI(tool);
             showToast(`Mở khóa thành công!`, "success");
-        } catch (err) { errEl.textContent = "Lỗi kết nối server."; }
+        } catch (err) { 
+            errEl.textContent = "Lỗi kết nối server."; 
+        }
     }
 
+    // CẬP NHẬT GIAO DIỆN KHI MỞ KHÓA
     function unlockUI(tool) {
         const btn = document.getElementById("unlockBtn-" + tool);
         const status = document.getElementById("unlockStatus-" + tool);
@@ -456,6 +476,7 @@
         if (copyBox) copyBox.style.display = "block";
     }
 
+    // GIẢI MÃ AES ĐỂ COPY
     async function decryptCode(enc) {
         const b64ToBytes = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
         const keyBytes = b64ToBytes(enc.key), iv = b64ToBytes(enc.iv), tag = b64ToBytes(enc.tag), payload = b64ToBytes(enc.payload);
@@ -466,32 +487,53 @@
         return new TextDecoder().decode(plainBuf);
     }
 
+    // NÚT COPY TOOL
     document.querySelectorAll(".copy-tool").forEach(btn => {
         btn.onclick = async () => {
             const tool = btn.dataset.tool;
-            const token = sessionStorage.getItem(UNLOCK_KEY);
-            if (!token) return openUnlockModal(tool);
+            // Kiểm tra token trong bộ nhớ
+            if (!memoryUnlockToken) {
+                showToast("Phiên đã hết hạn hoặc bạn vừa tải lại trang. Vui lòng nhập lại mã!", "error");
+                return openUnlockModal(tool);
+            }
+            
             btn.disabled = true; btn.innerHTML = "⏳ Đang copy...";
             try {
-                const res = await fetch(`/api/tool/${tool}/copy`, { method: "POST", headers: { "Authorization": "Bearer " + token } });
+                const res = await fetch(`/api/tool/${tool}/copy`, { 
+                    method: "POST", 
+                    headers: { "Authorization": "Bearer " + memoryUnlockToken } 
+                });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const code = await decryptCode(data.encrypted);
                 await navigator.clipboard.writeText(code);
                 showToast(`Đã copy toàn bộ tool ${tool.toUpperCase()}!`, "success");
-            } catch (err) { showToast("Lỗi: " + err.message, "error"); }
+            } catch (err) { 
+                showToast("Lỗi: " + err.message, "error"); 
+                if (err.message.includes("hết hạn") || err.message.includes("Chưa mở")) {
+                    memoryUnlockToken = null; // Xóa token nếu hết hạn
+                    openUnlockModal(tool);
+                }
+            }
             finally { btn.disabled = false; btn.innerHTML = `📋 Copy toàn bộ tool ${tool.toUpperCase()}`; }
         };
     });
 
+    // NÚT COPY BOOKMARKLET
     document.querySelectorAll(".copy-bookmarklet").forEach(btn => {
         btn.onclick = async () => {
             const tool = btn.dataset.tool;
-            const token = sessionStorage.getItem(UNLOCK_KEY);
-            if (!token) return openUnlockModal(tool);
+            if (!memoryUnlockToken) {
+                showToast("Vui lòng nhập lại mã mở khóa.", "error");
+                return openUnlockModal(tool);
+            }
+            
             btn.disabled = true; btn.innerHTML = "⏳ Đang tạo...";
             try {
-                const res = await fetch(`/api/tool/${tool}/copy`, { method: "POST", headers: { "Authorization": "Bearer " + token } });
+                const res = await fetch(`/api/tool/${tool}/copy`, { 
+                    method: "POST", 
+                    headers: { "Authorization": "Bearer " + memoryUnlockToken } 
+                });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const code = await decryptCode(data.encrypted);
@@ -503,6 +545,7 @@
         };
     });
 
+    // CÁC HÀM MUA HÀNG
     const pendingOrders = {};
     async function createOrderByTool(tool) {
         const phoneInput = document.getElementById("phoneInput-" + tool);
@@ -514,7 +557,7 @@
         try {
             const res = await fetch("/api/license/buy", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone, plan: "normal" })
+                body: JSON.stringify({ phone, plan: tool.includes("v2") ? "premium" : "normal" })
             });
             const data = await res.json();
             if (!data.success) throw new Error(data.message);
@@ -524,9 +567,9 @@
             document.getElementById("orderAmountDisplay-" + tool).textContent = Number(data.order.amount).toLocaleString("vi-VN") + "đ";
             document.getElementById("orderMemoDisplay-" + tool).textContent = data.order.bankInfo.transferContent;
             document.getElementById("orderInfoBox-" + tool).classList.add("show");
-            showToast("Đã tạo mã QR 1.200.000đ!", "success");
+            showToast(`Đã tạo mã QR ${Number(data.order.amount).toLocaleString("vi-VN")}đ!`, "success");
         } catch (err) { showToast("Lỗi: " + err.message, "error"); }
-        finally { btn.disabled = false; btn.innerHTML = "⚡ Tạo Mã QR — 1.200.000đ"; }
+        finally { btn.disabled = false; btn.innerHTML = "⚡ Tạo Mã QR Thanh Toán"; }
     }
 
     async function confirmPaidByTool(tool) {
@@ -582,27 +625,24 @@
         }
     }
 
+    // CHỐNG DEVTOOLS (TỰ ĐỘNG RELOAD XÓA TOKEN)
     (function() {
         function checkDevTools() {
             const startTime = performance.now();
             const endTime = performance.now();
             if (endTime - startTime > 100) {
-                sessionStorage.removeItem("__UNLOCK_TOKEN__");
+                memoryUnlockToken = null; // Xóa token
                 window.location.reload();
             }
         }
         setInterval(() => {
             if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
-                sessionStorage.removeItem("__UNLOCK_TOKEN__");
+                memoryUnlockToken = null; // Xóa token
                 window.location.reload();
             }
         }, 500);
         setInterval(checkDevTools, 1000);
     })();
-
-    if (sessionStorage.getItem(UNLOCK_KEY)) {
-        ["cms", "pan", "gin"].forEach(t => unlockUI(t));
-    }
 </script>
 </body>
 </html>

@@ -35,13 +35,15 @@ function encryptCode(code) {
     };
 }
 
-// HÀM MỞ KHÓA (ĐÃ SỬA)
+// HÀM MỞ KHÓA (CÓ KIỂM TRA GÓI)
 async function unlock(req, res) {
     try {
         const code = String(req.body?.code || "").trim();
+        const toolId = String(req.body?.toolId || "").toLowerCase().trim();
+
         if (!code) return res.status(400).json({ success: false, message: "Vui lòng nhập mã kích hoạt." });
 
-        // 1. Kiểm tra xem mã Code này có tồn tại trong Database không
+        // 1. Kiểm tra mã Code trong Database
         const result = await pool.query(
             `SELECT * FROM licenses WHERE unlock_code = $1 AND status = 'ACTIVE'`,
             [code]
@@ -51,7 +53,23 @@ async function unlock(req, res) {
             return res.status(403).json({ success: false, message: "Mã kích hoạt không đúng hoặc chưa được duyệt." });
         }
 
-        // 2. Nếu đúng, cấp token để copy tool
+        const licenseData = result.rows[0];
+        
+        // 2. Phân biệt gói dựa vào giá tiền (Bản Thường 1.2tr, Bản Pre 1.5tr)
+        const isPremiumLicense = Number(licenseData.amount) === 1500000;
+        const isPremiumTool = toolId.includes("v2"); // cmsv2, panv2, ginv2
+
+        // Nếu dùng mã Bản Thường để mở tool Bản Premium -> Chặn
+        if (!isPremiumLicense && isPremiumTool) {
+            return res.status(403).json({ success: false, message: "Mã này là của Bản Thường. Vui lòng mua Bản Premium để mở khóa tool này!" });
+        }
+
+        // Nếu dùng mã Bản Premium để mở tool Bản Thường -> Chặn luôn (hoặc bạn có thể mở)
+        if (isPremiumLicense && !isPremiumTool) {
+            return res.status(403).json({ success: false, message: "Mã này là của Bản Premium. Vui lòng chuyển sang tab Bản Premium để sử dụng!" });
+        }
+        
+        // 3. Cấp token
         const token = generateToken();
         unlockTokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS });
         return res.json({ success: true, token });
