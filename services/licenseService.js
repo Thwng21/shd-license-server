@@ -9,8 +9,8 @@ function generateLicenseKey() {
     return `SHD-${part1}-${part2}-${part3}`;
 }
 
-async function createPendingLicense(phone, plan = "normal") {
-    if (!phone) throw new Error("Thiếu số điện thoại.");
+async function createPendingLicense(phone, password, plan = "normal") {
+    if (!phone || !password) throw new Error("Thiếu số điện thoại hoặc mật khẩu.");
 
     const PRICE_NORMAL = 1200000;
     const PRICE_PREMIUM = 1500000;
@@ -20,15 +20,15 @@ async function createPendingLicense(phone, plan = "normal") {
     const now = new Date();
     const transferContent = `${licenseKey} ${phone}`;
 
-    // LƯU SĐT VÀO CỘT PHONE
+    // Lưu SĐT và Mật khẩu vào Database
     await pool.query(
         `
         INSERT INTO licenses (
-            license_key, expires_at, status, created_at, months, amount, phone
+            license_key, expires_at, status, created_at, months, amount, phone, password
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `,
-        [licenseKey, now, "PENDING", now, 0, FIXED_PRICE, phone]
+        [licenseKey, now, "PENDING", now, 0, FIXED_PRICE, phone, password]
     );
 
     const qrUrl = paymentConfig.getVietQrUrl(FIXED_PRICE, transferContent);

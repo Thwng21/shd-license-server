@@ -41,9 +41,13 @@ async function getShdV6(req, res) {
 async function buyLicense(req, res) {
     try {
         const phone = String(req.body?.phone || "").trim().replace(/\s+/g, "");
+        const password = String(req.body?.password || "").trim();
         const plan = String(req.body?.plan || "normal").toLowerCase();
+        
         if (!/^0\d{9}$/.test(phone)) return res.status(400).json({ success: false, message: "SĐT không hợp lệ." });
-        const order = await createPendingLicense(phone, plan);
+        if (password.length < 4) return res.status(400).json({ success: false, message: "Mật khẩu phải từ 4 ký tự." });
+
+        const order = await createPendingLicense(phone, password, plan);
         return res.json({ success: true, order });
     } catch (error) { return res.status(500).json({ success: false, message: error.message }); }
 }
@@ -55,20 +59,34 @@ async function confirmPaymentOrder(req, res) {
     } catch (error) { return res.status(400).json({ success: false, message: error.message }); }
 }
 
-// TRA CỨU BẰNG SĐT
+// TRA CỨU BẰNG SĐT + MẬT KHẨU
 async function lookupByPhone(req, res) {
     try {
         const phone = String(req.params.phone || "").trim();
-        const result = await pool.query(`SELECT license_key, status, unlock_code FROM licenses WHERE phone = $1 ORDER BY id DESC LIMIT 1`, [phone]);
+        const password = String(req.body?.password || "").trim();
+
+        if (!phone || !password) return res.status(400).json({ success: false, message: "Vui lòng nhập SĐT và Mật khẩu." });
+
+        // Tìm đơn hàng khớp cả SĐT và Mật khẩu
+        const result = await pool.query(
+            `SELECT license_key, status, unlock_code FROM licenses WHERE phone = $1 AND password = $2 ORDER BY id DESC LIMIT 1`, 
+            [phone, password]
+        );
         
-        if (result.rowCount === 0) return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng nào với SĐT này." });
+        if (result.rowCount === 0) {
+            return res.status(404).json({ success: false, message: "Sai Số điện thoại hoặc Mật khẩu tra cứu." });
+        }
         
         const data = result.rows[0];
         if (data.status === "PENDING") return res.json({ success: true, status: "PENDING", message: "Chưa thanh toán." });
         if (data.status === "WAITING_CONFIRM") return res.json({ success: true, status: "WAITING_CONFIRM", message: "Đang chờ Admin duyệt." });
         if (data.status === "ACTIVE") return res.json({ success: true, status: "ACTIVE", unlockCode: data.unlock_code, message: "Thành công!" });
+        
         return res.json({ success: true, status: data.status, message: "Đơn hàng đã bị hủy." });
-    } catch (error) { return res.status(500).json({ success: false, message: "Lỗi server." }); }
+    } catch (error) { 
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Lỗi server." }); 
+    }
 }
 
 module.exports = { getAvailableTools, verifyLicense, getToolCode, getShdV6, buyLicense, confirmPaymentOrder, lookupByPhone };

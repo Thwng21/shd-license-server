@@ -29,12 +29,13 @@ async function testDatabase() {
             );
         `);
 
-        // Thêm các cột mới nếu chưa có
+        // Thêm các cột mới nếu chưa có (bao gồm cột password)
         await pool.query(`
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS months INTEGER DEFAULT 1;
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS amount INTEGER DEFAULT 50000;
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS phone VARCHAR(20);
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS unlock_code VARCHAR(100);
+            ALTER TABLE licenses ADD COLUMN IF NOT EXISTS password VARCHAR(100);
         `);
     } catch (err) {
         console.warn("Notice during table migration:", err.message);

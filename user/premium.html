@@ -55,6 +55,8 @@
         .bank-row .value { color: var(--text); font-weight: 700; }
         .phone-input { width: 100%; padding: 12px; background: #06080d; border: 1px solid var(--border-2); border-radius: 9px; color: var(--text); font-size: 14px; outline: none; margin: 10px 0; text-align: center; font-family: monospace; letter-spacing: 2px; transition: 0.2s; }
         .phone-input:focus { border-color: var(--primary); }
+        .pass-input { width: 100%; padding: 12px; background: #06080d; border: 1px solid var(--border-2); border-radius: 9px; color: var(--text); font-size: 14px; outline: none; margin-bottom: 10px; text-align: center; letter-spacing: 1px; transition: 0.2s; }
+        .pass-input:focus { border-color: var(--primary); }
         
         .btn-primary, .btn-success, .btn-secondary, .btn-unlock-big {
             padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
@@ -189,6 +191,7 @@
                         <div class="bank-row"><span class="label">Ngân hàng</span><span class="value">VPBank</span></div>
                         <div style="margin-top:14px;">
                             <input id="phoneInput-cmsv2" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="passInput-cmsv2" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
                             <button class="btn-primary" onclick="createOrderByTool('cmsv2')">⚡ Tạo Mã QR — 1.500.000đ</button>
                         </div>
                         <div class="order-info-box" id="orderInfoBox-cmsv2">
@@ -207,8 +210,9 @@
                             <button class="btn-secondary copy-bookmarklet" data-tool="cmsv2" style="margin-top:8px;">🔖 Copy Bookmarklet</button>
                         </div>
                         <div class="lookup-box">
-                            <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt (bằng SĐT):</div>
+                            <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
                             <input id="lookupPhoneInput" class="lookup-input" type="tel" maxlength="10" placeholder="Nhập SĐT đã mua..." oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="lookupPassInput" class="lookup-input" type="password" placeholder="Nhập mật khẩu tra cứu...">
                             <button class="btn-secondary" style="width:100%; justify-content:center; padding:9px;" onclick="lookupByPhone()">Lấy Mã Code</button>
                         </div>
                     </div>
@@ -254,6 +258,7 @@
                         <div class="bank-row"><span class="label">Ngân hàng</span><span class="value">VPBank</span></div>
                         <div style="margin-top:14px;">
                             <input id="phoneInput-panv2" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="passInput-panv2" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
                             <button class="btn-primary" onclick="createOrderByTool('panv2')">⚡ Tạo Mã QR — 1.500.000đ</button>
                         </div>
                         <div class="order-info-box" id="orderInfoBox-panv2">
@@ -272,8 +277,9 @@
                             <button class="btn-secondary copy-bookmarklet" data-tool="panv2" style="margin-top:8px;">🔖 Copy Bookmarklet</button>
                         </div>
                         <div class="lookup-box">
-                            <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt (bằng SĐT):</div>
+                            <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
                             <input id="lookupPhoneInput" class="lookup-input" type="tel" maxlength="10" placeholder="Nhập SĐT đã mua..." oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="lookupPassInput" class="lookup-input" type="password" placeholder="Nhập mật khẩu tra cứu...">
                             <button class="btn-secondary" style="width:100%; justify-content:center; padding:9px;" onclick="lookupByPhone()">Lấy Mã Code</button>
                         </div>
                     </div>
@@ -323,6 +329,7 @@
                         <div class="bank-row"><span class="label">Ngân hàng</span><span class="value">VPBank</span></div>
                         <div style="margin-top:14px;">
                             <input id="phoneInput-ginv2" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="passInput-ginv2" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
                             <button class="btn-primary" onclick="createOrderByTool('ginv2')">⚡ Tạo Mã QR — 1.500.000đ</button>
                         </div>
                         <div class="order-info-box" id="orderInfoBox-ginv2">
@@ -341,8 +348,9 @@
                             <button class="btn-secondary copy-bookmarklet" data-tool="ginv2" style="margin-top:8px;">🔖 Copy Bookmarklet</button>
                         </div>
                         <div class="lookup-box">
-                            <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt (bằng SĐT):</div>
+                            <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
                             <input id="lookupPhoneInput" class="lookup-input" type="tel" maxlength="10" placeholder="Nhập SĐT đã mua..." oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="lookupPassInput" class="lookup-input" type="password" placeholder="Nhập mật khẩu tra cứu...">
                             <button class="btn-secondary" style="width:100%; justify-content:center; padding:9px;" onclick="lookupByPhone()">Lấy Mã Code</button>
                         </div>
                     </div>
@@ -544,15 +552,19 @@
     const pendingOrders = {};
     async function createOrderByTool(tool) {
         const phoneInput = document.getElementById("phoneInput-" + tool);
+        const passInput = document.getElementById("passInput-" + tool);
         const phone = (phoneInput?.value || "").trim();
+        const password = (passInput?.value || "").trim();
+
         if (!/^0\d{9}$/.test(phone)) return showToast("SĐT không hợp lệ (10 số).", "error");
+        if (password.length < 4) return showToast("Mật khẩu phải từ 4 ký tự.", "error");
 
         const btn = event.target;
         btn.disabled = true; btn.innerHTML = "⏳ Đang tạo...";
         try {
             const res = await fetch("/api/license/buy", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone, plan: "premium" })
+                body: JSON.stringify({ phone, password, plan: "premium" })
             });
             const data = await res.json();
             if (!data.success) throw new Error(data.message);
@@ -587,7 +599,8 @@
 
     async function lookupByPhone() {
         const phone = document.getElementById("lookupPhoneInput").value.trim();
-        if (!phone) return showToast("Vui lòng nhập SĐT.", "error");
+        const password = document.getElementById("lookupPassInput").value.trim();
+        if (!phone || !password) return showToast("Vui lòng nhập SĐT và Mật khẩu.", "error");
         
         const btn = event.target;
         const originalText = btn.innerHTML;
@@ -595,25 +608,29 @@
         btn.innerHTML = "⏳ Đang kiểm tra...";
         
         try {
-            const res = await fetch(`/api/license/lookup/${phone}`);
+            const res = await fetch(`/api/license/lookup/${phone}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password })
+            });
             const data = await res.json();
             
             if (!data.success) {
-                alert(`❌ KHÔNG TÌM THẤY\n\n${data.message}`);
+                alert(`❌ THẤT BẠI\n\n${data.message}`);
                 return;
             }
             
             if (data.status === "PENDING") {
-                alert(`⏳ CHỜ THANH TOÁN\n\n${data.message}\n\nVui lòng quét mã QR và chuyển khoản.`);
+                alert(`⏳ CHỜ THANH TOÁN\n\n${data.message}`);
             } else if (data.status === "WAITING_CONFIRM") {
-                alert(`🕒 ĐANG CHỜ DUYỆT\n\n${data.message}\n\nVui lòng quay lại sau!`);
+                alert(`🕒 ĐANG CHỜ DUYỆT\n\n${data.message}`);
             } else if (data.status === "ACTIVE") {
                 alert(`🎉 ĐƠN HÀNG ĐÃ DUYỆT!\n\nMã kích hoạt của bạn là:\n👉 ${data.unlockCode}\n\nHãy copy mã này và dán vào ô "Mở khóa Tool".`);
             } else {
                 alert(`⚠️ TRẠNG THÁI: ${data.status}\n\n${data.message}`);
             }
         } catch (err) {
-            alert("❌ LỖI KẾT NỐI\n\nKhông thể kết nối đến server. Vui lòng thử lại sau.");
+            alert("❌ LỖI KẾT NỐI\n\nKhông thể kết nối đến server.");
         } finally {
             btn.disabled = false;
             btn.innerHTML = originalText;
