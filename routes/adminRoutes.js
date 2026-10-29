@@ -1,26 +1,20 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-    login,
-    getLicenses,
-    create,
-    approve,
-    reject,
-    disable,
-    enable,
-    extend
+const { 
+    login, 
+    verifyToken, 
+    getLicenses, 
+    approve, 
+    updateUnlockCode, 
+    reject 
 } = require("../controllers/adminController");
 
-const requireAdmin = require("../middleware/adminAuth");
-
 router.post("/login", login);
-router.get("/licenses", requireAdmin, getLicenses);
-router.post("/create", requireAdmin, create);
-router.post("/approve", requireAdmin, approve);
-router.post("/reject", requireAdmin, reject);
-router.post("/disable", requireAdmin, disable);
-router.post("/enable", requireAdmin, enable);
-router.post("/extend", requireAdmin, extend);
+
+router.get("/licenses", verifyToken, getLicenses);
+router.post("/approve", verifyToken, approve);
+router.post("/update-unlock-code", verifyToken, updateUnlockCode);
+router.post("/reject", verifyToken, reject);
 
 module.exports = router;

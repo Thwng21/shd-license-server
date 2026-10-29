@@ -12,6 +12,14 @@ const TOOLS = {
         description: "Công cụ SHD V6 mới nhất từ SHD License Server",
         guide: "Có 2 cách để chạy SHD V6: Copy mã Loader chạy trên Console hoặc dùng Bookmarklet."
     },
+    "shd-premium": {
+    id: "shd-premium",
+    name: "SHD V6 Premium",
+    file: "shd-premium.js",
+    version: "v6-premium",
+    description: "Loader cao cấp mở khóa toàn bộ tính năng",
+    guide: "..."
+    },
     "gin": {
         id: "gin",
         name: "GIN Tool",

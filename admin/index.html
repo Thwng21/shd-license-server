@@ -1,750 +1,110 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>SHD License Admin</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHD License - Đăng nhập</title>
     <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-
-            margin: 0;
-
-            font-family:
-                Arial,
-                sans-serif;
-
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             background: #f5f6fa;
-
-            color: #222;
+            font-family: Arial, sans-serif;
         }
-
-        /* =========================
-           LOGIN
-        ========================= */
-
-        .login {
-
-            max-width: 400px;
-
-            margin: 100px auto;
-
+        .login-box {
             background: white;
-
-            padding: 30px;
-
+            padding: 40px;
             border-radius: 12px;
-
-            box-shadow:
-                0 5px 25px
-                rgba(0, 0, 0, .08);
-        }
-
-        .login h2 {
-
-            margin-top: 0;
-        }
-
-        .login input {
-
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
             width: 100%;
-
-            padding: 12px;
-
-            margin: 8px 0;
-
-            border:
-                1px solid #ddd;
-
-            border-radius: 7px;
-        }
-
-        /* =========================
-           GENERAL
-        ========================= */
-
-        .container {
-
-            max-width: 1200px;
-
-            margin: auto;
-
-            padding: 30px;
-        }
-
-        h1 {
-
-            margin-bottom: 5px;
-        }
-
-        .subtitle {
-
-            color: #777;
-
-            margin-bottom: 30px;
-        }
-
-        /* =========================
-           BUTTON
-        ========================= */
-
-        button {
-
-            border: 0;
-
-            padding: 10px 15px;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            margin: 3px;
-
-            font-size: 14px;
-        }
-
-        button:hover {
-
-            opacity: .85;
-        }
-
-        .primary {
-
-            background: #111827;
-
-            color: white;
-        }
-
-        .danger {
-
-            background: #dc2626;
-
-            color: white;
-        }
-
-        .success {
-
-            background: #16a34a;
-
-            color: white;
-        }
-
-        .warning {
-
-            background: #f59e0b;
-
-            color: white;
-        }
-
-        .logout {
-
-            float: right;
-
-            background: #eee;
-        }
-
-        /* =========================
-           STATS
-        ========================= */
-
-        .stats {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 15px;
-
-            margin: 25px 0;
-        }
-
-        .card {
-
-            background: white;
-
-            padding: 20px;
-
-            border-radius: 10px;
-
-            box-shadow:
-                0 2px 10px
-                rgba(0, 0, 0, .05);
-        }
-
-        .number {
-
-            font-size: 28px;
-
-            font-weight: bold;
-
-            margin-top: 8px;
-        }
-
-        /* =========================
-           TOOLBAR
-        ========================= */
-
-        .toolbar {
-
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            align-items: center;
-
-            gap: 15px;
-
-            margin-bottom: 20px;
-        }
-
-        /* SEARCH */
-
-        .search-box {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            flex: 1;
-        }
-
-        .search-input {
-
-            width: 100%;
-
             max-width: 400px;
-
-            padding: 12px 14px;
-
-            border:
-                1px solid #ddd;
-
-            border-radius: 8px;
-
-            outline: none;
-
-            font-size: 14px;
-
-            margin: 0;
         }
-
-        .search-input:focus {
-
-            border-color: #111827;
-        }
-
-        /* STATUS FILTER */
-
-        .status-filter {
-
-            padding: 12px;
-
-            border:
-                1px solid #ddd;
-
-            border-radius: 8px;
-
-            background: white;
-
-            cursor: pointer;
-
-            outline: none;
-        }
-
-        .toolbar-actions {
-
-            display: flex;
-
-            gap: 5px;
-        }
-
-        /* =========================
-           TABLE
-        ========================= */
-
-        .table-box {
-
-            background: white;
-
-            border-radius: 10px;
-
-            overflow: auto;
-
-            box-shadow:
-                0 2px 10px
-                rgba(0, 0, 0, .05);
-        }
-
-        table {
-
+        h2 { margin-bottom: 10px; color: #111827; text-align: center; }
+        p { color: #6b7280; text-align: center; margin-bottom: 25px; font-size: 14px; }
+        input {
             width: 100%;
-
-            border-collapse:
-                collapse;
-        }
-
-        th,
-        td {
-
             padding: 14px;
-
-            border-bottom:
-                1px solid #eee;
-
-            text-align: left;
-
-            white-space: nowrap;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
         }
-
-        th {
-
-            background: #fafafa;
+        input:focus { border-color: #111827; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
         }
-
-        /* =========================
-           BADGE
-        ========================= */
-
-        .badge {
-
-            padding: 5px 9px;
-
-            border-radius: 20px;
-
-            font-size: 12px;
-        }
-
-        .active {
-
-            background: #dcfce7;
-
-            color: #166534;
-        }
-
-        .disabled {
-
-            background: #fee2e2;
-
-            color: #991b1b;
-        }
-
-        .expired {
-
-            background: #fef3c7;
-
-            color: #92400e;
-        }
-
-        .pending {
-
-            background: #fed7aa;
-
-            color: #c2410c;
-        }
-
-        .waiting {
-
-            background: #fef08a;
-
-            color: #854d0e;
-        }
-
-        .rejected {
-
-            background: #f1f5f9;
-
-            color: #64748b;
-        }
-
-        /* =========================
-           ERROR
-        ========================= */
-
-        .error {
-
-            color: #dc2626;
-
-            margin-top: 10px;
-        }
-
-        /* =========================
-           HIDDEN
-        ========================= */
-
-        #dashboard {
-
-            display: none;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 800px) {
-
-            .stats {
-
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
-            .toolbar {
-
-                flex-direction: column;
-
-                align-items: stretch;
-            }
-
-            .search-box {
-
-                flex-direction: column;
-
-                align-items: stretch;
-            }
-
-            .search-input {
-
-                max-width: none;
-            }
-
-            .toolbar-actions {
-
-                justify-content: flex-end;
-            }
-        }
-
-        @media (max-width: 500px) {
-
-            .container {
-
-                padding: 15px;
-            }
-
-            .stats {
-
-                grid-template-columns: 1fr;
-            }
-        }
-
+        button:hover { background: #374151; }
+        button:disabled { opacity: 0.7; cursor: not-allowed; }
+        .error { color: #dc2626; text-align: center; margin-top: 15px; font-size: 13px; min-height: 20px; }
     </style>
-
 </head>
-
-
 <body>
 
-
-<!-- =====================================================
-     LOGIN PAGE
-===================================================== -->
-
-<div
-    id="loginPage"
-    class="login"
->
-
-    <h2>
-        SHD License Admin
-    </h2>
-
-    <p>
-        Đăng nhập quản trị
-    </p>
-
-    <input
-        id="username"
-        type="text"
-        placeholder="Username"
-        onkeydown="if(event.key==='Enter') login()"
-    >
-
-    <input
-        id="password"
-        type="password"
-        placeholder="Password"
-        onkeydown="if(event.key==='Enter') login()"
-    >
-
-    <button
-        id="loginBtn"
-        class="primary"
-        style="width:100%;"
-        onclick="login()"
-    >
-        Đăng nhập
-    </button>
-
-    <div
-        id="loginError"
-        class="error"
-    ></div>
-
-</div>
-
-
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
-
-<div id="dashboard">
-
-    <div class="container">
-
-
-        <!-- LOGOUT -->
-
-        <button
-            class="logout"
-            onclick="logout()"
-        >
-            Đăng xuất
-        </button>
-
-
-        <!-- HEADER -->
-
-        <h1>
-            SHD License Dashboard
-        </h1>
-
-        <div class="subtitle">
-            Quản lý License SHD V6
-        </div>
-
-
-        <!-- =================================================
-             STATS
-        ================================================== -->
-
-        <div class="stats" style="grid-template-columns: repeat(5, 1fr);">
-
-            <div class="card">
-
-                Tổng License
-
-                <div
-                    id="total"
-                    class="number"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="card" style="border-top: 3px solid #f97316;">
-
-                Chờ duyệt
-
-                <div
-                    id="pendingStat"
-                    class="number"
-                    style="color: #ea580c;"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="card" style="border-top: 3px solid #16a34a;">
-
-                Active
-
-                <div
-                    id="active"
-                    class="number"
-                    style="color: #16a34a;"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                Disabled
-
-                <div
-                    id="disabled"
-                    class="number"
-                >
-                    0
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                Expired
-
-                <div
-                    id="expired"
-                    class="number"
-                >
-                    0
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             TOOLBAR
-        ================================================== -->
-
-        <div class="toolbar">
-
-
-            <!-- SEARCH -->
-
-            <div class="search-box">
-
-                <input
-                    id="searchInput"
-                    class="search-input"
-                    type="text"
-                    placeholder="🔎 Tìm License..."
-                    oninput="filterLicenses()"
-                >
-
-
-                <select
-                    id="statusFilter"
-                    class="status-filter"
-                    onchange="filterLicenses()"
-                >
-
-                    <option value="ALL">
-                        Tất cả
-                    </option>
-
-                    <option value="PENDING">
-                        ⏳ Chờ duyệt / Đã thanh toán
-                    </option>
-
-                    <option value="ACTIVE">
-                        Active
-                    </option>
-
-                    <option value="DISABLED">
-                        Disabled
-                    </option>
-
-                    <option value="EXPIRED">
-                        Expired
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- ACTIONS -->
-
-            <div class="toolbar-actions">
-
-                <button
-                    class="primary"
-                    onclick="createLicense()"
-                >
-                    + Tạo License
-                </button>
-
-                <button
-                    onclick="loadLicenses()"
-                >
-                    ↻ Refresh
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             LICENSE TABLE
-        ================================================== -->
-
-        <div class="table-box">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            ID
-                        </th>
-
-                        <th>
-                            License
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            Gói / Tiền
-                        </th>
-
-                        <th>
-                            Expires
-                        </th>
-
-                        <th>
-                            Created
-                        </th>
-
-                        <th>
-                            Actions
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody
-                    id="licenseTable"
-                ></tbody>
-
-            </table>
-
-        </div>
-
+    <div class="login-box">
+        <h2>SHD License Admin</h2>
+        <p>Đăng nhập để quản lý hệ thống</p>
+        
+        <input id="username" type="text" placeholder="Tên đăng nhập" onkeydown="if(event.key==='Enter') login()">
+        <input id="password" type="password" placeholder="Mật khẩu" onkeydown="if(event.key==='Enter') login()">
+        
+        <button id="loginBtn" onclick="login()">Đăng nhập</button>
+        <div id="loginError" class="error"></div>
     </div>
 
-</div>
+    <script>
+        async function login() {
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value;
+            const errEl = document.getElementById("loginError");
+            const btn = document.getElementById("loginBtn");
 
+            if (!username || !password) {
+                errEl.textContent = "Vui lòng nhập đủ tài khoản và mật khẩu.";
+                return;
+            }
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
+            btn.disabled = true;
+            btn.textContent = "Đang kiểm tra...";
+            errEl.textContent = "";
 
-<script src="/admin/admin.js?v=2.0"></script>
+            try {
+                const res = await fetch("/api/admin/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
 
+                if (!data.success) {
+                    errEl.textContent = data.message || "Sai tài khoản hoặc mật khẩu.";
+                    return;
+                }
+
+                // Lưu token và chuyển sang trang detail
+                sessionStorage.setItem("admin_token", data.token);
+                window.location.href = "detail.html";
+
+            } catch (err) {
+                errEl.textContent = "Lỗi kết nối server.";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Đăng nhập";
+            }
+        }
+    </script>
 </body>
-
 </html>

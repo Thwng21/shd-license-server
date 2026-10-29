@@ -4,1730 +4,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>SHD Tools</title>
+    <title>SHD Tools — Trang chủ</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
             min-height: 100vh;
-
             background: #0f1117;
             color: #e5e7eb;
-
-            font-family:
-                Inter,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 32px;
+            padding: 48px 32px;
         }
 
-        /* =========================
-           HEADER
-        ========================= */
-
+        /* HEADER */
         .header {
-            margin-bottom: 18px;
+            text-align: center;
+            margin-bottom: 48px;
         }
 
         .header h1 {
             margin: 0;
-
-            font-size: 24px;
-            font-weight: 700;
-
+            font-size: 36px;
+            font-weight: 800;
             color: #f8fafc;
+            letter-spacing: -0.5px;
         }
 
         .header p {
-            margin: 6px 0 0;
-
-            font-size: 13px;
+            margin: 12px 0 0;
+            font-size: 15px;
             color: #64748b;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
 
-
-        /* =========================
-           TOOL NAVIGATION
-        ========================= */
-
-        .tool-nav {
-            display: flex;
-
-            width: 100%;
-
-            margin-bottom: 18px;
-
-            background: #151922;
-
-            border: 1px solid #242936;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-        }
-
-        .tool-button {
-            position: relative;
-
-            flex: 1;
-
-            padding: 13px 18px;
-
-            background: transparent;
-
-            color: #64748b;
-
-            border: none;
-            border-right: 1px solid #242936;
-
-            border-radius: 0;
-
-            font-size: 13px;
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition:
-                background 0.15s ease,
-                color 0.15s ease;
-        }
-
-        .tool-button:last-child {
-            border-right: none;
-        }
-
-        .tool-button:hover {
-            background: #1a1e27;
-            color: #cbd5e1;
-        }
-
-        .tool-button.active {
-            background: #1b2333;
-            color: #60a5fa;
-        }
-
-        .tool-button.active::after {
-            content: "";
-
-            position: absolute;
-
-            left: 20%;
-            right: 20%;
-            bottom: 0;
-
-            height: 2px;
-
-            background: #3b82f6;
-        }
-
-        .tool-status {
-            display: block;
-
-            margin-top: 3px;
-
-            font-size: 10px;
-
-            font-weight: 400;
-
-            color: #475569;
-        }
-
-        .tool-button.active .tool-status {
-            color: #60a5fa;
-        }
-
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
+        /* TOOL GRID */
+        .tools-grid {
             display: grid;
-
-            grid-template-columns:
-                minmax(0, 1.45fr) minmax(300px, 0.8fr) 260px;
-
-            gap: 18px;
-
-            align-items: stretch;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
-
-        /* =========================
-           CARD
-        ========================= */
-
-        .card {
+        .tool-card {
             background: #151922;
-
             border: 1px solid #242936;
-
-            border-radius: 12px;
-
-            overflow: hidden;
+            border-radius: 14px;
+            padding: 28px 24px;
+            transition: all 0.2s ease;
         }
 
-        .card-header {
-            padding: 17px 18px;
-
-            border-bottom: 1px solid #242936;
+        .tool-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15);
         }
 
-        .card-header h2 {
-            margin: 0;
+        .tool-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
 
-            font-size: 14px;
-            font-weight: 650;
-
+        .tool-card h2 {
+            margin: 0 0 8px;
+            font-size: 20px;
+            font-weight: 700;
             color: #f1f5f9;
         }
 
-        .card-header p {
-            margin: 5px 0 0;
-
-            font-size: 12px;
-            line-height: 1.5;
-
-            color: #64748b;
-        }
-
-        .card-body {
-            padding: 18px;
-        }
-
-
-        /* =========================
-           LOADER
-        ========================= */
-
-        #loaderCode {
-            width: 100%;
-            height: 480px;
-
-            resize: vertical;
-
-            padding: 15px;
-
-            border-radius: 8px;
-
-            border: 1px solid #292e3a;
-
-            background: #0b0d12;
-
-            color: #cbd5e1;
-
-            font-family:
-                "JetBrains Mono",
-                "Fira Code",
-                Consolas,
-                monospace;
-
-            font-size: 12px;
-
-            line-height: 1.6;
-
-            outline: none;
-        }
-
-        #loaderCode:focus {
-            border-color: #3b82f6;
-        }
-
-
-        /* =========================
-           STATUS
-        ========================= */
-
-        .status {
-            display: flex;
-            align-items: center;
-
-            gap: 8px;
-
-            margin-top: 12px;
-
-            color: #64748b;
-
-            font-size: 12px;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-
-            flex-shrink: 0;
-
-            border-radius: 50%;
-
-            background: #22c55e;
-        }
-
-
-        /* =========================
-           BUTTONS
-        ========================= */
-
-        .buttons {
-            display: flex;
-
-            gap: 8px;
-
-            margin-top: 14px;
-        }
-
-        button {
-            outline: none;
-
-            padding: 9px 14px;
-
-            border-radius: 7px;
-
-            font-size: 12px;
-            font-weight: 600;
-
-            cursor: pointer;
-
-            transition: 0.15s;
-        }
-
-        button:hover {
-            opacity: 0.85;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-
-            color: white;
-
-            border: 1px solid #2563eb;
-        }
-
-        .btn-secondary {
-            background: #202530;
-
-            color: #cbd5e1;
-
-            border: 1px solid #2c3240;
-        }
-
-
-        /* =========================
-           GUIDE
-        ========================= */
-
-        .guide {
-            display: flex;
-            flex-direction: column;
-
-            gap: 12px;
-        }
-
-        .method {
-            padding: 15px;
-
-            background: #10131a;
-
-            border: 1px solid #252a35;
-
-            border-radius: 9px;
-        }
-
-        .method-title {
-            display: flex;
-            align-items: center;
-
-            gap: 9px;
-
-            margin-bottom: 10px;
-        }
-
-        .method-number {
-            width: 24px;
-            height: 24px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            flex-shrink: 0;
-
-            border-radius: 6px;
-
-            background: #1d4ed8;
-
-            color: white;
-
-            font-size: 11px;
+        .tool-card .version {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #1b2333;
+            color: #60a5fa;
+            font-size: 10px;
             font-weight: 700;
+            border-radius: 4px;
+            margin-bottom: 12px;
         }
 
-        .method-title h3 {
+        .tool-card p {
             margin: 0;
-
             font-size: 13px;
-            font-weight: 650;
-
-            color: #e2e8f0;
-        }
-
-        .method p {
-            margin: 6px 0;
-
             color: #94a3b8;
-
-            font-size: 12px;
-
             line-height: 1.65;
         }
 
-        .method strong {
-            color: #e2e8f0;
-        }
-
-        .method code {
+        .tool-card .status {
             display: inline-block;
-
-            padding: 2px 5px;
-
-            border-radius: 4px;
-
-            background: #1a1e27;
-
-            color: #93c5fd;
-
-            font-size: 11px;
-        }
-
-
-        /* =========================
-           DONATE
-        ========================= */
-
-        .donate-card {
-            background: #151922;
-
-            border: 1px solid #242936;
-
-            border-radius: 12px;
-
-            padding: 20px;
-
-            text-align: center;
-        }
-
-        .donate-title {
-            margin: 0;
-
-            font-size: 14px;
-
-            font-weight: 650;
-
-            color: #f1f5f9;
-        }
-
-        .donate-subtitle {
-            margin: 7px 0 18px;
-
-            color: #64748b;
-
-            font-size: 11px;
-
-            line-height: 1.5;
-        }
-
-        .qr {
-            width: 190px;
-            height: 190px;
-
-            display: block;
-
-            margin: 0 auto 17px;
-
-            padding: 8px;
-
-            background: white;
-
-            border-radius: 8px;
-        }
-
-        .bank {
-            margin: 0;
-
-            font-size: 13px;
-
-            color: #cbd5e1;
-        }
-
-        .account {
-            margin-top: 7px;
-
-            font-family:
-                "JetBrains Mono",
-                Consolas,
-                monospace;
-
-            font-size: 14px;
-
-            font-weight: 650;
-
-            color: #60a5fa;
-        }
-
-        .donate-note {
-            margin: 12px 0 0;
-
-            color: #64748b;
-
+            margin-top: 14px;
+            padding: 4px 10px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
             font-size: 10px;
-
-            line-height: 1.5;
+            font-weight: 700;
+            border-radius: 20px;
         }
 
-        .plan-select {
-            width: 100%;
-            padding: 8px 10px;
-            background: #0b0d12;
-            border: 1px solid #292e3a;
-            border-radius: 6px;
-            color: #f1f5f9;
-            font-size: 12px;
-            outline: none;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-
-        .plan-select:focus {
-            border-color: #3b82f6;
-        }
-
-        .btn-copy-mini {
-            display: inline-block;
-            padding: 2px 7px;
-            background: #202530;
-            border: 1px solid #2c3240;
-            border-radius: 4px;
-            color: #93c5fd;
-            font-size: 10px;
-            cursor: pointer;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-
-        .btn-copy-mini:hover {
-            background: #2563eb;
-            color: white;
-        }
-
-        .payment-status-box {
-            display: none;
-            margin-top: 12px;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            line-height: 1.5;
-            text-align: left;
-        }
-
-        .payment-status-box.waiting {
-            display: block;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+        .tool-card .status.soon {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.3);
             color: #fbbf24;
         }
 
-        .payment-status-box.active {
-            display: block;
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #4ade80;
-        }
-
-        .lookup-box {
-            margin-top: 16px;
-            padding-top: 14px;
-            border-top: 1px dashed #242936;
-        }
-
-        .lookup-input {
-            width: 100%;
-            padding: 7px 10px;
-            background: #0b0d12;
-            border: 1px solid #292e3a;
-            border-radius: 6px;
-            color: #cbd5e1;
-            font-size: 11px;
-            outline: none;
-            margin-bottom: 6px;
-        }
-
-        .lookup-input:focus {
-            border-color: #3b82f6;
-        }
-
-
-        /* =========================
-           COMING SOON
-        ========================= */
-
-        .coming-soon {
-            display: none;
-
-            min-height: 480px;
-
-            align-items: center;
-            justify-content: center;
-
+        /* PLAN CTA */
+        .plan-cta {
             text-align: center;
-
-            color: #64748b;
+            margin-top: 48px;
         }
 
-        .coming-soon-icon {
-            width: 45px;
-            height: 45px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin: 0 auto 12px;
-
-            border-radius: 10px;
-
-            background: #202530;
-
-            color: #64748b;
-
-            font-size: 18px;
+        .plan-cta h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin: 0 0 24px;
         }
 
-        .coming-soon h3 {
-            margin: 0;
-
-            color: #cbd5e1;
-
-            font-size: 14px;
+        .plan-cta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        .coming-soon p {
-            margin: 7px 0 0;
+        .plan-btn {
+            position: relative;
+            display: block;
+            padding: 32px 28px;
+            background: #151922;
+            border: 2px solid #242936;
+            border-radius: 14px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
 
+        .plan-btn:hover {
+            border-color: #3b82f6;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.18);
+        }
+
+        .plan-btn.premium:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.18);
+        }
+
+        .plan-btn .plan-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .plan-btn h3 {
+            margin: 0 0 6px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .plan-btn .price {
+            margin: 10px 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .plan-btn.premium .price {
+            color: #fbbf24;
+        }
+
+        .plan-btn .price small {
             font-size: 12px;
+            color: #64748b;
+            font-weight: 400;
         }
 
+        .plan-btn .desc {
+            margin: 0;
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
 
-        /* =========================
-           FOOTER
-        ========================= */
+        .plan-btn .badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 3px 10px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 20px;
+        }
 
         .footer {
-            margin-top: 20px;
-
+            margin-top: 56px;
             text-align: center;
-
             color: #475569;
-
             font-size: 11px;
         }
 
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 1150px) {
-
-            .main {
-                grid-template-columns:
-                    minmax(0, 1fr) minmax(280px, 0.8fr);
-            }
-
-            .donate-card {
-                grid-column: 1 / -1;
-
-                display: flex;
-
-                align-items: center;
-                justify-content: center;
-
-                gap: 30px;
-
-                text-align: left;
-            }
-
-            .donate-card .qr {
-                margin: 0;
-            }
-        }
-
-
-        @media (max-width: 800px) {
-
-            .container {
-                padding: 18px;
-            }
-
-            .tool-button {
-                padding: 12px 8px;
-            }
-
-            .tool-status {
-                display: none;
-            }
-
-            .main {
-                grid-template-columns: 1fr;
-            }
-
-            .donate-card {
-                grid-column: auto;
-
-                display: block;
-
-                text-align: center;
-            }
-
-            .donate-card .qr {
-                margin: 0 auto 17px;
-            }
-
-            #loaderCode {
-                height: 350px;
-            }
+        @media (max-width: 900px) {
+            .tools-grid { grid-template-columns: 1fr; }
+            .plan-cta-grid { grid-template-columns: 1fr; }
+            .container { padding: 32px 18px; }
+            .header h1 { font-size: 28px; }
         }
     </style>
 </head>
 
-
 <body>
-
     <div class="container">
 
-
-        <!-- =================================
-         HEADER
-    ================================== -->
-
+        <!-- HEADER -->
         <div class="header">
-
-            <h1>
-                SHD Tools
-            </h1>
-
-            <p>
-                Automation tools
-            </p>
-
+            <h1>SHD Tools</h1>
+            <p>Bộ công cụ tự động hóa hỗ trợ xử lý dữ liệu, tra cứu thông tin và xuất báo cáo Excel/CSV nhanh chóng.</p>
         </div>
 
+        <!-- TOOL GRID -->
+        <div class="tools-grid">
 
-        <!-- =================================
-         TOOL NAVIGATION
-    ================================== -->
-
-        <div class="tool-nav">
-
-            <button class="tool-button active" data-tool="shd">
-                SHD
-
-                <span class="tool-status">
-                    Đang hoạt động
-                </span>
-            </button>
-
-
-            <button class="tool-button" data-tool="gin">
-                GIN
-
-                <span class="tool-status">
-                    Sắp có
-                </span>
-            </button>
-
-
-            <button class="tool-button" data-tool="pan">
-                PAN
-
-                <span class="tool-status">
-                    Sắp có
-                </span>
-            </button>
-
-        </div>
-
-
-        <!-- =================================
-         MAIN
-    ================================== -->
-
-        <div class="main">
-
-
-            <!-- =================================
-             TOOL CONTENT
-        ================================== -->
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    <h2 id="toolTitle">
-                        SHD Loader
-                    </h2>
-
-                    <p id="toolDescription">
-                        Loader mới nhất từ SHD License Server
-                    </p>
-
-                </div>
-
-
-                <div class="card-body">
-
-
-                    <!-- SHD -->
-
-                    <div id="shdContent">
-
-                        <textarea id="loaderCode" readonly placeholder="Đang tải Loader..."></textarea>
-
-
-                        <div class="status">
-
-                            <span id="statusDot" class="status-dot"></span>
-
-                            <span id="status">
-                                Đang tải Loader...
-                            </span>
-
-                        </div>
-
-
-                        <div class="buttons">
-
-                            <button id="copyLoader" class="btn-primary">
-                                Copy Loader
-                            </button>
-
-
-                            <button id="copyBookmarklet" class="btn-secondary">
-                                Copy Bookmarklet
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- COMING SOON -->
-
-                    <div id="comingSoon" class="coming-soon">
-
-                        <div>
-
-                            <div class="coming-soon-icon">
-                                ⚙
-                            </div>
-
-                            <h3 id="comingSoonTitle">
-                                GIN
-                            </h3>
-
-                            <p>
-                                Tool đang được phát triển.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
+            <div class="tool-card">
+                <div class="tool-icon">📊</div>
+                <h2>SHD Tool</h2>
+                <span class="version">V6</span>
+                <p>Công cụ tra cứu và xử lý dữ liệu SHD tự động. Hỗ trợ nhập liệu hàng loạt, lấy thông tin khách hàng, xuất Excel/CSV.</p>
+                <span class="status">✓ Đang hoạt động</span>
             </div>
 
-
-
-            <!-- =================================
-             GUIDE
-        ================================== -->
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    <h2>
-                        Hướng dẫn sử dụng
-                    </h2>
-
-                    <p id="guideDescription">
-                        Có 2 cách để chạy SHD V6
-                    </p>
-
-                </div>
-
-
-                <div class="card-body">
-
-                    <div id="guide" class="guide">
-
-
-                        <!-- METHOD 1 -->
-
-                        <div class="method">
-
-                            <div class="method-title">
-
-                                <div class="method-number">
-                                    1
-                                </div>
-
-                                <h3>
-                                    Cách 1 — Chạy bằng Console
-                                </h3>
-
-                            </div>
-
-
-                            <p>
-                                <strong>Bước 1:</strong>
-                                Nhấn
-                                <strong>Copy Loader</strong>
-                                ở bên trái.
-                            </p>
-
-
-                            <p>
-                                <strong>Bước 2:</strong>
-                                Mở website cần sử dụng SHD V6.
-                            </p>
-
-
-                            <p>
-                                <strong>Bước 3:</strong>
-                                Mở
-                                <strong>Developer Console</strong>
-                                bằng
-                                <code>F12</code>
-                                hoặc
-                                <code>Ctrl + Shift + J</code>.
-                            </p>
-
-
-                            <p>
-                                <strong>Bước 4:</strong>
-                                Paste Loader vào Console
-                                và nhấn Enter.
-                            </p>
-
-
-                            <p>
-                                Nếu đây là lần đầu sử dụng,
-                                hệ thống sẽ yêu cầu nhập
-                                <strong>License SHD V6</strong>.
-                            </p>
-                            <p>
-                                <strong>Lưu ý: </strong>.
-                                Phải đăng nhập vào tài khoản của bạn trên website CMS trước khi chạy loader.
-                            </p>
-                        </div>
-
-
-
-                        <!-- METHOD 2 -->
-
-                        <div class="method">
-
-                            <div class="method-title">
-
-                                <div class="method-number">
-                                    2
-                                </div>
-
-                                <h3>
-                                    Cách 2 — Chạy bằng Bookmarklet
-                                </h3>
-
-                            </div>
-
-
-                            <p>
-                                <strong>Bước 1:</strong>
-                                Nhấn
-                                <strong>Copy Bookmarklet</strong>.
-                            </p>
-
-
-                            <p>
-                                <strong>Bước 2:</strong>
-                                Tạo một Bookmark mới
-                                trên trình duyệt.
-                            </p>
-
-
-                            <p>
-                                <strong>Bước 3:</strong>
-                                Dán nội dung đã copy
-                                vào phần
-                                <strong>URL / Địa chỉ</strong>
-                                của Bookmark.
-                            </p>
-
-
-                            <p>
-                                <strong>Bước 4:</strong>
-                                Truy cập website cần sử dụng
-                                rồi nhấn Bookmark đó.
-                            </p>
-
-
-                            <p>
-                                Bookmarklet sẽ tự chạy Loader
-                                và kiểm tra License.
-                            </p>
-                            <p>
-                                <strong>Lưu ý: </strong>.
-                                Phải đăng nhập vào tài khoản của bạn trên website CMS trước khi chạy loader.
-                            </p>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- GIN/PAN GUIDE -->
-
-                    <div id="comingSoonGuide" class="coming-soon">
-
-                        <div>
-
-                            <div class="coming-soon-icon">
-                                ?
-                            </div>
-
-                            <h3>
-                                Hướng dẫn đang được cập nhật
-                            </h3>
-
-                            <p>
-                                Tool này chưa được phát hành.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="tool-card">
+                <div class="tool-icon">⚙️</div>
+                <h2>GIN Tool</h2>
+                <span class="version">V7</span>
+                <p>Tự động hóa tra cứu thông tin GIN hàng loạt, tổng hợp kết quả và xuất báo cáo chi tiết ra Excel.</p>
+                <span class="status soon">⏳ Sắp ra mắt</span>
             </div>
 
-
-
-            <!-- =================================
-             BUY & PAYMENT CARD (RIGHT)
-        ================================== -->
-
-            <div class="donate-card">
-
-                <div>
-
-                    <h2 class="donate-title">
-                        Mua License SHD
-                    </h2>
-
-
-                    <p class="donate-subtitle">
-                        Kích hoạt bản quyền cho mọi tool<br>
-                        (50.000đ / tháng)
-                    </p>
-
-
-                    <img id="paymentQrImage" class="qr" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png"
-                        alt="QR Thanh Toán VPBank">
-
-
-                    <p class="bank">
-                        VPBank
-                    </p>
-
-
-                    <div class="account">
-                        <span id="bankAccountSpan">210520042026</span>
-                        <button class="btn-copy-mini" onclick="copyValue('210520042026', 'Số tài khoản')">Copy</button>
-                    </div>
-
-                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                        PHAM HUU THAN THUONG
-                    </div>
-
-
-                    <!-- CHỌN GÓI -->
-                    <div style="margin-top: 12px; text-align: left;">
-                        <label style="font-size: 11px; color: #94a3b8; font-weight: 600;">Chọn gói thời hạn:</label>
-                        <select id="buyMonthsSelect" class="plan-select">
-                            <option value="1">1 Tháng — 50.000đ</option>
-                            <option value="3" selected>3 Tháng — 150.000đ (Khuyên dùng)</option>
-                            <option value="6">6 Tháng — 300.000đ</option>
-                            <option value="12">1 Năm — 600.000đ</option>
-                        </select>
-
-                        <button id="btnCreateQr" class="btn-primary" style="width: 100%; padding: 9px;"
-                            onclick="createOrder()">
-                            ⚡ Tạo Mã QR Thanh Toán
-                        </button>
-                    </div>
-
-
-                    <!-- THÔNG TIN ĐƠN HÀNG KHI ĐÃ TẠO QR -->
-                    <div id="orderInfoBox"
-                        style="display: none; margin-top: 12px; text-align: left; background: #10131a; padding: 10px; border-radius: 6px; border: 1px solid #292e3a; font-size: 11px;">
-                        <div style="color: #cbd5e1; margin-bottom: 4px;">
-                            Số tiền: <strong id="orderAmountDisplay" style="color: #22c55e;">150.000đ</strong>
-                        </div>
-                        <div style="color: #fbbf24;">
-                            Nội dung CK: <strong id="orderMemoDisplay"
-                                style="font-family: monospace; font-size: 12px;">SHD-XXX</strong>
-                            <button class="btn-copy-mini" style="background: #d97706; color: white;"
-                                onclick="copyValue(document.getElementById('orderMemoDisplay').textContent, 'Nội dung CK')">Copy</button>
-                        </div>
-                        <div style="font-size: 10px; color: #94a3b8; margin-top: 5px;">
-                            * Vui lòng nhập đúng nội dung để được duyệt nhanh nhất.
-                        </div>
-
-                        <button id="btnConfirmPaid"
-                            style="width: 100%; margin-top: 10px; padding: 9px; background: #16a34a; color: white;"
-                            onclick="confirmPaid()">
-                            ✅ Tôi Đã Chuyển Khoản
-                        </button>
-                    </div>
-
-
-                    <!-- THÔNG BÁO TRẠNG THÁI (CHỜ DUYỆT / ACTIVE) -->
-                    <div id="paymentStatusBox" class="payment-status-box"></div>
-
-
-                    <!-- TRA CỨU LICENSE -->
-                    <div class="lookup-box">
-                        <div style="font-size: 11px; color: #94a3b8; margin-bottom: 5px; text-align: left;">
-                            🔍 Tra cứu trạng thái License:
-                        </div>
-                        <input id="lookupKeyInput" class="lookup-input" type="text"
-                            placeholder="Nhập mã License cần kiểm tra..."
-                            onkeydown="if(event.key==='Enter') lookupLicense()">
-                        <button class="btn-secondary" style="width: 100%; padding: 6px; font-size: 11px;"
-                            onclick="lookupLicense()">
-                            Kiểm Tra License
-                        </button>
-                    </div>
-
-                </div>
-
+            <div class="tool-card">
+                <div class="tool-icon">🔍</div>
+                <h2>PAN Tool</h2>
+                <span class="version">V1</span>
+                <p>Phân tích dữ liệu và tự động thao tác trên hệ thống PAN. Tối ưu quy trình xử lý hồ sơ hàng loạt.</p>
+                <span class="status soon">⏳ Sắp ra mắt</span>
             </div>
-
 
         </div>
 
+        <!-- PLAN CTA -->
+        <div class="plan-cta">
+            <h2>Chọn phiên bản để bắt đầu</h2>
 
-        <!-- FOOTER -->
+            <div class="plan-cta-grid">
 
-        <div class="footer">
-            SHD Tools License System
+                <a href="normal.html" class="plan-btn">
+                    <div class="plan-icon">🎯</div>
+                    <h3>Bản Thường</h3>
+                    <div class="price">Miễn phí <small>(dùng thử)</small></div>
+                    <p class="desc">
+                        Loader SHD V6 cơ bản<br>
+                        Hỗ trợ đầy đủ tính năng chính
+                    </p>
+                </a>
+
+                <a href="premium.html" class="plan-btn premium">
+                    <div class="plan-icon">👑</div>
+                    <h3>Bản Premium</h3>
+                    <div class="price">50.000đ <small>/ tháng</small></div>
+                    <p class="desc">
+                        Mở khóa toàn bộ tính năng<br>
+                        Ưu tiên cập nhật & hỗ trợ 24/7
+                    </p>
+                    <span class="badge">🔥 Khuyên dùng</span>
+                </a>
+
+            </div>
         </div>
 
+        <div class="footer">SHD Tools License System</div>
     </div>
-
-
-
-    <script>
-
-        /* =================================
-           ELEMENTS
-        ================================== */
-
-        const loaderCode =
-            document.getElementById(
-                "loaderCode"
-            );
-
-        const status =
-            document.getElementById(
-                "status"
-            );
-
-        const statusDot =
-            document.getElementById(
-                "statusDot"
-            );
-
-        const toolTitle =
-            document.getElementById(
-                "toolTitle"
-            );
-
-        const toolDescription =
-            document.getElementById(
-                "toolDescription"
-            );
-
-        const guideDescription =
-            document.getElementById(
-                "guideDescription"
-            );
-
-        const shdContent =
-            document.getElementById(
-                "shdContent"
-            );
-
-        const comingSoon =
-            document.getElementById(
-                "comingSoon"
-            );
-
-        const comingSoonTitle =
-            document.getElementById(
-                "comingSoonTitle"
-            );
-
-        const guide =
-            document.getElementById(
-                "guide"
-            );
-
-        const comingSoonGuide =
-            document.getElementById(
-                "comingSoonGuide"
-            );
-
-
-        /* =================================
-           LOAD SHD LOADER
-        ================================== */
-
-        async function loadLoader() {
-
-            try {
-
-                status.textContent =
-                    "Đang tải Loader...";
-
-                statusDot.style.background =
-                    "#f59e0b";
-
-
-                const response =
-                    await fetch(
-                        "/loader.js?t=" +
-                        Date.now(),
-                        {
-                            cache: "no-store"
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        "HTTP " +
-                        response.status
-                    );
-
-                }
-
-
-                const code =
-                    await response.text();
-
-
-                loaderCode.value =
-                    code;
-
-
-                status.textContent =
-                    "Loader đã sẵn sàng";
-
-                statusDot.style.background =
-                    "#22c55e";
-
-
-            } catch (error) {
-
-                console.error(error);
-
-
-                status.textContent =
-                    "Không thể tải Loader";
-
-                statusDot.style.background =
-                    "#ef4444";
-
-            }
-
-        }
-
-
-        /* =================================
-           TOOL SWITCH
-        ================================== */
-
-        document
-            .querySelectorAll(".tool-button")
-            .forEach(
-                button => {
-
-                    button.addEventListener(
-                        "click",
-                        () => {
-
-                            const tool =
-                                button.dataset.tool;
-
-
-                            document
-                                .querySelectorAll(
-                                    ".tool-button"
-                                )
-                                .forEach(
-                                    item => {
-
-                                        item.classList.remove(
-                                            "active"
-                                        );
-
-                                    }
-                                );
-
-
-                            button.classList.add(
-                                "active"
-                            );
-
-
-                            if (tool === "shd") {
-
-                                showSHD();
-
-                            }
-
-
-                            if (tool === "gin") {
-
-                                showComingSoon(
-                                    "GIN"
-                                );
-
-                            }
-
-
-                            if (tool === "pan") {
-
-                                showComingSoon(
-                                    "PAN"
-                                );
-
-                            }
-
-                        }
-                    );
-
-                }
-            );
-
-
-        /* =================================
-           SHOW SHD
-        ================================== */
-
-        function showSHD() {
-
-            toolTitle.textContent =
-                "SHD Loader";
-
-            toolDescription.textContent =
-                "Loader mới nhất từ SHD License Server";
-
-            guideDescription.textContent =
-                "Có 2 cách để chạy SHD V6";
-
-
-            shdContent.style.display =
-                "block";
-
-            comingSoon.style.display =
-                "none";
-
-
-            guide.style.display =
-                "flex";
-
-            comingSoonGuide.style.display =
-                "none";
-
-        }
-
-
-        /* =================================
-           SHOW COMING SOON
-        ================================== */
-
-        function showComingSoon(tool) {
-
-            toolTitle.textContent =
-                tool;
-
-            toolDescription.textContent =
-                "Tool đang được phát triển";
-
-
-            comingSoonTitle.textContent =
-                tool;
-
-
-            shdContent.style.display =
-                "none";
-
-            comingSoon.style.display =
-                "flex";
-
-
-            guide.style.display =
-                "none";
-
-            comingSoonGuide.style.display =
-                "flex";
-
-            guideDescription.textContent =
-                "Thông tin tool";
-
-        }
-
-
-        /* =================================
-           COPY LOADER
-        ================================== */
-
-        document
-            .getElementById("copyLoader")
-            .addEventListener(
-                "click",
-                async () => {
-
-                    const code =
-                        loaderCode.value;
-
-
-                    if (!code) {
-
-                        alert(
-                            "Loader chưa được tải."
-                        );
-
-                        return;
-
-                    }
-
-
-                    try {
-
-                        await navigator.clipboard.writeText(
-                            code
-                        );
-
-
-                        alert(
-                            "Đã copy Loader."
-                        );
-
-                    } catch (error) {
-
-                        console.error(error);
-
-
-                        alert(
-                            "Không thể copy Loader."
-                        );
-
-                    }
-
-                }
-            );
-
-
-        /* =================================
-           COPY BOOKMARKLET
-        ================================== */
-
-        document
-            .getElementById("copyBookmarklet")
-            .addEventListener(
-                "click",
-                async () => {
-
-                    const code =
-                        loaderCode.value;
-
-
-                    if (!code) {
-
-                        alert(
-                            "Loader chưa được tải."
-                        );
-
-                        return;
-
-                    }
-
-
-                    const bookmarklet =
-                        "javascript:" +
-                        encodeURIComponent(
-                            `(async()=>{${code}})()`
-                        );
-
-
-                    try {
-
-                        await navigator.clipboard.writeText(
-                            bookmarklet
-                        );
-
-
-                        alert(
-                            "Đã copy Bookmarklet.\n\n" +
-                            "Tạo Bookmark mới và " +
-                            "dán nội dung vào ô URL."
-                        );
-
-                    } catch (error) {
-
-                        console.error(error);
-
-
-                        alert(
-                            "Không thể copy Bookmarklet."
-                        );
-
-                    }
-
-                }
-            );
-
-
-        /* =================================
-           START
-        ================================== */
-
-        loadLoader();
-
-
-        /* =================================
-           BUY LICENSE & VIETQR PAYMENT
-        ================================== */
-        let currentPendingOrder = null;
-        let statusInterval = null;
-
-        function copyValue(val, label) {
-            if (!val) return;
-            navigator.clipboard.writeText(String(val).trim())
-                .then(() => alert(`Đã copy ${label}!`))
-                .catch(() => prompt("Sao chép thủ công:", val));
-        }
-
-        async function createOrder() {
-            const btn = document.getElementById("btnCreateQr");
-            const months = Number(document.getElementById("buyMonthsSelect").value) || 1;
-
-            try {
-                btn.disabled = true;
-                btn.textContent = "Đang tạo QR...";
-
-                const res = await fetch("/api/license/buy", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ months })
-                });
-
-                const data = await res.json();
-                if (!data.success || !data.order) {
-                    alert(data.message || "Không thể tạo đơn hàng.");
-                    return;
-                }
-
-                currentPendingOrder = data.order;
-                localStorage.setItem("__PENDING_LICENSE__", currentPendingOrder.licenseKey);
-
-                // Cập nhật ảnh QR và thông tin chuyển khoản
-                document.getElementById("paymentQrImage").src = currentPendingOrder.qrUrl;
-                document.getElementById("orderAmountDisplay").textContent = Number(currentPendingOrder.amount).toLocaleString("vi-VN") + "đ";
-                document.getElementById("orderMemoDisplay").textContent = currentPendingOrder.bankInfo.transferContent;
-                document.getElementById("orderInfoBox").style.display = "block";
-
-                document.getElementById("orderInfoBox").scrollIntoView({ behavior: "smooth", block: "nearest" });
-
-            } catch (e) {
-                console.error(e);
-                alert("Lỗi kết nối: " + e.message);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "⚡ Tạo Mã QR Thanh Toán";
-            }
-        }
-
-        async function confirmPaid() {
-            if (!currentPendingOrder || !currentPendingOrder.licenseKey) {
-                alert("Không tìm thấy đơn hàng.");
-                return;
-            }
-
-            const btn = document.getElementById("btnConfirmPaid");
-            try {
-                btn.disabled = true;
-                btn.textContent = "Đang ghi nhận...";
-
-                const res = await fetch("/api/license/confirm-payment", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ licenseKey: currentPendingOrder.licenseKey })
-                });
-
-                const data = await res.json();
-                if (!data.success) {
-                    alert(data.message || "Không thể xác nhận.");
-                    return;
-                }
-
-                setWaitingStatus(currentPendingOrder.licenseKey);
-
-            } catch (e) {
-                console.error(e);
-                alert("Lỗi xác nhận: " + e.message);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "✅ Tôi Đã Chuyển Khoản";
-            }
-        }
-
-        function setWaitingStatus(licenseKey) {
-            const box = document.getElementById("paymentStatusBox");
-            box.className = "payment-status-box waiting";
-            box.innerHTML = `
-            <div>⏳ <strong>Đã ghi nhận thanh toán!</strong></div>
-            <div style="margin-top:4px;">License: <code style="color:#fbbf24; font-weight:bold;">${licenseKey}</code></div>
-            <div style="font-size:10px; color:#cbd5e1; margin-top:4px;">Admin sẽ đối soát và kích hoạt trong vòng 24h. Hệ thống sẽ tự động cập nhật!</div>
-        `;
-
-            startPolling(licenseKey);
-        }
-
-        function setActiveStatus(licenseKey, expiresAt) {
-            const box = document.getElementById("paymentStatusBox");
-            box.className = "payment-status-box active";
-            box.innerHTML = `
-            <div>🎉 <strong>License đang hoạt động!</strong></div>
-            <div style="margin-top:4px;">License: <code style="color:#22c55e; font-weight:bold;">${licenseKey}</code></div>
-            <div style="font-size:10px; color:#cbd5e1; margin-top:4px;">Hạn dùng đến: <strong>${new Date(expiresAt).toLocaleDateString("vi-VN")}</strong></div>
-        `;
-
-            localStorage.setItem("__APP_LICENSE__", licenseKey);
-            localStorage.setItem("__SHD_LICENSE__", licenseKey);
-            localStorage.removeItem("__PENDING_LICENSE__");
-
-            stopPolling();
-        }
-
-        function startPolling(licenseKey) {
-            stopPolling();
-            statusInterval = setInterval(async () => {
-                try {
-                    const res = await fetch(`/api/license/status/${encodeURIComponent(licenseKey)}`);
-                    if (!res.ok) return;
-                    const data = await res.json();
-                    if (data.success && data.license && data.license.status === "ACTIVE" && data.license.isActive) {
-                        setActiveStatus(data.license.licenseKey, data.license.expiresAt);
-                        alert(`🎉 Chúc mừng! License [${data.license.licenseKey}] đã được kích hoạt thành công!`);
-                    }
-                } catch (e) {
-                    console.error("Polling error:", e);
-                }
-            }, 12000);
-        }
-
-        function stopPolling() {
-            if (statusInterval) {
-                clearInterval(statusInterval);
-                statusInterval = null;
-            }
-        }
-
-        async function lookupLicense() {
-            const key = document.getElementById("lookupKeyInput").value.trim();
-            if (!key) {
-                alert("Vui lòng nhập mã License cần kiểm tra.");
-                return;
-            }
-
-            try {
-                const res = await fetch(`/api/license/status/${encodeURIComponent(key)}`);
-                if (!res.ok) {
-                    alert("Không tìm thấy thông tin License này.");
-                    return;
-                }
-                const data = await res.json();
-                if (!data.success || !data.license) {
-                    alert("Không tìm thấy thông tin License.");
-                    return;
-                }
-
-                const lic = data.license;
-                if (lic.status === "ACTIVE" && lic.isActive) {
-                    setActiveStatus(lic.licenseKey, lic.expiresAt);
-                    alert(`✓ License [${lic.licenseKey}] đang HOẠT ĐỘNG.\nHạn dùng: ${new Date(lic.expiresAt).toLocaleDateString("vi-VN")}`);
-                } else if (lic.status === "WAITING_CONFIRM") {
-                    setWaitingStatus(lic.licenseKey);
-                    alert(`⏳ License [${lic.licenseKey}] đang CHỜ DUYỆT (trong 24h).`);
-                } else {
-                    alert(`Trạng thái License: ${lic.status}`);
-                }
-            } catch (e) {
-                console.error(e);
-                alert("Lỗi kiểm tra License: " + e.message);
-            }
-        }
-
-        // Tự động nạp license đã lưu
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedPending = localStorage.getItem("__PENDING_LICENSE__");
-            const savedActive = localStorage.getItem("__APP_LICENSE__") || localStorage.getItem("__SHD_LICENSE__");
-            if (savedPending) {
-                setWaitingStatus(savedPending);
-            } else if (savedActive) {
-                const input = document.getElementById("lookupKeyInput");
-                if (input) input.value = savedActive;
-                fetch(`/api/license/status/${encodeURIComponent(savedActive)}`)
-                    .then(r => r.json())
-                    .then(d => {
-                        if (d.success && d.license && d.license.status === "ACTIVE" && d.license.isActive) {
-                            setActiveStatus(d.license.licenseKey, d.license.expiresAt);
-                        }
-                    }).catch(() => { });
-            }
-        });
-
-    </script>
-
 </body>
 
 </html>

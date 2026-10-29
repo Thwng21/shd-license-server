@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHD License - Quản lý</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f6fa; color: #222; padding-bottom: 50px; }
+        
+        .container { max-width: 1200px; margin: auto; padding: 30px; }
+        
+        /* HEADER */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+        h1 { margin: 0; font-size: 28px; }
+        .subtitle { color: #777; margin-top: 5px; }
+        .logout { background: #eee; border: none; padding: 10px 15px; border-radius: 7px; cursor: pointer; font-weight: bold; }
+        .logout:hover { background: #e5e7eb; }
+
+        /* STATS */
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 25px 0; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .number { font-size: 28px; font-weight: bold; margin-top: 8px; }
+
+        /* TOOLBAR */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .search-box { display: flex; gap: 10px; flex: 1; }
+        .search-input { width: 100%; max-width: 350px; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        .status-filter { padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; background: white; cursor: pointer; }
+        .toolbar-actions button { padding: 10px 15px; border-radius: 7px; cursor: pointer; border: none; font-weight: bold; font-size: 14px; }
+
+        /* TABLE */
+        .table-box { background: white; border-radius: 10px; overflow: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px; border-bottom: 1px solid #eee; text-align: left; white-space: nowrap; }
+        th { background: #fafafa; font-size: 13px; color: #555; }
+        
+        /* BUTTONS */
+        .btn { border: 0; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin: 2px; }
+        .btn:hover { opacity: .85; }
+        .btn-success { background: #16a34a; color: white; }
+        .btn-danger { background: #dc2626; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-secondary { background: #e5e7eb; color: #333; }
+
+        /* BADGES */
+        .badge { padding: 5px 9px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .active { background: #dcfce7; color: #166534; }
+        .pending { background: #fed7aa; color: #c2410c; }
+        .waiting_confirm { background: #fef08a; color: #854d0e; }
+        .rejected { background: #f1f5f9; color: #64748b; }
+
+        @media (max-width: 800px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .search-box { flex-direction: column; }
+            .search-input { max-width: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>SHD License Dashboard</h1>
+            <div class="subtitle">Quản lý đơn hàng và cấp mã Code</div>
+        </div>
+        <button class="logout" onclick="logout()">Đăng xuất</button>
+    </div>
+
+    <div class="stats">
+        <div class="card">
+            Tổng Đơn Hàng
+            <div id="total" class="number">0</div>
+        </div>
+        <div class="card" style="border-top: 3px solid #f97316;">
+            Chờ Duyệt
+            <div id="pending" class="number" style="color: #ea580c;">0</div>
+        </div>
+        <div class="card" style="border-top: 3px solid #16a34a;">
+            Đã Duyệt
+            <div id="active" class="number" style="color: #16a34a;">0</div>
+        </div>
+        <div class="card">
+            Đã Hủy
+            <div id="rejected" class="number">0</div>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <div class="search-box">
+            <input id="searchInput" class="search-input" type="text" placeholder="🔎 Tìm Mã Đơn hoặc Số Điện Thoại..." oninput="filterData()">
+            <select id="statusFilter" class="status-filter" onchange="filterData()">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="PENDING">Chờ duyệt (Chưa CK)</option>
+                <option value="WAITING_CONFIRM">Chờ duyệt (Đã CK)</option>
+                <option value="ACTIVE">Đã Duyệt</option>
+                <option value="REJECTED">Đã Từ Chối</option>
+            </select>
+        </div>
+        <div class="toolbar-actions">
+            <button class="btn-secondary" onclick="loadData()">↻ Refresh</button>
+        </div>
+    </div>
+
+    <div class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã Đơn / Ngày Tạo</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Số Tiền</th>
+                    <th>Mã Code Cấp Khách</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const API = "/api/admin";
+    let allData = [];
+
+    // Kiểm tra đăng nhập
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) window.location.href = "index.html";
+
+    function getToken() { return sessionStorage.getItem("admin_token"); }
+    function logout() { sessionStorage.removeItem("admin_token"); window.location.href = "index.html"; }
+
+    async function apiRequest(url, options = {}) {
+        const token = getToken();
+        const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
+        if (token) headers.Authorization = `Bearer ${token}`;
+
+        const res = await fetch(url, { ...options, headers });
+        const data = await res.json();
+        
+        if (res.status === 401) {
+            logout();
+            throw new Error("Phiên hết hạn.");
+        }
+        return data;
+    }
+
+    async function loadData() {
+        try {
+            const data = await apiRequest(`${API}/licenses`);
+            if (!data.success) return;
+            allData = data.licenses || [];
+            
+            // Cập nhật thống kê
+            document.getElementById("total").textContent = allData.length;
+            document.getElementById("pending").textContent = allData.filter(l => ["PENDING", "WAITING_CONFIRM"].includes(l.status)).length;
+            document.getElementById("active").textContent = allData.filter(l => l.status === "ACTIVE").length;
+            document.getElementById("rejected").textContent = allData.filter(l => l.status === "REJECTED").length;
+
+            filterData();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function filterData() {
+        const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+        const status = document.getElementById("statusFilter").value;
+
+        const filtered = allData.filter(l => {
+            const matchKeyword = l.license_key.toLowerCase().includes(keyword) || 
+                                 (l.phone && String(l.phone).includes(keyword));
+            
+            if (status === "ALL") return matchKeyword;
+            if (status === "PENDING") return matchKeyword && l.status === "PENDING";
+            if (status === "WAITING_CONFIRM") return matchKeyword && l.status === "WAITING_CONFIRM";
+            return matchKeyword && l.status === status;
+        });
+
+        renderTable(filtered);
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById("tableBody");
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#777;">Không tìm thấy đơn hàng nào.</td></tr>`;
+            return;
+        }
+
+        data.forEach(l => {
+            const isPending = ["PENDING", "WAITING_CONFIRM"].includes(l.status);
+            const row = document.createElement("tr");
+
+            let actionHtml = "";
+            if (isPending) {
+                actionHtml = `
+                    <button class="btn btn-success" onclick="approveOrder('${l.license_key}')">✓ Duyệt</button>
+                    <button class="btn btn-danger" onclick="rejectOrder('${l.license_key}')">✕ Từ chối</button>
+                `;
+            } else if (l.status === "ACTIVE") {
+                actionHtml = `
+                    <span style="color:#16a34a; font-weight:bold; margin-right:10px; font-size:13px;">✓ Đã duyệt</span>
+                    <button class="btn btn-warning" onclick="editCode('${l.license_key}', '${l.unlock_code || ''}')">Sửa Code</button>
+                `;
+            }
+
+            row.innerHTML = `
+                <td>
+                    <strong>${l.license_key}</strong><br>
+                    <small style="color:#777">${new Date(l.created_at).toLocaleString('vi-VN')}</small>
+                </td>
+                <td style="font-weight:bold; font-size:14px; color:${l.phone ? '#111827' : '#dc2626'}">
+                    ${l.phone || "Không có SĐT"}
+                </td>
+                <td style="font-weight:bold; color:${isPending ? '#dc2626' : '#16a34a'}">
+                    ${Number(l.amount).toLocaleString('vi-VN')}đ
+                </td>
+                <td>
+                    ${l.unlock_code ? `<code style="background:#e0f2fe; padding:4px 8px; border-radius:4px; font-size:13px; font-weight:bold; color:#1d4ed8;">${l.unlock_code}</code>` : "-"}
+                </td>
+                <td>
+                    <span class="badge ${l.status.toLowerCase()}">${l.status}</span>
+                </td>
+                <td>${actionHtml}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    async function approveOrder(licenseKey) {
+        if (!confirm(`Xác nhận đã nhận đủ tiền cho đơn:\n${licenseKey}?`)) return;
+        try {
+            const data = await apiRequest(`${API}/approve`, { method: "POST", body: JSON.stringify({ license: licenseKey }) });
+            if (data.success) {
+                alert(`Đã duyệt thành công!\n\nMã Code cấp cho khách là:\n👉 ${data.license.unlock_code}`);
+                loadData();
+            } else alert(data.message);
+        } catch (err) { alert("Lỗi server khi duyệt."); }
+    }
+
+    async function editCode(licenseKey, oldCode) {
+        const newCode = prompt(`Nhập mã Code mới cho đơn:\n${licenseKey}`, oldCode);
+        if (!newCode || newCode === oldCode) return;
+        try {
+            const data = await apiRequest(`${API}/update-unlock-code`, {
+                method: "POST", body: JSON.stringify({ license: licenseKey, unlockCode: newCode })
+            });
+            if (data.success) { alert("Đã cập nhật mã Code!"); loadData(); }
+            else alert(data.message);
+        } catch (err) { alert("Lỗi server khi sửa mã."); }
+    }
+
+    async function rejectOrder(licenseKey) {
+        if (!confirm(`Từ chối đơn hàng:\n${licenseKey}?`)) return;
+        try {
+            await apiRequest(`${API}/reject`, { method: "POST", body: JSON.stringify({ license: licenseKey }) });
+            loadData();
+        } catch (err) { alert("Lỗi server khi từ chối."); }
+    }
+
+    // Khởi chạy
+    loadData();
+</script>
+</body>
+</html>
