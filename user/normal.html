@@ -129,10 +129,11 @@
 </head>
 <body>
 
-<!-- BẢO VỆ CHỐNG DEVTOOLS (AUTO-OUT) -->
+<!-- BẢO VỆ CHỐNG DEVTOOLS (TỐI THƯỢNG) -->
 <script>
     (function() {
         let isTriggered = false;
+
         function handleDevToolsDetected() {
             if (isTriggered) return;
             isTriggered = true;
@@ -173,6 +174,14 @@
                 handleDevToolsDetected();
             }
         }, 1000);
+
+        try {
+            const disableConsole = function() {};
+            console.log = disableConsole; console.warn = disableConsole; console.error = disableConsole;
+            console.info = disableConsole; console.debug = disableConsole; console.clear = disableConsole;
+            console.table = disableConsole; console.dir = disableConsole; console.trace = disableConsole;
+            window.eval = function() { return "Blocked"; };
+        } catch(e) {}
     })();
 </script>
 

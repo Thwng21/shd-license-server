@@ -129,10 +129,11 @@
 </head>
 <body>
 
-<!-- BẢO VỆ CHỐNG DEVTOOLS (AUTO-OUT) -->
+<!-- BẢO VỆ CHỐNG DEVTOOLS (TỐI THƯỢNG) -->
 <script>
     (function() {
         let isTriggered = false;
+
         function handleDevToolsDetected() {
             if (isTriggered) return;
             isTriggered = true;
@@ -173,6 +174,14 @@
                 handleDevToolsDetected();
             }
         }, 1000);
+
+        try {
+            const disableConsole = function() {};
+            console.log = disableConsole; console.warn = disableConsole; console.error = disableConsole;
+            console.info = disableConsole; console.debug = disableConsole; console.clear = disableConsole;
+            console.table = disableConsole; console.dir = disableConsole; console.trace = disableConsole;
+            window.eval = function() { return "Blocked"; };
+        } catch(e) {}
     })();
 </script>
 
@@ -292,6 +301,7 @@
                         <button class="btn-unlock-big" id="unlockBtn-panv2" onclick="openUnlockModal('panv2')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-panv2">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-panv2">
+                            <p>✓ Đã mở khóa! Bấm để copy:</p>
                             <button class="btn-success copy-tool" data-tool="panv2">📋 Copy toàn bộ tool PAN V2</button>
                         </div>
                         <div class="lookup-box">
@@ -362,6 +372,7 @@
                         <button class="btn-unlock-big" id="unlockBtn-ginv2" onclick="openUnlockModal('ginv2')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-ginv2">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-ginv2">
+                            <p>✓ Đã mở khóa! Bấm để copy:</p>
                             <button class="btn-success copy-tool" data-tool="ginv2">📋 Copy toàn bộ tool GIN V2</button>
                         </div>
                         <div class="lookup-box">
