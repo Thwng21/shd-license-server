@@ -126,6 +126,35 @@
     </style>
 </head>
 <body>
+
+<!-- BẢO VỆ CHỐNG DEVTOOLS -->
+<script>
+    (function() {
+        document.addEventListener("keydown", function(e) {
+            const key = e.key.toUpperCase();
+            if (key === "F12" || (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(key)) || (e.ctrlKey && key === "U")) {
+                e.preventDefault(); e.stopPropagation(); return false;
+            }
+        }, true);
+        document.addEventListener("contextmenu", function(e) { e.preventDefault(); return false; });
+        setInterval(function() {
+            if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+                document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20vh; font-family:sans-serif;'>PHÁT HIỆN TRUY CẬP TRÁI PHÉP!<br>HỆ THỐNG ĐÃ KHÓA.</h1>";
+                window.location.href = "about:blank"; 
+                setTimeout(() => window.close(), 100);
+            }
+        }, 500);
+        setInterval(function() {
+            const startTime = performance.now();
+            debugger; 
+            const endTime = performance.now();
+            if (endTime - startTime > 100) {
+                document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20vh; font-family:sans-serif;'>PHÁT HIỆN TRUY CẬP TRÁI PHÉP!</h1>";
+            }
+        }, 1000);
+    })();
+</script>
+
 <div class="container">
     <div class="header">
         <a href="index.html" class="back-btn">← Quay lại</a>
@@ -362,7 +391,6 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-    // 1. CHỈ LƯU TOKEN TRONG BỘ NHỚ (MẤT KHI F5)
     let memoryUnlockToken = null; 
     let currentUnlockTool = null;
 
@@ -376,7 +404,6 @@
         setTimeout(() => { toast.style.opacity = "0"; setTimeout(() => toast.remove(), 300); }, 3500);
     }
 
-    // CHUYỂN TAB
     document.querySelectorAll(".tab-button").forEach(btn => {
         btn.onclick = () => {
             document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
@@ -386,7 +413,6 @@
         };
     });
 
-    // XỬ LÝ HÌNH ẢNH
     document.querySelectorAll("[data-lightbox]").forEach(img => {
         img.onclick = () => { document.getElementById("lightboxImg").src = img.src; document.getElementById("lightbox").classList.add("open"); };
         img.onerror = () => img.style.display = "none";
@@ -402,7 +428,6 @@
     });
     function closeLightbox() { document.getElementById("lightbox").classList.remove("open"); }
 
-    // MỞ MODAL NHẬP CODE
     function openUnlockModal(tool) {
         currentUnlockTool = tool;
         document.getElementById("unlockToolName").textContent = tool.toUpperCase();
@@ -413,7 +438,6 @@
     }
     function closeUnlockModal() { document.getElementById("unlockModal").classList.remove("open"); }
 
-    // XÁC NHẬN MỞ KHÓA (GỬI KÈM TOOL ID ĐỂ PHÂN QUYỀN)
     async function confirmUnlock() {
         const code = document.getElementById("unlockCodeInput").value.trim();
         const errEl = document.getElementById("unlockError");
@@ -432,7 +456,6 @@
                 return; 
             }
             
-            // LƯU TOKEN VÀO BIẾN BỘ NHỚ (KHÔNG LƯU VÀO STORAGE)
             memoryUnlockToken = data.token;
             
             const tool = currentUnlockTool;
@@ -444,7 +467,6 @@
         }
     }
 
-    // CẬP NHẬT GIAO DIỆN KHI MỞ KHÓA
     function unlockUI(tool) {
         const btn = document.getElementById("unlockBtn-" + tool);
         const status = document.getElementById("unlockStatus-" + tool);
@@ -454,7 +476,6 @@
         if (copyBox) copyBox.style.display = "block";
     }
 
-    // GIẢI MÃ AES ĐỂ COPY
     async function decryptCode(enc) {
         const b64ToBytes = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
         const keyBytes = b64ToBytes(enc.key), iv = b64ToBytes(enc.iv), tag = b64ToBytes(enc.tag), payload = b64ToBytes(enc.payload);
@@ -465,13 +486,11 @@
         return new TextDecoder().decode(plainBuf);
     }
 
-    // NÚT COPY TOOL
     document.querySelectorAll(".copy-tool").forEach(btn => {
         btn.onclick = async () => {
             const tool = btn.dataset.tool;
-            // Kiểm tra token trong bộ nhớ
             if (!memoryUnlockToken) {
-                showToast("Phiên đã hết hạn hoặc bạn vừa tải lại trang. Vui lòng nhập lại mã!", "error");
+                showToast("Phiên đã hết hạn. Vui lòng nhập lại mã!", "error");
                 return openUnlockModal(tool);
             }
             
@@ -489,7 +508,7 @@
             } catch (err) { 
                 showToast("Lỗi: " + err.message, "error"); 
                 if (err.message.includes("hết hạn") || err.message.includes("Chưa mở")) {
-                    memoryUnlockToken = null; // Xóa token nếu hết hạn
+                    memoryUnlockToken = null; 
                     openUnlockModal(tool);
                 }
             }
@@ -497,7 +516,6 @@
         };
     });
 
-    // NÚT COPY BOOKMARKLET
     document.querySelectorAll(".copy-bookmarklet").forEach(btn => {
         btn.onclick = async () => {
             const tool = btn.dataset.tool;
@@ -523,7 +541,6 @@
         };
     });
 
-    // CÁC HÀM MUA HÀNG
     const pendingOrders = {};
     async function createOrderByTool(tool) {
         const phoneInput = document.getElementById("phoneInput-" + tool);
@@ -535,7 +552,7 @@
         try {
             const res = await fetch("/api/license/buy", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone, plan: tool.includes("v2") ? "premium" : "normal" })
+                body: JSON.stringify({ phone, plan: "premium" })
             });
             const data = await res.json();
             if (!data.success) throw new Error(data.message);
@@ -602,25 +619,6 @@
             btn.innerHTML = originalText;
         }
     }
-
-    // CHỐNG DEVTOOLS (TỰ ĐỘNG RELOAD XÓA TOKEN)
-    (function() {
-        function checkDevTools() {
-            const startTime = performance.now();
-            const endTime = performance.now();
-            if (endTime - startTime > 100) {
-                memoryUnlockToken = null; // Xóa token
-                window.location.reload();
-            }
-        }
-        setInterval(() => {
-            if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
-                memoryUnlockToken = null; // Xóa token
-                window.location.reload();
-            }
-        }, 500);
-        setInterval(checkDevTools, 1000);
-    })();
 </script>
 </body>
 </html>

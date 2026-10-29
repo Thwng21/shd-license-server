@@ -54,6 +54,48 @@
 </head>
 <body>
 
+    <!-- HỆ THỐNG BẢO VỆ CHỐNG DEVTOOLS -->
+    <script>
+        (function() {
+            // 1. Chặn phím tắt
+            document.addEventListener("keydown", function(e) {
+                const key = e.key.toUpperCase();
+                if (key === "F12" || (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(key)) || (e.ctrlKey && key === "U")) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            }, true);
+
+            // 2. Chặn chuột phải
+            document.addEventListener("contextmenu", function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // 3. Tự động đá văng nếu kéo mở DevTools
+            setInterval(function() {
+                const widthThreshold = window.outerWidth - window.innerWidth > 160;
+                const heightThreshold = window.outerHeight - window.innerHeight > 160;
+                if (widthThreshold || heightThreshold) {
+                    document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20vh; font-family:sans-serif;'>PHÁT HIỆN TRUY CẬP TRÁI PHÉP!<br>HỆ THỐNG ĐÃ KHÓA.</h1>";
+                    window.location.href = "about:blank"; 
+                    setTimeout(() => window.close(), 100);
+                }
+            }, 500);
+
+            // 4. Bẫy Debugger (Chống Undock)
+            setInterval(function() {
+                const startTime = performance.now();
+                debugger; 
+                const endTime = performance.now();
+                if (endTime - startTime > 100) {
+                    document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20vh; font-family:sans-serif;'>PHÁT HIỆN TRUY CẬP TRÁI PHÉP!</h1>";
+                }
+            }, 1000);
+        })();
+    </script>
+
     <div class="login-box">
         <h2>SHD License Admin</h2>
         <p>Đăng nhập để quản lý hệ thống</p>
@@ -94,7 +136,6 @@
                     return;
                 }
 
-                // Lưu token và chuyển sang trang detail
                 sessionStorage.setItem("admin_token", data.token);
                 window.location.href = "detail.html";
 
