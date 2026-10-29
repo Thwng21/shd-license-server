@@ -9,12 +9,12 @@
         :root {
             --bg: #0a0d14; --bg-card: #12161f; --bg-card-2: #171c28; --bg-elevated: #1c2233;
             --border: #232a3a; --border-2: #2d3548; --text: #e5e7eb; --text-dim: #8892a6;
-            --text-mute: #5a6478; --primary: #3b82f6; --success: #10b981; --warning: #f59e0b;
-            --danger: #ef4444; --radius: 14px;
+            --text-mute: #5a6478; --primary: #f59e0b; /* Vàng Gold cho Pre */
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --radius: 14px;
         }
         body {
             min-height: 100vh;
-            background: radial-gradient(ellipse at top left, rgba(59, 130, 246, 0.08), transparent 50%), var(--bg);
+            background: radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.08), transparent 50%), var(--bg);
             color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased;
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
@@ -22,19 +22,20 @@
         .header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
         .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-dim); font-size: 13px; font-weight: 600; text-decoration: none; transition: 0.2s; }
         .back-btn:hover { background: var(--primary); border-color: var(--primary); color: white; transform: translateX(-2px); }
-        .header h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #93c5fd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .plan-tag { padding: 6px 12px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); color: #93c5fd; font-size: 11px; font-weight: 700; border-radius: 20px; }
+        .header h1 { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #fff 0%, #fcd34d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .plan-tag { padding: 6px 12px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; font-size: 11px; font-weight: 700; border-radius: 20px; }
+        
         .tab-nav { display: flex; gap: 6px; padding: 6px; margin-bottom: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; }
         .tab-button { flex: 1; padding: 14px; background: transparent; border: none; border-radius: 10px; color: var(--text-mute); font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .tab-button:hover { background: var(--bg-card-2); color: var(--text-dim); }
-        .tab-button.active { background: rgba(59, 130, 246, 0.15); color: #93c5fd; box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3); }
+        .tab-button.active { background: rgba(245, 158, 11, 0.15); color: #fbbf24; box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.3); }
         .tab-pane { display: none; animation: fadeIn 0.3s ease; }
         .tab-pane.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 24px; overflow: hidden; }
         .section-header { padding: 18px 22px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); display: flex; align-items: center; gap: 12px; }
-        .section-num { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; font-size: 14px; font-weight: 800; }
+        .section-num { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; font-size: 14px; font-weight: 800; }
         .section-header h2 { font-size: 15px; font-weight: 800; color: #f1f5f9; }
         .section-header p { font-size: 12px; color: var(--text-mute); margin-top: 3px; }
         .section-body { padding: 22px; }
@@ -42,12 +43,11 @@
         .info-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; }
         .info-box { background: var(--bg-card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .info-box-title { font-size: 13px; font-weight: 800; color: #f1f5f9; margin-bottom: 12px; display: flex; gap: 8px; }
-        .price-display { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, #10b981, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0 6px; }
+        .price-display { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0 6px; }
         .price-note { font-size: 11px; color: var(--text-mute); }
         .feature-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
         .feature-list li { display: flex; gap: 10px; font-size: 12px; color: var(--text-dim); }
-        .feature-list li::before { content: "✓"; color: #4ade80; font-weight: 800; }
-        .feature-list li.no::before { content: "✕"; color: #f87171; }
+        .feature-list li::before { content: "✓"; color: #fbbf24; font-weight: 800; }
 
         .qr { width: 160px; height: 160px; display: block; margin: 0 auto 14px; padding: 8px; background: white; border-radius: 10px; }
         .bank-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
@@ -61,9 +61,9 @@
         .btn-primary, .btn-success, .btn-secondary, .btn-unlock-big {
             padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
         }
-        .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3); }
+        .btn-primary { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-2px); }
-        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
         .btn-success:hover:not(:disabled) { transform: translateY(-2px); }
         .btn-secondary { background: var(--bg-elevated); color: var(--text-dim); border: 1px solid var(--border-2); }
         .btn-secondary:hover:not(:disabled) { background: var(--bg-card-2); color: var(--text); border-color: var(--primary); }
@@ -96,7 +96,7 @@
         .steps-list { display: flex; flex-direction: column; gap: 16px; }
         .step-card { background: var(--bg-card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-        .step-num { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: #2563eb; color: white; font-weight: 800; font-size: 13px; }
+        .step-num { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: #d97706; color: white; font-weight: 800; font-size: 13px; }
         .step-card h3 { font-size: 14px; color: #e2e8f0; font-weight: 700; }
         .step-card p { color: var(--text-dim); font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
         .step-thumb { display: block; width: 100%; max-width: 480px; border-radius: 9px; border: 1px solid var(--border-2); cursor: zoom-in; transition: 0.2s; }
@@ -107,7 +107,7 @@
         .gallery-item:hover { border-color: var(--primary); transform: translateY(-2px); }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: 0.3s; }
         .gallery-item:hover img { transform: scale(1.05); }
-        .gallery-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-mute); background: repeating-linear-gradient(45deg, rgba(59,130,246,0.03), rgba(59,130,246,0.03) 10px, transparent 10px, transparent 20px); }
+        .gallery-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-mute); background: repeating-linear-gradient(45deg, rgba(245,158,11,0.03), rgba(245,158,11,0.03) 10px, transparent 10px, transparent 20px); }
         .gallery-item.loaded .gallery-placeholder { display: none; }
         .gallery-item:not(.loaded) img { display: none; }
 
@@ -117,11 +117,11 @@
         .modal-input { width: 100%; padding: 14px; background: #06080d; border: 1px solid var(--border-2); border-radius: 10px; color: var(--text); font-size: 15px; outline: none; margin-bottom: 12px; text-align: center; letter-spacing: 2px; }
         .modal-error { color: var(--danger); font-size: 12px; margin-bottom: 12px; min-height: 18px; }
         .modal-actions { display: flex; gap: 10px; }
-        .lightbox { cursor: zoom-out; }
         .lightbox img { max-width: 95vw; max-height: 92vh; border-radius: 12px; }
+        
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
         .toast { display: flex; gap: 12px; padding: 14px 18px; background: var(--bg-elevated); border: 1px solid var(--border-2); border-radius: 12px; color: var(--text); font-size: 13px; font-weight: 600; animation: toastIn 0.3s; }
-        .toast.success { border-color: #10b981; } .toast.error { border-color: #ef4444; } .toast.info { border-color: #3b82f6; }
+        .toast.success { border-color: #10b981; } .toast.error { border-color: #ef4444; } .toast.info { border-color: #f59e0b; }
         @keyframes toastIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         @media (max-width: 1000px) { .info-grid { grid-template-columns: 1fr; } }
@@ -144,21 +144,21 @@
     <div class="header">
         <a href="index.html" class="back-btn">← Quay lại</a>
         <h1>Bản Premium</h1>
-        <span class="plan-tag" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🎯 NORMAL</span>
+        <span class="plan-tag">👑 PREMIUM</span>
     </div>
 
     <div class="tab-nav">
-        <button class="tab-button active" data-tool="cmsv2">CMS <span class="tab-status">Bản thường</span></button>
-        <button class="tab-button" data-tool="panv2">PAN <span class="tab-status">Bản thường</span></button>
-        <button class="tab-button" data-tool="ginv3">GIN <span class="tab-status">Chỉ cào dữ liệu</span></button>
+        <button class="tab-button active" data-tool="cmsv2">CMS V2 <span class="tab-status">Bản Premium</span></button>
+        <button class="tab-button" data-tool="panv2">PAN V2 <span class="tab-status">Bản Premium</span></button>
+        <button class="tab-button" data-tool="ginv2">GIN V2 <span class="tab-status">Có Dashboard</span></button>
     </div>
 
-    <!-- TAB CMS -->
-    <div id="pane-cms" class="tab-pane active">
+    <!-- TAB CMS V2 -->
+    <div id="pane-cmsv2" class="tab-pane active">
         <div class="section">
             <div class="section-header">
                 <div class="section-num">1</div>
-                <div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>CMS Tool — Bản Thường</p></div>
+                <div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>CMS V2 Tool</p></div>
             </div>
             <div class="section-body">
                 <div class="info-grid">
@@ -167,38 +167,33 @@
                         <div class="price-display">1.500.000đ</div>
                         <div class="price-note">Thanh toán 1 lần · Sử dụng vĩnh viễn</div>
                         <ul class="feature-list">
-                            <li>Copy toàn bộ tool CMS</li>
-                            <li>Sử dụng trọn đời, không giới hạn</li>
-                            <li>Cập nhật miễn phí</li>
+                            <li>Copy toàn bộ tool CMS V2</li>
+                            <li>Có Dashboard thao tác nâng cao</li>
                         </ul>
                     </div>
                     <div class="info-box">
                         <div class="info-box-title">💳 Thanh toán</div>
-                        <img class="qr" id="paymentQrImage-cms" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png" alt="QR">
+                        <img class="qr" id="paymentQrImage-cmsv2" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png">
                         <div class="bank-row"><span class="label">Ngân hàng</span><span class="value">VPBank</span></div>
-                        <div class="bank-row"><span class="label">Số TK</span><span class="value mono">210520042026</span></div>
                         <div style="margin-top:14px;">
-                            <label style="font-size:11px; color:var(--text-dim); font-weight:700;">📱 Nhập số điện thoại:</label>
-                            <input id="phoneInput-cms" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-                            <label style="font-size:11px; color:var(--text-dim); font-weight:700;">🔑 Tạo mật khẩu tra cứu:</label>
-                            <input id="passInput-cms" class="pass-input" type="password" placeholder="Nhập mật khẩu...">
-                            <button class="btn-primary" onclick="createOrderByTool('cms')">⚡ Tạo Mã QR — 1.200.000đ</button>
+                            <input id="phoneInput-cmsv2" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="passInput-cmsv2" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
+                            <button class="btn-primary" onclick="createOrderByTool('cmsv2')">⚡ Tạo Mã QR — 1.500.000đ</button>
                         </div>
-                        <div class="order-info-box" id="orderInfoBox-cms">
-                            <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-cms">1.200.000đ</span></div>
-                            <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-cms"></span></div>
-                            <div style="font-size:10px; color:#4ade80; margin-top:6px;">✓ Nội dung đã gắn sẵn trong QR.</div>
-                            <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('cms')">✅ Tôi Đã Chuyển Khoản</button>
+                        <div class="order-info-box" id="orderInfoBox-cmsv2">
+                            <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-cmsv2"></span></div>
+                            <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-cmsv2"></span></div>
+                            <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('cmsv2')">✅ Tôi Đã Chuyển Khoản</button>
                         </div>
-                        <div id="paymentStatusBox-cms" class="payment-status-box"></div>
+                        <div id="paymentStatusBox-cmsv2" class="payment-status-box"></div>
                     </div>
                     <div class="info-box">
                         <div class="info-box-title">🔓 Mở khóa Tool</div>
-                        <button class="btn-unlock-big" id="unlockBtn-cms" onclick="openUnlockModal('cms')">🔓 Nhập mã mở khóa</button>
-                        <div class="unlock-status locked" id="unlockStatus-cms">🔒 Tool chưa được mở khóa</div>
-                        <div class="copy-tool-box" id="copyBox-cms">
+                        <button class="btn-unlock-big" id="unlockBtn-cmsv2" onclick="openUnlockModal('cmsv2')">🔓 Nhập mã mở khóa</button>
+                        <div class="unlock-status locked" id="unlockStatus-cmsv2">🔒 Tool chưa được mở khóa</div>
+                        <div class="copy-tool-box" id="copyBox-cmsv2">
                             <p>✓ Đã mở khóa! Bấm để chạy trực tiếp:</p>
-                            <button class="btn-success copy-tool" data-tool="cms">🚀 Chạy Tool Ngay</button>
+                            <button class="btn-success copy-tool" data-tool="cmsv2">🚀 Chạy Tool Ngay</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -217,12 +212,12 @@
                     <div class="step-card">
                         <div class="step-header"><div class="step-num">1</div><h3>Mở khóa tool</h3></div>
                         <p>Nhấn 🔓 Nhập mã mở khóa và nhập mã Code Admin cấp.</p>
-                        <img class="step-thumb" src="cmsb1.jpg" data-lightbox alt="Bước 1">
+                        <img class="step-thumb" src="cmsv2b1.jpg" data-lightbox alt="Bước 1">
                     </div>
                     <div class="step-card">
                         <div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div>
                         <p>Bấm nút 🚀 Chạy Tool Ngay (Tool sẽ tự chạy không cần F12).</p>
-                        <img class="step-thumb" src="cmsb2.jpg" data-lightbox alt="Bước 2">
+                        <img class="step-thumb" src="cmsv2b2.jpg" data-lightbox alt="Bước 2">
                     </div>
                 </div>
             </div>
@@ -231,46 +226,46 @@
             <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
             <div class="section-body">
                 <div class="gallery-grid">
-                    <div class="gallery-item" data-img="cmsb1.jpg"><img src="cmsb1.jpg"><div class="gallery-placeholder">🖼️ cmsb1.jpg</div></div>
-                    <div class="gallery-item" data-img="cmsb2.jpg"><img src="cmsb2.jpg"><div class="gallery-placeholder">🖼️ cmsb2.jpg</div></div>
+                    <div class="gallery-item" data-img="cmsv2b1.jpg"><img src="cmsv2b1.jpg"><div class="gallery-placeholder">🖼️ cmsv2b1.jpg</div></div>
+                    <div class="gallery-item" data-img="cmsv2b2.jpg"><img src="cmsv2b2.jpg"><div class="gallery-placeholder">🖼️ cmsv2b2.jpg</div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB PAN -->
-    <div id="pane-pan" class="tab-pane">
+    <!-- TAB PAN V2 -->
+    <div id="pane-panv2" class="tab-pane">
         <div class="section">
-            <div class="section-header"><div class="section-num">1</div><div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>PAN Tool</p></div></div>
+            <div class="section-header"><div class="section-num">1</div><div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>PAN V2 Tool</p></div></div>
             <div class="section-body">
                 <div class="info-grid">
                     <div class="info-box">
                         <div class="info-box-title">📦 Thông tin gói</div>
-                        <div class="price-display">1.200.000đ</div>
+                        <div class="price-display">1.500.000đ</div>
                         <div class="price-note">Thanh toán 1 lần · Sử dụng vĩnh viễn</div>
                     </div>
                     <div class="info-box">
                         <div class="info-box-title">💳 Thanh toán</div>
-                        <img class="qr" id="paymentQrImage-pan" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png">
+                        <img class="qr" id="paymentQrImage-panv2" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png">
                         <div class="bank-row"><span class="label">Ngân hàng</span><span class="value">VPBank</span></div>
                         <div style="margin-top:14px;">
-                            <input id="phoneInput-pan" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-                            <input id="passInput-pan" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
-                            <button class="btn-primary" onclick="createOrderByTool('pan')">⚡ Tạo Mã QR — 1.200.000đ</button>
+                            <input id="phoneInput-panv2" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="passInput-panv2" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
+                            <button class="btn-primary" onclick="createOrderByTool('panv2')">⚡ Tạo Mã QR — 1.500.000đ</button>
                         </div>
-                        <div class="order-info-box" id="orderInfoBox-pan">
-                            <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-pan"></span></div>
-                            <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-pan"></span></div>
-                            <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('pan')">✅ Tôi Đã Chuyển Khoản</button>
+                        <div class="order-info-box" id="orderInfoBox-panv2">
+                            <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-panv2"></span></div>
+                            <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-panv2"></span></div>
+                            <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('panv2')">✅ Tôi Đã Chuyển Khoản</button>
                         </div>
-                        <div id="paymentStatusBox-pan" class="payment-status-box"></div>
+                        <div id="paymentStatusBox-panv2" class="payment-status-box"></div>
                     </div>
                     <div class="info-box">
                         <div class="info-box-title">🔓 Mở khóa Tool</div>
-                        <button class="btn-unlock-big" id="unlockBtn-pan" onclick="openUnlockModal('pan')">🔓 Nhập mã mở khóa</button>
-                        <div class="unlock-status locked" id="unlockStatus-pan">🔒 Tool chưa được mở khóa</div>
-                        <div class="copy-tool-box" id="copyBox-pan">
-                            <button class="btn-success copy-tool" data-tool="pan">🚀 Chạy Tool Ngay</button>
+                        <button class="btn-unlock-big" id="unlockBtn-panv2" onclick="openUnlockModal('panv2')">🔓 Nhập mã mở khóa</button>
+                        <div class="unlock-status locked" id="unlockStatus-panv2">🔒 Tool chưa được mở khóa</div>
+                        <div class="copy-tool-box" id="copyBox-panv2">
+                            <button class="btn-success copy-tool" data-tool="panv2">🚀 Chạy Tool Ngay</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -286,8 +281,8 @@
             <div class="section-header"><div class="section-num">2</div><div><h2>Các bước thực hiện</h2></div></div>
             <div class="section-body">
                 <div class="steps-list">
-                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="panb1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="panb2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="panv2b1.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="panv2b2.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -295,50 +290,50 @@
             <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
             <div class="section-body">
                 <div class="gallery-grid">
-                    <div class="gallery-item" data-img="panb1.jpg"><img src="panb1.jpg"><div class="gallery-placeholder">panb1.jpg</div></div>
-                    <div class="gallery-item" data-img="panb2.jpg"><img src="panb2.jpg"><div class="gallery-placeholder">panb2.jpg</div></div>
+                    <div class="gallery-item" data-img="panv2b1.jpg"><img src="panv2b1.jpg"><div class="gallery-placeholder">panv2b1.jpg</div></div>
+                    <div class="gallery-item" data-img="panv2b2.jpg"><img src="panv2b2.jpg"><div class="gallery-placeholder">panv2b2.jpg</div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB GIN -->
-    <div id="pane-gin" class="tab-pane">
+    <!-- TAB GIN V2 -->
+    <div id="pane-ginv2" class="tab-pane">
         <div class="section">
-            <div class="section-header"><div class="section-num">1</div><div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>GIN Tool (Cào dữ liệu thô)</p></div></div>
+            <div class="section-header"><div class="section-num">1</div><div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>GIN V2 Tool (Có Dashboard)</p></div></div>
             <div class="section-body">
                 <div class="info-grid">
                     <div class="info-box">
                         <div class="info-box-title">📦 Thông tin gói</div>
-                        <div class="price-display">1.200.000đ</div>
+                        <div class="price-display">1.500.000đ</div>
                         <div class="price-note">Thanh toán 1 lần · Sử dụng vĩnh viễn</div>
                         <ul class="feature-list">
-                            <li>Cào dữ liệu thô từ GIN</li>
-                            <li class="no">Không có dashboard</li>
+                            <li>Cào dữ liệu + Dashboard thao tác</li>
+                            <li>Phân tích, xuất báo cáo nâng cao</li>
                         </ul>
                     </div>
                     <div class="info-box">
                         <div class="info-box-title">💳 Thanh toán</div>
-                        <img class="qr" id="paymentQrImage-gin" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png">
+                        <img class="qr" id="paymentQrImage-ginv2" src="https://img.vietqr.io/image/VPB-210520042026-compact2.png">
                         <div class="bank-row"><span class="label">Ngân hàng</span><span class="value">VPBank</span></div>
                         <div style="margin-top:14px;">
-                            <input id="phoneInput-gin" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
-                            <input id="passInput-gin" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
-                            <button class="btn-primary" onclick="createOrderByTool('gin')">⚡ Tạo Mã QR — 1.200.000đ</button>
+                            <input id="phoneInput-ginv2" class="phone-input" type="tel" maxlength="10" placeholder="0912345678" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)">
+                            <input id="passInput-ginv2" class="pass-input" type="password" placeholder="Tạo mật khẩu tra cứu...">
+                            <button class="btn-primary" onclick="createOrderByTool('ginv2')">⚡ Tạo Mã QR — 1.500.000đ</button>
                         </div>
-                        <div class="order-info-box" id="orderInfoBox-gin">
-                            <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-gin"></span></div>
-                            <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-gin"></span></div>
-                            <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('gin')">✅ Tôi Đã Chuyển Khoản</button>
+                        <div class="order-info-box" id="orderInfoBox-ginv2">
+                            <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-ginv2"></span></div>
+                            <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-ginv2"></span></div>
+                            <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('ginv2')">✅ Tôi Đã Chuyển Khoản</button>
                         </div>
-                        <div id="paymentStatusBox-gin" class="payment-status-box"></div>
+                        <div id="paymentStatusBox-ginv2" class="payment-status-box"></div>
                     </div>
                     <div class="info-box">
                         <div class="info-box-title">🔓 Mở khóa Tool</div>
-                        <button class="btn-unlock-big" id="unlockBtn-gin" onclick="openUnlockModal('gin')">🔓 Nhập mã mở khóa</button>
-                        <div class="unlock-status locked" id="unlockStatus-gin">🔒 Tool chưa được mở khóa</div>
-                        <div class="copy-tool-box" id="copyBox-gin">
-                            <button class="btn-success copy-tool" data-tool="gin">🚀 Chạy Tool Ngay</button>
+                        <button class="btn-unlock-big" id="unlockBtn-ginv2" onclick="openUnlockModal('ginv2')">🔓 Nhập mã mở khóa</button>
+                        <div class="unlock-status locked" id="unlockStatus-ginv2">🔒 Tool chưa được mở khóa</div>
+                        <div class="copy-tool-box" id="copyBox-ginv2">
+                            <button class="btn-success copy-tool" data-tool="ginv2">🚀 Chạy Tool Ngay</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -354,8 +349,8 @@
             <div class="section-header"><div class="section-num">2</div><div><h2>Các bước thực hiện</h2></div></div>
             <div class="section-body">
                 <div class="steps-list">
-                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="ginb1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="ginb2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="ginv2b1.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="ginv2b2.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -363,20 +358,20 @@
             <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
             <div class="section-body">
                 <div class="gallery-grid">
-                    <div class="gallery-item" data-img="ginb1.jpg"><img src="ginb1.jpg"><div class="gallery-placeholder">ginb1.jpg</div></div>
-                    <div class="gallery-item" data-img="ginb2.jpg"><img src="ginb2.jpg"><div class="gallery-placeholder">ginb2.jpg</div></div>
+                    <div class="gallery-item" data-img="ginv2b1.jpg"><img src="ginv2b1.jpg"><div class="gallery-placeholder">ginv2b1.jpg</div></div>
+                    <div class="gallery-item" data-img="ginv2b2.jpg"><img src="ginv2b2.jpg"><div class="gallery-placeholder">ginv2b2.jpg</div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="footer" style="text-align:center; padding:20px; color:#5a6478; font-size:12px;">SHD Tools — Bản Thường · Made with ❤️</div>
+    <div class="footer" style="text-align:center; padding:20px; color:#5a6478; font-size:12px;">SHD Tools — Bản Premium · Made with ❤️</div>
 </div>
 
 <div class="modal" id="unlockModal">
     <div class="modal-box">
         <h2>🔓 Mở khóa Tool</h2>
-        <p style="font-size:13px; color:var(--text-dim); margin-bottom:20px;">Nhập mã kích hoạt để mở khóa tool <strong id="unlockToolName" style="color:#93c5fd;"></strong>.</p>
+        <p style="font-size:13px; color:var(--text-dim); margin-bottom:20px;">Nhập mã kích hoạt để mở khóa tool <strong id="unlockToolName" style="color:#fbbf24;"></strong>.</p>
         <input type="text" id="unlockCodeInput" class="modal-input" placeholder="VIP-0912345678-XXXX">
         <div class="modal-error" id="unlockError"></div>
         <div class="modal-actions">
@@ -525,7 +520,7 @@
         try {
             const res = await fetch("/api/license/buy", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone, password, plan: "remium" })
+                body: JSON.stringify({ phone, password, plan: "premium" }) // SỬA LỖI TẠI ĐÂY
             });
             const data = await res.json();
             if (!data.success) throw new Error(data.message);
