@@ -129,7 +129,7 @@
 </head>
 <body>
 
-<!-- BẢO VỆ CHỐNG DEVTOOLS (CHỈ CHẶN PHÍM, KHÔNG TỰ OUT) -->
+<!-- CHỈ CHẶN PHÍM F12, KHÔNG TỰ OUT -->
 <script>
     document.addEventListener("keydown", function(e) {
         const key = e.key.toUpperCase();
@@ -156,10 +156,7 @@
     <!-- TAB CMS V2 -->
     <div id="pane-cmsv2" class="tab-pane active">
         <div class="section">
-            <div class="section-header">
-                <div class="section-num">1</div>
-                <div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>CMS V2 Tool</p></div>
-            </div>
+            <div class="section-header"><div class="section-num">1</div><div><h2>Thông tin gói · Thanh toán · Mở khóa</h2><p>CMS V2 Tool</p></div></div>
             <div class="section-body">
                 <div class="info-grid">
                     <div class="info-box">
@@ -192,8 +189,8 @@
                         <button class="btn-unlock-big" id="unlockBtn-cmsv2" onclick="openUnlockModal('cmsv2')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-cmsv2">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-cmsv2">
-                            <p>✓ Đã mở khóa! Bấm để chạy trực tiếp:</p>
-                            <button class="btn-success copy-tool" data-tool="cmsv2">🚀 Chạy Tool Ngay</button>
+                            <p>✓ Đã mở khóa! Bấm để copy:</p>
+                            <button class="btn-success copy-tool" data-tool="cmsv2">📋 Copy toàn bộ tool CMS V2</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -209,16 +206,9 @@
             <div class="section-header"><div class="section-num">2</div><div><h2>Các bước thực hiện</h2></div></div>
             <div class="section-body">
                 <div class="steps-list">
-                    <div class="step-card">
-                        <div class="step-header"><div class="step-num">1</div><h3>Mở khóa tool</h3></div>
-                        <p>Nhấn 🔓 Nhập mã mở khóa và nhập mã Code Admin cấp.</p>
-                        <img class="step-thumb" src="cmsv2b1.jpg" data-lightbox alt="Bước 1">
-                    </div>
-                    <div class="step-card">
-                        <div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div>
-                        <p>Bấm nút 🚀 Chạy Tool Ngay (Tool sẽ tự chạy không cần F12).</p>
-                        <img class="step-thumb" src="cmsv2b2.jpg" data-lightbox alt="Bước 2">
-                    </div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="cmsv2b1.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="cmsv2b2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="cmsv2b3.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -226,8 +216,9 @@
             <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
             <div class="section-body">
                 <div class="gallery-grid">
-                    <div class="gallery-item" data-img="cmsv2b1.jpg"><img src="cmsv2b1.jpg"><div class="gallery-placeholder">🖼️ cmsv2b1.jpg</div></div>
-                    <div class="gallery-item" data-img="cmsv2b2.jpg"><img src="cmsv2b2.jpg"><div class="gallery-placeholder">🖼️ cmsv2b2.jpg</div></div>
+                    <div class="gallery-item" data-img="cmsv2b1.jpg"><img src="cmsv2b1.jpg"><div class="gallery-placeholder">cmsv2b1.jpg</div></div>
+                    <div class="gallery-item" data-img="cmsv2b2.jpg"><img src="cmsv2b2.jpg"><div class="gallery-placeholder">cmsv2b2.jpg</div></div>
+                    <div class="gallery-item" data-img="cmsv2b3.jpg"><img src="cmsv2b3.jpg"><div class="gallery-placeholder">cmsv2b3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -265,7 +256,7 @@
                         <button class="btn-unlock-big" id="unlockBtn-panv2" onclick="openUnlockModal('panv2')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-panv2">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-panv2">
-                            <button class="btn-success copy-tool" data-tool="panv2">🚀 Chạy Tool Ngay</button>
+                            <button class="btn-success copy-tool" data-tool="panv2">📋 Copy toàn bộ tool PAN V2</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -282,7 +273,8 @@
             <div class="section-body">
                 <div class="steps-list">
                     <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="panv2b1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="panv2b2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="panv2b2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="panv2b3.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -292,6 +284,7 @@
                 <div class="gallery-grid">
                     <div class="gallery-item" data-img="panv2b1.jpg"><img src="panv2b1.jpg"><div class="gallery-placeholder">panv2b1.jpg</div></div>
                     <div class="gallery-item" data-img="panv2b2.jpg"><img src="panv2b2.jpg"><div class="gallery-placeholder">panv2b2.jpg</div></div>
+                    <div class="gallery-item" data-img="panv2b3.jpg"><img src="panv2b3.jpg"><div class="gallery-placeholder">panv2b3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -333,7 +326,7 @@
                         <button class="btn-unlock-big" id="unlockBtn-ginv2" onclick="openUnlockModal('ginv2')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-ginv2">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-ginv2">
-                            <button class="btn-success copy-tool" data-tool="ginv2">🚀 Chạy Tool Ngay</button>
+                            <button class="btn-success copy-tool" data-tool="ginv2">📋 Copy toàn bộ tool GIN V2</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -350,7 +343,8 @@
             <div class="section-body">
                 <div class="steps-list">
                     <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="ginv2b1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="ginv2b2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="ginv2b2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="ginv2b3.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -360,6 +354,7 @@
                 <div class="gallery-grid">
                     <div class="gallery-item" data-img="ginv2b1.jpg"><img src="ginv2b1.jpg"><div class="gallery-placeholder">ginv2b1.jpg</div></div>
                     <div class="gallery-item" data-img="ginv2b2.jpg"><img src="ginv2b2.jpg"><div class="gallery-placeholder">ginv2b2.jpg</div></div>
+                    <div class="gallery-item" data-img="ginv2b3.jpg"><img src="ginv2b3.jpg"><div class="gallery-placeholder">ginv2b3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -470,7 +465,7 @@
         if (copyBox) copyBox.style.display = "block";
     }
 
-    // SỰ KIỆN NÚT CHẠY TOOL
+    // COPY TOOL
     document.querySelectorAll(".copy-tool").forEach(btn => {
         btn.onclick = async () => {
             const tool = btn.dataset.tool;
@@ -479,7 +474,10 @@
                 return openUnlockModal(tool);
             }
             
-            btn.disabled = true; btn.innerHTML = "⏳ Đang khởi chạy...";
+            const originalText = btn.innerHTML;
+            btn.disabled = true; 
+            btn.innerHTML = "⏳ Đang copy...";
+            
             try {
                 const res = await fetch(`/api/tool/${tool}/run`, { 
                     method: "POST", 
@@ -488,20 +486,19 @@
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 
-                const script = document.createElement("script");
-                script.textContent = data.code;
-                document.body.appendChild(script);
-                script.remove(); 
-
-                showToast(`Tool ${tool.toUpperCase()} đã chạy thành công!`, "success");
+                await navigator.clipboard.writeText(data.code);
+                showToast(`Đã copy toàn bộ tool ${tool.toUpperCase()}!`, "success");
+                
             } catch (err) { 
                 showToast("Lỗi: " + err.message, "error"); 
                 if (err.message.includes("hết hạn") || err.message.includes("Chưa mở")) {
                     memoryUnlockToken = null; 
                     openUnlockModal(tool);
                 }
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = originalText;
             }
-            finally { btn.disabled = false; btn.innerHTML = `🚀 Chạy Tool Ngay`; }
         };
     });
 
@@ -520,7 +517,7 @@
         try {
             const res = await fetch("/api/license/buy", {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone, password, plan: "premium" }) // SỬA LỖI TẠI ĐÂY
+                body: JSON.stringify({ phone, password, plan: "premium" })
             });
             const data = await res.json();
             if (!data.success) throw new Error(data.message);

@@ -129,7 +129,7 @@
 </head>
 <body>
 
-<!-- BẢO VỆ CHỐNG DEVTOOLS (CHỈ CHẶN PHÍM, KHÔNG TỰ OUT) -->
+<!-- CHỈ CHẶN PHÍM F12, KHÔNG TỰ OUT -->
 <script>
     document.addEventListener("keydown", function(e) {
         const key = e.key.toUpperCase();
@@ -197,8 +197,8 @@
                         <button class="btn-unlock-big" id="unlockBtn-cms" onclick="openUnlockModal('cms')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-cms">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-cms">
-                            <p>✓ Đã mở khóa! Bấm để chạy trực tiếp:</p>
-                            <button class="btn-success copy-tool" data-tool="cms">🚀 Chạy Tool Ngay</button>
+                            <p>✓ Đã mở khóa! Bấm để copy:</p>
+                            <button class="btn-success copy-tool" data-tool="cms">📋 Copy toàn bộ tool CMS</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -220,9 +220,14 @@
                         <img class="step-thumb" src="cmsb1.jpg" data-lightbox alt="Bước 1">
                     </div>
                     <div class="step-card">
-                        <div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div>
-                        <p>Bấm nút 🚀 Chạy Tool Ngay (Tool sẽ tự chạy không cần F12).</p>
+                        <div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div>
+                        <p>Nhấn 📋 Copy toàn bộ tool CMS.</p>
                         <img class="step-thumb" src="cmsb2.jpg" data-lightbox alt="Bước 2">
+                    </div>
+                    <div class="step-card">
+                        <div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div>
+                        <p>Mở CMS, nhấn F12 → Console → Dán → Enter.</p>
+                        <img class="step-thumb" src="cmsb3.jpg" data-lightbox alt="Bước 3">
                     </div>
                 </div>
             </div>
@@ -233,6 +238,7 @@
                 <div class="gallery-grid">
                     <div class="gallery-item" data-img="cmsb1.jpg"><img src="cmsb1.jpg"><div class="gallery-placeholder">🖼️ cmsb1.jpg</div></div>
                     <div class="gallery-item" data-img="cmsb2.jpg"><img src="cmsb2.jpg"><div class="gallery-placeholder">🖼️ cmsb2.jpg</div></div>
+                    <div class="gallery-item" data-img="cmsb3.jpg"><img src="cmsb3.jpg"><div class="gallery-placeholder">🖼️ cmsb3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -270,7 +276,8 @@
                         <button class="btn-unlock-big" id="unlockBtn-pan" onclick="openUnlockModal('pan')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-pan">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-pan">
-                            <button class="btn-success copy-tool" data-tool="pan">🚀 Chạy Tool Ngay</button>
+                            <p>✓ Đã mở khóa! Bấm để copy:</p>
+                            <button class="btn-success copy-tool" data-tool="pan">📋 Copy toàn bộ tool PAN</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -287,7 +294,8 @@
             <div class="section-body">
                 <div class="steps-list">
                     <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="panb1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="panb2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="panb2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="panb3.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -297,6 +305,7 @@
                 <div class="gallery-grid">
                     <div class="gallery-item" data-img="panb1.jpg"><img src="panb1.jpg"><div class="gallery-placeholder">panb1.jpg</div></div>
                     <div class="gallery-item" data-img="panb2.jpg"><img src="panb2.jpg"><div class="gallery-placeholder">panb2.jpg</div></div>
+                    <div class="gallery-item" data-img="panb3.jpg"><img src="panb3.jpg"><div class="gallery-placeholder">panb3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -338,7 +347,8 @@
                         <button class="btn-unlock-big" id="unlockBtn-gin" onclick="openUnlockModal('gin')">🔓 Nhập mã mở khóa</button>
                         <div class="unlock-status locked" id="unlockStatus-gin">🔒 Tool chưa được mở khóa</div>
                         <div class="copy-tool-box" id="copyBox-gin">
-                            <button class="btn-success copy-tool" data-tool="gin">🚀 Chạy Tool Ngay</button>
+                            <p>✓ Đã mở khóa! Bấm để copy:</p>
+                            <button class="btn-success copy-tool" data-tool="gin">📋 Copy toàn bộ tool GIN</button>
                         </div>
                         <div class="lookup-box">
                             <div style="font-size:11px; color:var(--text-mute); margin-bottom:8px; font-weight:600; text-align:left;">🔍 Tra cứu Mã Kích Hoạt:</div>
@@ -355,7 +365,9 @@
             <div class="section-body">
                 <div class="steps-list">
                     <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="ginb1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Chạy Tool</h3></div><img class="step-thumb" src="ginb2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="ginb2.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="ginb3.jpg" data-lightbox></div>
+                    <div class="step-card"><div class="step-header"><div class="step-num">4</div><h3>Chọn File Excel</h3></div><img class="step-thumb" src="ginb4.jpg" data-lightbox></div>
                 </div>
             </div>
         </div>
@@ -365,6 +377,8 @@
                 <div class="gallery-grid">
                     <div class="gallery-item" data-img="ginb1.jpg"><img src="ginb1.jpg"><div class="gallery-placeholder">ginb1.jpg</div></div>
                     <div class="gallery-item" data-img="ginb2.jpg"><img src="ginb2.jpg"><div class="gallery-placeholder">ginb2.jpg</div></div>
+                    <div class="gallery-item" data-img="ginb3.jpg"><img src="ginb3.jpg"><div class="gallery-placeholder">ginb3.jpg</div></div>
+                    <div class="gallery-item" data-img="ginb4.jpg"><img src="ginb4.jpg"><div class="gallery-placeholder">ginb4.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -475,7 +489,7 @@
         if (copyBox) copyBox.style.display = "block";
     }
 
-    // SỰ KIỆN NÚT CHẠY TOOL
+    // COPY TOOL
     document.querySelectorAll(".copy-tool").forEach(btn => {
         btn.onclick = async () => {
             const tool = btn.dataset.tool;
@@ -484,7 +498,10 @@
                 return openUnlockModal(tool);
             }
             
-            btn.disabled = true; btn.innerHTML = "⏳ Đang khởi chạy...";
+            const originalText = btn.innerHTML;
+            btn.disabled = true; 
+            btn.innerHTML = "⏳ Đang copy...";
+            
             try {
                 const res = await fetch(`/api/tool/${tool}/run`, { 
                     method: "POST", 
@@ -493,20 +510,19 @@
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 
-                const script = document.createElement("script");
-                script.textContent = data.code;
-                document.body.appendChild(script);
-                script.remove(); 
-
-                showToast(`Tool ${tool.toUpperCase()} đã chạy thành công!`, "success");
+                await navigator.clipboard.writeText(data.code);
+                showToast(`Đã copy toàn bộ tool ${tool.toUpperCase()}!`, "success");
+                
             } catch (err) { 
                 showToast("Lỗi: " + err.message, "error"); 
                 if (err.message.includes("hết hạn") || err.message.includes("Chưa mở")) {
                     memoryUnlockToken = null; 
                     openUnlockModal(tool);
                 }
+            } finally {
+                btn.disabled = false; 
+                btn.innerHTML = originalText;
             }
-            finally { btn.disabled = false; btn.innerHTML = `🚀 Chạy Tool Ngay`; }
         };
     });
 
