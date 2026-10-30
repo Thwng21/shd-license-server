@@ -58,7 +58,7 @@
         .pass-input { width: 100%; padding: 12px; background: #06080d; border: 1px solid var(--border-2); border-radius: 9px; color: var(--text); font-size: 14px; outline: none; margin-bottom: 10px; text-align: center; letter-spacing: 1px; transition: 0.2s; }
         .pass-input:focus { border-color: var(--primary); }
         
-        .btn-primary, .btn-success, .btn-secondary, .btn-unlock-big {
+        .btn-primary, .btn-success, .btn-secondary, .btn-unlock-big, .btn-bank {
             padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; border: none; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
         }
         .btn-primary { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
@@ -71,6 +71,10 @@
         .btn-unlock-big { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; margin-top: 4px; }
         .btn-unlock-big:hover { transform: translateY(-2px); }
         .btn-unlock-big.unlocked { background: linear-gradient(135deg, #10b981, #059669); }
+
+        /* Nút mở app ngân hàng */
+        .btn-bank { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; margin-top: 10px; display: none; text-decoration: none; }
+        .btn-bank:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4); }
 
         .unlock-status { margin-top: 12px; padding: 10px; border-radius: 9px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .unlock-status.locked { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; }
@@ -93,14 +97,35 @@
         .lookup-box { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border); }
         .lookup-input { width: 100%; padding: 10px; background: #06080d; border: 1px solid var(--border-2); border-radius: 8px; color: var(--text); font-size: 12px; outline: none; margin-bottom: 8px; }
 
+        /* CSS CHO PHẦN HƯỚNG DẪN CHUNG */
         .steps-list { display: flex; flex-direction: column; gap: 16px; }
         .step-card { background: var(--bg-card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
         .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         .step-num { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: #d97706; color: white; font-weight: 800; font-size: 13px; }
         .step-card h3 { font-size: 14px; color: #e2e8f0; font-weight: 700; }
         .step-card p { color: var(--text-dim); font-size: 13px; line-height: 1.6; margin-bottom: 10px; }
+        .step-card p b { color: #f8fafc; }
+        
         .step-thumb { display: block; width: 100%; max-width: 480px; border-radius: 9px; border: 1px solid var(--border-2); cursor: zoom-in; transition: 0.2s; }
         .step-thumb:hover { border-color: var(--primary); }
+
+        .image-row {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-top: 10px;
+        }
+        .image-row img {
+            height: 200px; /* Giới hạn chiều cao ảnh nhỏ */
+            width: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-2);
+            cursor: zoom-in;
+            transition: 0.2s;
+            object-fit: cover;
+        }
+        .image-row img:hover { border-color: var(--primary); transform: scale(1.02); }
 
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
         .gallery-item { position: relative; background: #06080d; border: 1px solid var(--border-2); border-radius: 11px; overflow: hidden; cursor: zoom-in; aspect-ratio: 4/3; transition: 0.2s; }
@@ -129,10 +154,24 @@
 </head>
 <body>
 
-<!-- BẢO VỆ CHỐNG DEVTOOLS (TỐI THƯỢNG) -->
+<!-- BẢO VỆ CHỐNG DEVTOOLS (ĐÃ SỬA LỖI TỰ ĐỘNG OUT KHI BẤM ALERT) -->
 <script>
     (function() {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
         let isTriggered = false;
+        let lastCheck = Date.now();
+        let isAlerting = false; // Cờ chặn đóng tab khi đang hiện alert
+
+        // Ghi đè hàm alert gốc để tạm dừng bộ đếm thời gian
+        const originalAlert = window.alert;
+        window.alert = function(msg) {
+            isAlerting = true;
+            originalAlert(msg);
+            isAlerting = false;
+            lastCheck = Date.now(); // Reset lại bộ đếm sau khi bấm OK
+        };
+
         function handleDevToolsDetected() {
             if (isTriggered) return;
             isTriggered = true;
@@ -160,18 +199,29 @@
         document.addEventListener("contextmenu", function(e) { e.preventDefault(); return false; });
 
         setInterval(function() {
-            if (isTriggered) return;
+            if (isTriggered || isAlerting) return; // Bỏ qua nếu đang hiện alert
             const startTime = performance.now();
             debugger; 
             const endTime = performance.now();
             if (endTime - startTime > 100) handleDevToolsDetected();
         }, 1000);
 
+        if (!isMobile) {
+            setInterval(function() {
+                if (isTriggered || isAlerting) return; // Bỏ qua nếu đang hiện alert
+                if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+                    handleDevToolsDetected();
+                }
+            }, 1000);
+        }
+
         setInterval(function() {
-            if (isTriggered) return;
-            if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
+            if (isTriggered || isAlerting) return; // Bỏ qua nếu đang hiện alert
+            const now = Date.now();
+            if (now - lastCheck > 5000) {
                 handleDevToolsDetected();
             }
+            lastCheck = now;
         }, 1000);
 
         try {
@@ -225,6 +275,7 @@
                             <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-cmsv2"></span></div>
                             <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-cmsv2"></span></div>
                             <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('cmsv2')">✅ Tôi Đã Chuyển Khoản</button>
+                            <a href="#" id="btnOpenBank-cmsv2" class="btn-bank" target="_blank">🏦 Mở App Ngân Hàng</a>
                         </div>
                         <div id="paymentStatusBox-cmsv2" class="payment-status-box"></div>
                     </div>
@@ -243,47 +294,6 @@
                             <button class="btn-secondary" style="width:100%; justify-content:center; padding:9px;" onclick="lookupByPhone()">Lấy Mã Code</button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- SECTION 2: HƯỚNG DẪN + ẢNH -->
-        <div class="section">
-                            <!-- ẢNH HƯỚNG DẪN CHI TIẾT (G4) -->
-                <div style="margin-top: 30px; border-top: 1px dashed var(--border); padding-top: 20px; text-align: center;">
-                    <h3 style="font-size: 15px; color: #fbbf24; margin-bottom: 15px;">Sơ đồ hướng dẫn chi tiết (Phiên bản G4)</h3>
-                    <img src="img/huongdan.png" alt="Hướng dẫn sử dụng chi tiết" data-lightbox style="width: 100%; max-width: 1000px; display: block; margin: 0 auto; cursor: zoom-in; border-radius: 9px; border: 1px solid var(--border-2);">
-                </div>
-            <div class="section-header"><div class="section-num">2</div><div><h2>Hướng dẫn sử dụng</h2><p>Chi tiết các bước cài đặt và sơ đồ tổng quát</p></div></div>
-            <div class="section-body">
-                <div class="steps-list">
-                    <div class="step-card">
-                        <div class="step-header"><div class="step-num">1</div><h3>Mở khóa tool</h3></div>
-                        <p>Nhấn 🔓 Nhập mã mở khóa và nhập mã Code Admin cấp.</p>
-                        <img class="step-thumb" src="cmsv2b1.jpg" data-lightbox>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div>
-                        <p>Nhấn 📋 Copy toàn bộ tool CMS V2.</p>
-                        <img class="step-thumb" src="cmsv2b2.jpg" data-lightbox>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div>
-                        <p>Mở CMS, nhấn F12 → Console → Dán → Enter.</p>
-                        <img class="step-thumb" src="cmsv2b3.jpg" data-lightbox>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
-            <div class="section-body">
-                <div class="gallery-grid">
-                    <div class="gallery-item" data-img="cmsv2b1.jpg"><img src="cmsv2b1.jpg"><div class="gallery-placeholder">cmsv2b1.jpg</div></div>
-                    <div class="gallery-item" data-img="cmsv2b2.jpg"><img src="cmsv2b2.jpg"><div class="gallery-placeholder">cmsv2b2.jpg</div></div>
-                    <div class="gallery-item" data-img="cmsv2b3.jpg"><img src="cmsv2b3.jpg"><div class="gallery-placeholder">cmsv2b3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -313,6 +323,7 @@
                             <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-panv2"></span></div>
                             <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-panv2"></span></div>
                             <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('panv2')">✅ Tôi Đã Chuyển Khoản</button>
+                            <a href="#" id="btnOpenBank-panv2" class="btn-bank" target="_blank">🏦 Mở App Ngân Hàng</a>
                         </div>
                         <div id="paymentStatusBox-panv2" class="payment-status-box"></div>
                     </div>
@@ -331,35 +342,6 @@
                             <button class="btn-secondary" style="width:100%; justify-content:center; padding:9px;" onclick="lookupByPhone()">Lấy Mã Code</button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 2: HƯỚNG DẪN + ẢNH -->
-        <div class="section">
-            <div class="section-header"><div class="section-num">2</div><div><h2>Hướng dẫn sử dụng</h2><p>Chi tiết các bước cài đặt và sơ đồ tổng quát</p></div></div>
-            <div class="section-body">
-                <div class="steps-list">
-                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="panv2b1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="panv2b2.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="panv2b3.jpg" data-lightbox></div>
-                </div>
-                
-                <!-- ẢNH HƯỚNG DẪN CHI TIẾT (G4) -->
-                <div style="margin-top: 30px; border-top: 1px dashed var(--border); padding-top: 20px; text-align: center;">
-                    <h3 style="font-size: 15px; color: #fbbf24; margin-bottom: 15px;">Sơ đồ hướng dẫn chi tiết (Phiên bản G4)</h3>
-                    <img src="img/huongdan.jpg" alt="Hướng dẫn sử dụng chi tiết" data-lightbox style="width: 100%; max-width: 1000px; display: block; margin: 0 auto; cursor: zoom-in; border-radius: 9px; border: 1px solid var(--border-2);">
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
-            <div class="section-body">
-                <div class="gallery-grid">
-                    <div class="gallery-item" data-img="panv2b1.jpg"><img src="panv2b1.jpg"><div class="gallery-placeholder">panv2b1.jpg</div></div>
-                    <div class="gallery-item" data-img="panv2b2.jpg"><img src="panv2b2.jpg"><div class="gallery-placeholder">panv2b2.jpg</div></div>
-                    <div class="gallery-item" data-img="panv2b3.jpg"><img src="panv2b3.jpg"><div class="gallery-placeholder">panv2b3.jpg</div></div>
                 </div>
             </div>
         </div>
@@ -393,6 +375,7 @@
                             <div class="order-info-row"><span class="label">Số tiền:</span> <span class="value green" id="orderAmountDisplay-ginv2"></span></div>
                             <div class="order-info-row"><span class="label">Nội dung CK:</span><br><span class="value yellow" id="orderMemoDisplay-ginv2"></span></div>
                             <button class="btn-success" style="margin-top:12px;" onclick="confirmPaidByTool('ginv2')">✅ Tôi Đã Chuyển Khoản</button>
+                            <a href="#" id="btnOpenBank-ginv2" class="btn-bank" target="_blank">🏦 Mở App Ngân Hàng</a>
                         </div>
                         <div id="paymentStatusBox-ginv2" class="payment-status-box"></div>
                     </div>
@@ -414,33 +397,71 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- SECTION 2: HƯỚNG DẪN + ẢNH -->
-        <div class="section">
-            <div class="section-header"><div class="section-num">2</div><div><h2>Hướng dẫn sử dụng</h2><p>Chi tiết các bước cài đặt và sơ đồ tổng quát</p></div></div>
-            <div class="section-body">
-                <div class="steps-list">
-                    <div class="step-card"><div class="step-header"><div class="step-num">1</div><h3>Mở khóa</h3></div><img class="step-thumb" src="ginv2b1.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">2</div><h3>Copy tool</h3></div><img class="step-thumb" src="ginv2b2.jpg" data-lightbox></div>
-                    <div class="step-card"><div class="step-header"><div class="step-num">3</div><h3>Dán vào Console</h3></div><img class="step-thumb" src="ginv2b3.jpg" data-lightbox></div>
+    <!-- KHU VỰC DÙNG CHUNG CHO CẢ 3 TAB (SECTION 2 & 3) -->
+    
+    <!-- SECTION 2: HƯỚNG DẪN + ẢNH -->
+    <div class="section">
+        <div class="section-header"><div class="section-num">2</div><div><h2>Hướng dẫn sử dụng</h2><p>Chi tiết các bước cài đặt và sơ đồ tổng quát</p></div></div>
+        <div class="section-body">
+            <div class="steps-list">
+                <!-- BƯỚC 1 -->
+                <div class="step-card">
+                    <div class="step-header"><div class="step-num">1</div><h3>Mở khóa tool</h3></div>
+                    <p><b>Bước 1:</b> Tạo đơn mua (nhập SĐT và tạo 1 mật khẩu > 4 ký tự để sau này sử dụng kiểm tra trạng thái và lấy code).</p>
+                    <p><b>Bước 2:</b> Sau khi tạo đơn, quét QR và thanh toán xong, bấm <b>"Tôi Đã Chuyển Khoản"</b>.</p>
+                    <p style="color: #ef4444; font-size: 12px; margin-bottom: 10px;">* Đơn mua sẽ được Admin duyệt trong vòng 24h.</p>
+                    <p><b>Bước 3:</b> Bạn có thể kiểm tra bằng cách nhập SĐT và Mật khẩu tra cứu vào ô tương ứng.</p>
+                    <p><b>Bước 4:</b> Nếu đơn hàng chưa được duyệt, bạn có thể liên hệ với Admin để được hỗ trợ.</p>
+                    <p><b>Bước 5:</b> Sau khi đơn hàng được duyệt, bạn sẽ nhận được mã code để mở khóa tool.</p>
+                    <p><b>Bước 6:</b> Để mở khóa tool, bạn cần nhập mã code vào ô <b>"Nhập mã mở khóa"</b>.</p>
+                    <div class="image-row">
+                        
+                        <img src="/user/img/b2.jpg" data-lightbox>
+                        <img src="/user/img/b3.jpg" data-lightbox>
+                        <img src="/user/img/b4.jpg" data-lightbox>
+                        <img src="/user/img/b5.jpg" data-lightbox>
+                        <img src="/user/img/b6.jpg" data-lightbox>
+                    </div>
                 </div>
                 
-                <!-- ẢNH HƯỚNG DẪN CHI TIẾT (G4) -->
-                <div style="margin-top: 30px; border-top: 1px dashed var(--border); padding-top: 20px; text-align: center;">
-                    <h3 style="font-size: 15px; color: #fbbf24; margin-bottom: 15px;">Sơ đồ hướng dẫn chi tiết (Phiên bản G4)</h3>
-                    <img src="img/huongdan.jpg" alt="Hướng dẫn sử dụng chi tiết" data-lightbox style="width: 100%; max-width: 1000px; display: block; margin: 0 auto; cursor: zoom-in; border-radius: 9px; border: 1px solid var(--border-2);">
+                <!-- BƯỚC 2 -->
+                <div class="step-card">
+                    <div class="step-header"><div class="step-num">2</div><h3>Copy tool & Mở Console</h3></div>
+                    <p><b>Bước 1:</b> Sau khi mở khóa thành công, bấm nút <b>"📋 Copy toàn bộ tool"</b>.</p>
+                    <p><b>Bước 2:</b> Mở trang web đích (CMS, PAN hoặc GIN) và đăng nhập vào tài khoản của bạn.</p>
+                    <p><b>Bước 3:</b> Tìm ô tìm kiếm SHD trên trang web (hoặc bất kỳ đâu trên trang).</p>
+                    <p><b>Bước 4:</b> Nhấn <code>F12</code> hoặc Chuột phải chọn <b>Inspect</b> (Kiểm tra) để mở DevTools.<p style="color: #ef4444; font-size: 12px; margin-bottom: 10px;">Lưu ý: Phải đăng nhập và vào khung tìm kiếm của trang CMS, PAN, GIN rồi mới dán tool vào Console</p></p>
+                    <p><b>Bước 5:</b> Chuyển sang tab <b>Console</b>.</p>
+                    <p><b>Bước 6:</b> Click chuột vào ô nhập lệnh phía dưới cùng, nhấn <code>Ctrl + V</code> để dán.</p>
+                    <p style="color: #ef4444; font-size: 12px; margin-bottom: 10px;">* Nếu trình duyệt báo lỗi không cho dán (cảnh báo bảo mật), bạn hãy gõ <code style="background:#000; padding:2px 5px; border-radius:4px;">allow pasting</code> rồi nhấn Enter, sau đó dán lại.</p>
+                    <p><b>Bước 7:</b> Nhấn <code>Enter</code> để chạy tool.</p>
+                    <div class="image-row">
+                        <img src="/user/img/gin1.png" data-lightbox>
+                        <img src="/user/img/gin2.png" data-lightbox>
+                        <img src="/user/img/gin3.png" data-lightbox>
+                        <img src="/user/img/gin4.png" data-lightbox>
+                    </div>
                 </div>
             </div>
+            <!-- ẢNH HƯỚNG DẪN CHI TIẾT (G4) -->
+            <div style="margin-top: 30px; border-top: 1px dashed var(--border); padding-top: 20px; text-align: center;">
+                <h3 style="font-size: 15px; color: #fbbf24; margin-bottom: 15px;">Sơ đồ hướng dẫn chi tiết (Phiên bản G4)</h3>
+                <img src="img/huongdan.png" alt="Hướng dẫn sử dụng chi tiết" data-lightbox style="width: 100%; max-width: 1000px; display: block; margin: 0 auto; cursor: zoom-in; border-radius: 9px; border: 1px solid var(--border-2);">
+            </div>
         </div>
+    </div>
 
-        <div class="section">
-            <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
-            <div class="section-body">
-                <div class="gallery-grid">
-                    <div class="gallery-item" data-img="ginv2b1.jpg"><img src="ginv2b1.jpg"><div class="gallery-placeholder">ginv2b1.jpg</div></div>
-                    <div class="gallery-item" data-img="ginv2b2.jpg"><img src="ginv2b2.jpg"><div class="gallery-placeholder">ginv2b2.jpg</div></div>
-                    <div class="gallery-item" data-img="ginv2b3.jpg"><img src="ginv2b3.jpg"><div class="gallery-placeholder">ginv2b3.jpg</div></div>
-                </div>
+    <!-- SECTION 3: THƯ VIỆN ẢNH -->
+    <div class="section">
+        <div class="section-header"><div class="section-num">3</div><div><h2>Thư viện ảnh</h2></div></div>
+        <div class="section-body">
+            <div class="gallery-grid">
+                <div class="gallery-item" data-img="img1"><img src="/user/img/gin1.png"><div class="gallery-placeholder">Ảnh 1</div></div>
+                <div class="gallery-item" data-img="img2"><img src="/user/img/gin2.png"><div class="gallery-placeholder">Ảnh 2</div></div>
+                <div class="gallery-item" data-img="img3"><img src="/user/img/gin3.png"><div class="gallery-placeholder">Ảnh 3</div></div>
+                <div class="gallery-item" data-img="img4"><img src="/user/img/gin4.png"><div class="gallery-placeholder">Ảnh 4</div></div>
             </div>
         </div>
     </div>
@@ -612,6 +633,13 @@
             document.getElementById("orderAmountDisplay-" + tool).textContent = Number(data.order.amount).toLocaleString("vi-VN") + "đ";
             document.getElementById("orderMemoDisplay-" + tool).textContent = data.order.bankInfo.transferContent;
             document.getElementById("orderInfoBox-" + tool).classList.add("show");
+            
+            // CẬP NHẬT LINK MỞ APP NGÂN HÀNG
+            const bankUrl = `vietqr://pay?bank=${data.order.bankInfo.bankId}&account=${data.order.bankInfo.accountNumber}&amount=${data.order.amount}&memo=${encodeURIComponent(data.order.bankInfo.transferContent)}`;
+            const btnBank = document.getElementById("btnOpenBank-" + tool);
+            btnBank.href = bankUrl;
+            btnBank.style.display = "flex";
+
             showToast(`Đã tạo mã QR ${Number(data.order.amount).toLocaleString("vi-VN")}đ!`, "success");
         } catch (err) { showToast("Lỗi: " + err.message, "error"); }
         finally { btn.disabled = false; btn.innerHTML = "⚡ Tạo Mã QR Thanh Toán"; }
