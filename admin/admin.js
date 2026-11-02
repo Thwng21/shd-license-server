@@ -79,7 +79,7 @@ function renderLicenses(licenses) {
     table.innerHTML = "";
 
     if (licenses.length === 0) {
-        table.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">Không có đơn hàng.</td></tr>`;
+        table.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Không có đơn hàng.</td></tr>`;
         return;
     }
 
@@ -92,9 +92,14 @@ function renderLicenses(licenses) {
             actionHtml = `<button class="success" onclick="approveOrder('${l.license_key}')">✓ Duyệt</button>
                           <button class="danger" onclick="rejectOrder('${l.license_key}')">✕ Từ chối</button>`;
         } else if (l.status === "ACTIVE") {
+            const specialActionHtml = l.special_code
+                ? `<button class="warning" onclick="editSpecialCode('${l.license_key}', '${l.special_code}')">Sửa mã ĐB</button>
+                   <button class="danger" onclick="deleteSpecialCode('${l.license_key}')">Xóa mã ĐB</button>`
+                : `<button class="secondary" onclick="createSpecialCode('${l.license_key}')">Tạo mã ĐB</button>`;
             actionHtml = `
                 <span style="color:green;font-weight:bold;margin-right:10px">✓ Đã duyệt</span>
                 <button class="warning" onclick="editCode('${l.license_key}', '${l.unlock_code}')">Sửa Code</button>
+                ${specialActionHtml}
             `;
         }
 
@@ -103,6 +108,7 @@ function renderLicenses(licenses) {
             <td style="font-weight:bold; font-size:14px">${l.phone || "-"}</td>
             <td style="font-weight:bold; color:${isPending ? 'red' : 'green'}">${Number(l.amount).toLocaleString('vi-VN')}đ</td>
             <td>${l.status === "ACTIVE" ? `<code style="background:#e0f2fe; padding:4px; border-radius:4px; font-size:13px; font-weight:bold; color:blue">${l.unlock_code || "Chưa có"}</code>` : "-"}</td>
+            <td>${l.special_code ? `<code style="background:#fef3c7; padding:4px; border-radius:4px; font-size:13px; font-weight:bold; color:#92400e">${l.special_code}</code>` : "-"}</td>
             <td><span class="badge ${l.status.toLowerCase()}">${l.status}</span></td>
             <td>${actionHtml}</td>
         `;
@@ -115,7 +121,7 @@ async function approveOrder(license) {
     try {
         const data = await apiRequest(`${API}/approve`, { method: "POST", body: JSON.stringify({ license }) });
         if (data.success) {
-            alert(`Đã duyệt! Mã Code cấp cho khách là:\n\n${data.license.unlock_code}`);
+            alert(`Đã duyệt! Mã Code cấp cho khách là:\n\n${data.license.unlock_code}\n\nHãy tạo mã đặc biệt nếu cần.`);
             loadLicenses();
         } else alert(data.message);
     } catch (err) { alert("Lỗi server"); }
@@ -132,6 +138,39 @@ async function editCode(license, oldCode) {
         if (data.success) { alert("Đã cập nhật mã!"); loadLicenses(); }
         else alert(data.message);
     } catch (err) { alert("Lỗi server"); }
+}
+
+async function createSpecialCode(license) {
+    const specialCode = prompt(`Nhập mã đặc biệt cho đơn ${license}:`, "");
+    if (specialCode === null) return;
+    await saveSpecialCode(license, specialCode, "create-special-code");
+}
+
+async function editSpecialCode(license, oldCode) {
+    const specialCode = prompt(`Nhập mã đặc biệt mới cho đơn ${license}:`, oldCode);
+    if (!specialCode || specialCode.trim().toUpperCase() === oldCode) return;
+    await saveSpecialCode(license, specialCode, "update-special-code");
+}
+
+async function saveSpecialCode(license, specialCode, endpoint) {
+    try {
+        const data = await apiRequest(`${API}/${endpoint}`, {
+            method: "POST", body: JSON.stringify({ license, specialCode })
+        });
+        if (data.success) { alert(`Mã đặc biệt: ${data.specialCode}`); loadLicenses(); }
+        else alert(data.message);
+    } catch (err) { alert("Lỗi server khi lưu mã đặc biệt."); }
+}
+
+async function deleteSpecialCode(license) {
+    if (!confirm(`Xóa mã đặc biệt của đơn ${license}?`)) return;
+    try {
+        const data = await apiRequest(`${API}/delete-special-code`, {
+            method: "POST", body: JSON.stringify({ license })
+        });
+        if (data.success) loadLicenses();
+        else alert(data.message);
+    } catch (err) { alert("Lỗi server khi xóa mã đặc biệt."); }
 }
 
 async function rejectOrder(license) {

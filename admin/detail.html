@@ -56,6 +56,53 @@
             .search-box { flex-direction: column; }
             .search-input { max-width: none; }
         }
+
+        :root { --ink: #172033; --muted: #64748b; --line: #e6eaf0; --soft: #f8fafc; --blue: #2563eb; }
+        body { background: #f1f5f9; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        .container { max-width: 1440px; padding: 32px 36px 56px; }
+        .header { align-items: center; padding: 4px 0 24px; margin-bottom: 22px; border-bottom: 1px solid var(--line); }
+        h1 { font-size: 26px; letter-spacing: -0.5px; }
+        .subtitle { color: var(--muted); font-size: 13px; }
+        .logout { background: white; border: 1px solid var(--line); color: #475569; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }
+        .logout:hover { background: #fff1f2; border-color: #fecdd3; color: #be123c; }
+        .stats { gap: 14px; margin: 0 0 24px; }
+        .card { position: relative; min-height: 92px; padding: 17px 18px; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 3px 12px rgba(15, 23, 42, .04); color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+        .card::after { content: ""; position: absolute; left: 18px; bottom: 0; width: 34px; height: 3px; border-radius: 3px 3px 0 0; background: var(--blue); }
+        .card:nth-child(2)::after { background: #f97316; }
+        .card:nth-child(3)::after { background: #16a34a; }
+        .card:nth-child(4)::after { background: #94a3b8; }
+        .number { color: var(--ink); font-size: 30px; line-height: 1; margin-top: 13px; letter-spacing: 0; }
+        .toolbar { padding: 13px; margin-bottom: 14px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, .03); }
+        .search-box { gap: 8px; }
+        .search-input, .status-filter { border-color: #dbe2ea; background: var(--soft); color: var(--ink); }
+        .search-input:focus, .status-filter:focus { border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(37, 99, 235, .10); }
+        .toolbar-actions button { background: var(--ink); color: white; }
+        .table-box { border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(15, 23, 42, .05); }
+        table { min-width: 1080px; }
+        th, td { padding: 13px 15px; border-color: var(--line); vertical-align: middle; }
+        th { position: sticky; top: 0; z-index: 1; background: #f8fafc; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+        tbody tr { transition: background .15s ease; }
+        tbody tr:hover { background: #f8fbff; }
+        .order-cell strong { display: block; color: #1e3a8a; font-size: 12px; }
+        .order-cell small { display: block; margin-top: 5px; color: #94a3b8; }
+        .code-cell { display: inline-flex; align-items: center; gap: 6px; min-width: 132px; padding: 6px 8px; border-radius: 6px; font-size: 12px; }
+        .code-cell.unlock { background: #eff6ff; color: #1d4ed8; }
+        .code-cell.special { background: #fffbeb; color: #92400e; }
+        .code-empty { color: #94a3b8; font-size: 12px; }
+        .action-cell { min-width: 260px; white-space: normal; }
+        .action-cell .btn { margin: 2px 3px 2px 0; font-size: 11px; padding: 7px 9px; }
+        .status-cell { min-width: 112px; }
+        .badge { display: inline-flex; align-items: center; gap: 5px; }
+        .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        @media (max-width: 800px) {
+            .container { padding: 22px 14px 40px; }
+            .header { align-items: flex-start; }
+            h1 { font-size: 22px; }
+            .stats { gap: 10px; }
+            .card { min-height: 82px; padding: 14px; }
+            .number { font-size: 25px; }
+            .toolbar { padding: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -153,7 +200,9 @@
                         <th>Mã Đơn / Ngày Tạo</th>
                         <th>Số Điện Thoại</th>
                         <th>Số Tiền</th>
+                        <th>Lượt Copy</th>
                         <th>Mã Code Cấp Khách</th>
+                        <th>Mã Đặc Biệt</th>
                         <th>Trạng Thái</th>
                         <th>Hành Động</th>
                     </tr>
@@ -212,8 +261,9 @@
             const status = document.getElementById("statusFilter").value;
 
             const filtered = allData.filter(l => {
-                const matchKeyword = l.license_key.toLowerCase().includes(keyword) || 
-                                     (l.phone && String(l.phone).includes(keyword));
+                const matchKeyword = [l.license_key, l.phone, l.unlock_code, l.special_code]
+                    .filter(Boolean)
+                    .some(value => String(value).toLowerCase().includes(keyword));
                 
                 if (status === "ALL") return matchKeyword;
                 if (status === "PENDING") return matchKeyword && l.status === "PENDING";
@@ -229,7 +279,7 @@
             tbody.innerHTML = "";
 
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#777;">Không tìm thấy đơn hàng nào.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#777;">Không tìm thấy đơn hàng nào.</td></tr>`;
                 return;
             }
 
@@ -244,16 +294,21 @@
                         <button class="btn btn-danger" onclick="rejectOrder('${l.license_key}')">✕ Từ chối</button>
                     `;
                 } else if (l.status === "ACTIVE") {
+                    const specialActionHtml = l.special_code
+                        ? `<button class="btn btn-warning" onclick="editSpecialCode('${l.license_key}', '${l.special_code}')">Sửa mã ĐB</button>
+                           <button class="btn btn-danger" onclick="deleteSpecialCode('${l.license_key}')">Xóa mã ĐB</button>`
+                        : `<button class="btn btn-secondary" onclick="createSpecialCode('${l.license_key}')">Tạo mã ĐB</button>`;
                     actionHtml = `
                         <span style="color:#16a34a; font-weight:bold; margin-right:10px; font-size:13px;">✓ Đã duyệt</span>
                         <button class="btn btn-warning" onclick="editCode('${l.license_key}', '${l.unlock_code || ''}')">Sửa Code</button>
+                        ${specialActionHtml}
                     `;
                 }
 
                 row.innerHTML = `
-                    <td>
-                        <strong>${l.license_key}</strong><br>
-                        <small style="color:#777">${new Date(l.created_at).toLocaleString('vi-VN')}</small>
+                    <td class="order-cell">
+                        <strong>${l.license_key}</strong>
+                        <small>${new Date(l.created_at).toLocaleString('vi-VN')}</small>
                     </td>
                     <td style="font-weight:bold; font-size:14px; color:${l.phone ? '#111827' : '#dc2626'}">
                         ${l.phone || "Không có SĐT"}
@@ -261,13 +316,17 @@
                     <td style="font-weight:bold; color:${isPending ? '#dc2626' : '#16a34a'}">
                         ${Number(l.amount).toLocaleString('vi-VN')}đ
                     </td>
+                    <td><strong style="font-size:14px;">${Math.max(3 - (Number(l.copy_count) || 0), 0)}</strong><span style="color:#94a3b8;"> / 3 còn lại</span></td>
                     <td>
-                        ${l.unlock_code ? `<code style="background:#e0f2fe; padding:4px 8px; border-radius:4px; font-size:13px; font-weight:bold; color:#1d4ed8;">${l.unlock_code}</code>` : "-"}
+                        ${l.unlock_code ? `<code class="code-cell unlock">${l.unlock_code}</code>` : `<span class="code-empty">Chưa có</span>`}
                     </td>
                     <td>
+                        ${l.special_code ? `<code class="code-cell special">${l.special_code}</code><br><small style="color:${l.special_code_used ? '#16a34a' : '#94a3b8'}">${l.special_code_used ? 'Đã dùng' : 'Chưa dùng'}</small>` : `<span class="code-empty">Chưa tạo</span>`}
+                    </td>
+                    <td class="status-cell">
                         <span class="badge ${l.status.toLowerCase()}">${l.status}</span>
                     </td>
-                    <td>${actionHtml}</td>
+                    <td class="action-cell">${actionHtml}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -278,7 +337,7 @@
             try {
                 const data = await apiRequest(`${API}/approve`, { method: "POST", body: JSON.stringify({ license: licenseKey }) });
                 if (data.success) {
-                    alert(`Đã duyệt thành công!\n\nMã Code cấp cho khách là:\n👉 ${data.license.unlock_code}`);
+                    alert(`Đã duyệt thành công!\n\nMã Code cấp cho khách là:\n👉 ${data.license.unlock_code}\n\nHãy tạo mã đặc biệt bằng nút "Tạo mã ĐB" nếu cần.`);
                     loadData();
                 } else alert(data.message);
             } catch (err) { alert("Lỗi server khi duyệt."); }
@@ -294,6 +353,40 @@
                 if (data.success) { alert("Đã cập nhật mã Code!"); loadData(); }
                 else alert(data.message);
             } catch (err) { alert("Lỗi server khi sửa mã."); }
+        }
+
+        async function createSpecialCode(licenseKey) {
+            const specialCode = prompt(`Nhập mã đặc biệt cho đơn:\n${licenseKey}`);
+            if (specialCode === null) return;
+            await saveSpecialCode(licenseKey, specialCode, "create-special-code");
+        }
+
+        async function editSpecialCode(licenseKey, oldCode) {
+            const specialCode = prompt(`Nhập mã đặc biệt mới cho đơn:\n${licenseKey}`, oldCode);
+            if (!specialCode || specialCode.trim().toUpperCase() === oldCode) return;
+            await saveSpecialCode(licenseKey, specialCode, "update-special-code");
+        }
+
+        async function saveSpecialCode(licenseKey, specialCode, endpoint) {
+            try {
+                const data = await apiRequest(`${API}/${endpoint}`, {
+                    method: "POST",
+                    body: JSON.stringify({ license: licenseKey, specialCode })
+                });
+                if (data.success) { alert(`Mã đặc biệt: ${data.specialCode}`); loadData(); }
+                else alert(data.message);
+            } catch (err) { alert("Lỗi server khi lưu mã đặc biệt."); }
+        }
+
+        async function deleteSpecialCode(licenseKey) {
+            if (!confirm(`Xóa mã đặc biệt của đơn:\n${licenseKey}?`)) return;
+            try {
+                const data = await apiRequest(`${API}/delete-special-code`, {
+                    method: "POST", body: JSON.stringify({ license: licenseKey })
+                });
+                if (data.success) loadData();
+                else alert(data.message);
+            } catch (err) { alert("Lỗi server khi xóa mã đặc biệt."); }
         }
 
         async function rejectOrder(licenseKey) {

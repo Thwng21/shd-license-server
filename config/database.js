@@ -36,7 +36,16 @@ async function testDatabase() {
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS phone VARCHAR(20);
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS unlock_code VARCHAR(100);
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS password VARCHAR(100);
+            ALTER TABLE licenses ADD COLUMN IF NOT EXISTS copy_count INTEGER NOT NULL DEFAULT 0;
+            ALTER TABLE licenses ADD COLUMN IF NOT EXISTS special_code VARCHAR(100);
+            ALTER TABLE licenses ADD COLUMN IF NOT EXISTS special_code_used BOOLEAN NOT NULL DEFAULT FALSE;
         `);
+        await pool.query(`
+            CREATE UNIQUE INDEX IF NOT EXISTS licenses_special_code_unique
+            ON licenses (special_code)
+            WHERE special_code IS NOT NULL;
+        `);
+
     } catch (err) {
         console.warn("Notice during table migration:", err.message);
     }

@@ -7,6 +7,9 @@ const {
     getLicenses, 
     approve, 
     updateUnlockCode, 
+    createSpecialCode,
+    updateSpecialCode,
+    deleteSpecialCode,
     reject 
 } = require("../controllers/adminController");
 
@@ -15,6 +18,9 @@ router.post("/login", login);
 router.get("/licenses", verifyToken, getLicenses);
 router.post("/approve", verifyToken, approve);
 router.post("/update-unlock-code", verifyToken, updateUnlockCode);
+router.post("/create-special-code", verifyToken, createSpecialCode);
+router.post("/update-special-code", verifyToken, updateSpecialCode);
+router.post("/delete-special-code", verifyToken, deleteSpecialCode);
 router.post("/reject", verifyToken, reject);
 
 module.exports = router;

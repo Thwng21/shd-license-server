@@ -143,6 +143,7 @@
         .modal-input { width: 100%; padding: 14px; background: #06080d; border: 1px solid var(--border-2); border-radius: 10px; color: var(--text); font-size: 15px; outline: none; margin-bottom: 12px; text-align: center; letter-spacing: 2px; }
         .modal-error { color: var(--danger); font-size: 12px; margin-bottom: 12px; min-height: 18px; }
         .modal-actions { display: flex; gap: 10px; }
+        .limit-modal-actions { display: flex; gap: 10px; margin-top: 20px; }
         .lightbox img { max-width: 95vw; max-height: 92vh; border-radius: 12px; }
         
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
@@ -487,6 +488,20 @@
     </div>
 </div>
 
+<div class="modal" id="copyLimitModal">
+    <div class="modal-box">
+        <h2>⚠️ Đã hết lượt copy</h2>
+        <p style="font-size:13px; color:var(--text-dim); margin-top:12px;">Bạn đã hết lượt copy code. Vui lòng mua thêm gói hoặc liên hệ Admin.</p>
+        <input type="text" id="specialCodeInput" class="modal-input" placeholder="Nhập mã đặc biệt" autocomplete="off">
+        <div class="modal-error" id="specialCodeError"></div>
+        <div class="limit-modal-actions">
+            <button class="btn-primary" onclick="window.location.href='/user/premium.html'">Nâng cấp</button>
+            <button class="btn-secondary" onclick="window.location.href='/admin'">Liên hệ Admin</button>
+        </div>
+        <button class="btn-success" style="margin-top:10px;" onclick="redeemSpecialCode()">Mở lại lượt copy</button>
+    </div>
+</div>
+
 <div class="lightbox" id="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src=""></div>
 <div class="toast-container" id="toastContainer"></div>
 
@@ -537,6 +552,31 @@
         setTimeout(() => document.getElementById("unlockCodeInput").focus(), 100);
     }
     function closeUnlockModal() { document.getElementById("unlockModal").classList.remove("open"); }
+    function openCopyLimitModal() {
+        document.getElementById("specialCodeInput").value = "";
+        document.getElementById("specialCodeError").textContent = "";
+        document.getElementById("copyLimitModal").classList.add("open");
+        setTimeout(() => document.getElementById("specialCodeInput").focus(), 100);
+    }
+
+    async function redeemSpecialCode() {
+        const input = document.getElementById("specialCodeInput");
+        const error = document.getElementById("specialCodeError");
+        const specialCode = input.value.trim();
+        if (!specialCode) { error.textContent = "Vui lòng nhập mã đặc biệt."; return; }
+
+        try {
+            const res = await fetch("/api/tool/redeem-special", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + memoryUnlockToken },
+                body: JSON.stringify({ specialCode })
+            });
+            const data = await res.json();
+            if (!data.success) { error.textContent = data.message || "Mã đặc biệt không hợp lệ."; return; }
+            document.getElementById("copyLimitModal").classList.remove("open");
+            showToast("Đã mở lại 3 lượt copy!", "success");
+        } catch (err) { error.textContent = "Lỗi kết nối server."; }
+    }
 
     async function confirmUnlock() {
         const code = document.getElementById("unlockCodeInput").value.trim();
@@ -595,6 +635,10 @@
                     headers: { "Authorization": "Bearer " + memoryUnlockToken } 
                 });
                 const data = await res.json();
+                if (data.code === "COPY_LIMIT_REACHED") {
+                    openCopyLimitModal();
+                    return;
+                }
                 if (!data.success) throw new Error(data.message);
                 
                 await navigator.clipboard.writeText(data.code);

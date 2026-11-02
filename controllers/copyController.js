@@ -45,7 +45,12 @@ async function unlock(req, res) {
         }
         
         const token = generateToken();
-        unlockTokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS });
+        unlockTokens.set(token, {
+            expiresAt: Date.now() + TOKEN_TTL_MS,
+            isPremium: isPremiumLicense,
+            licenseId: licenseData.id,
+            copyCount: Number(licenseData.copy_count) || 0
+        });
         return res.json({ success: true, token });
     } catch (err) {
         return res.status(500).json({ success: false, message: "Lỗi server." });
@@ -53,7 +58,7 @@ async function unlock(req, res) {
 }
 
 // TRẢ VỀ CODE THÔ (ĐỂ FRONTEND TỰ CHẠY)
-function getToolCode(req, res) {
+async function getToolCode(req, res) {
     try {
         const auth = req.headers.authorization || "";
         if (!auth.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Chưa mở khóa." });
@@ -65,6 +70,23 @@ function getToolCode(req, res) {
             return res.status(401).json({ success: false, message: "Phiên mở khóa hết hạn." });
         }
 
+        const licenseResult = await pool.query(
+            "SELECT copy_count FROM licenses WHERE id = $1 AND status = 'ACTIVE'",
+            [session.licenseId]
+        );
+        if (licenseResult.rowCount === 0) {
+            return res.status(401).json({ success: false, message: "License không còn hoạt động." });
+        }
+
+        session.copyCount = Number(licenseResult.rows[0].copy_count) || 0;
+        if (session.copyCount >= 3) {
+            return res.status(429).json({
+                success: false,
+                code: "COPY_LIMIT_REACHED",
+                message: "Mã của bạn đã giới hạn. Vui lòng nâng cấp gói hoặc liên hệ Admin."
+            });
+        }
+
         const toolId = String(req.params.toolId || "").toLowerCase().trim();
         const fileName = TOOL_FILE_MAP[toolId];
         if (!fileName) return res.status(404).json({ success: false, message: "Tool không tồn tại." });
@@ -72,6 +94,24 @@ function getToolCode(req, res) {
         const filePath = path.join(PROTECTED_DIR, fileName);
         if (!fs.existsSync(filePath)) return res.status(404).json({ success: false, message: `File ${fileName} chưa có.` });
 
+        const copyResult = await pool.query(
+            `UPDATE licenses
+             SET copy_count = copy_count + 1
+             WHERE id = $1 AND copy_count < 3
+             RETURNING copy_count`,
+            [session.licenseId]
+        );
+
+        if (copyResult.rowCount === 0) {
+            session.copyCount = 3;
+            return res.status(429).json({
+                success: false,
+                code: "COPY_LIMIT_REACHED",
+                message: "Mã của bạn đã giới hạn. Vui lòng nâng cấp gói hoặc liên hệ Admin."
+            });
+        }
+
+        session.copyCount = copyResult.rows[0].copy_count;
         const code = fs.readFileSync(filePath, "utf8");
 
         // Trả về code trực tiếp, không mã hóa
@@ -81,4 +121,59 @@ function getToolCode(req, res) {
     }
 }
 
-module.exports = { unlock, getToolCode };
+async function redeemSpecialCode(req, res) {
+    try {
+        const auth = req.headers.authorization || "";
+        if (!auth.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Chưa mở khóa." });
+
+        const token = auth.substring(7);
+        const session = unlockTokens.get(token);
+        if (!session || Date.now() > session.expiresAt) {
+            unlockTokens.delete(token);
+            return res.status(401).json({ success: false, message: "Phiên mở khóa hết hạn." });
+        }
+
+        const specialCode = String(req.body?.specialCode || "").trim().toUpperCase();
+        if (!specialCode) return res.status(400).json({ success: false, message: "Vui lòng nhập mã đặc biệt." });
+
+        const licenseResult = await pool.query(
+            `SELECT special_code, special_code_used, copy_count
+             FROM licenses
+             WHERE id = $1 AND status = 'ACTIVE'`,
+            [session.licenseId]
+        );
+        if (licenseResult.rowCount === 0) {
+            return res.status(401).json({ success: false, message: "License không còn hoạt động." });
+        }
+
+        const license = licenseResult.rows[0];
+        if (!license.special_code || String(license.special_code).trim().toUpperCase() !== specialCode) {
+            return res.status(403).json({ success: false, message: "Mã đặc biệt không thuộc license đang mở khóa." });
+        }
+        if (license.special_code_used) {
+            return res.status(403).json({ success: false, message: "Mã đặc biệt này đã được sử dụng." });
+        }
+        if (Number(license.copy_count) < 3) {
+            return res.status(403).json({ success: false, message: "License này chưa hết 3 lượt copy." });
+        }
+
+        const result = await pool.query(
+            `UPDATE licenses
+             SET copy_count = 0, special_code_used = TRUE
+             WHERE id = $1 AND special_code_used = FALSE AND copy_count >= 3
+             RETURNING copy_count`,
+            [session.licenseId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(409).json({ success: false, message: "Mã đặc biệt vừa được sử dụng hoặc trạng thái license đã thay đổi." });
+        }
+
+        session.copyCount = 0;
+        return res.json({ success: true, message: "Đã mở lại 3 lượt copy." });
+    } catch (err) {
+        return res.status(500).json({ success: false, message: "Lỗi server." });
+    }
+}
+
+module.exports = { unlock, getToolCode, redeemSpecialCode };
