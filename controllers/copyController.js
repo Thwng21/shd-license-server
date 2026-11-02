@@ -150,17 +150,14 @@ async function redeemSpecialCode(req, res) {
         if (!license.special_code || String(license.special_code).trim().toUpperCase() !== specialCode) {
             return res.status(403).json({ success: false, message: "Mã đặc biệt không thuộc license đang mở khóa." });
         }
-        if (license.special_code_used) {
-            return res.status(403).json({ success: false, message: "Mã đặc biệt này đã được sử dụng." });
-        }
         if (Number(license.copy_count) < 3) {
             return res.status(403).json({ success: false, message: "License này chưa hết 3 lượt copy." });
         }
 
         const result = await pool.query(
             `UPDATE licenses
-             SET copy_count = 0, special_code_used = TRUE
-             WHERE id = $1 AND special_code_used = FALSE AND copy_count >= 3
+             SET copy_count = 0, special_code_used = FALSE
+             WHERE id = $1 AND copy_count >= 3
              RETURNING copy_count`,
             [session.licenseId]
         );
@@ -170,7 +167,7 @@ async function redeemSpecialCode(req, res) {
         }
 
         session.copyCount = 0;
-        return res.json({ success: true, message: "Đã mở lại 3 lượt copy." });
+        return res.json({ success: true, message: "Đã mở lại 3 lượt copy. Mã đặc biệt có thể dùng lại sau mỗi 3 lượt." });
     } catch (err) {
         return res.status(500).json({ success: false, message: "Lỗi server." });
     }

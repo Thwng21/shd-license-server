@@ -321,7 +321,7 @@
                         ${l.unlock_code ? `<code class="code-cell unlock">${l.unlock_code}</code>` : `<span class="code-empty">Chưa có</span>`}
                     </td>
                     <td>
-                        ${l.special_code ? `<code class="code-cell special">${l.special_code}</code><br><small style="color:${l.special_code_used ? '#16a34a' : '#94a3b8'}">${l.special_code_used ? 'Đã dùng' : 'Chưa dùng'}</small>` : `<span class="code-empty">Chưa tạo</span>`}
+                        ${l.special_code ? `<code class="code-cell special">${l.special_code}</code><br><small style="color:#16a34a">Dùng lại được</small>` : `<span class="code-empty">Chưa tạo</span>`}
                     </td>
                     <td class="status-cell">
                         <span class="badge ${l.status.toLowerCase()}">${l.status}</span>
