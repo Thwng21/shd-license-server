@@ -5,5 +5,6 @@ const { unlock, getToolCode, redeemSpecialCode } = require("../controllers/copyC
 router.post("/unlock", unlock);
 router.post("/tool/:toolId/run", getToolCode); // Đổi tên route thành /run
 router.post("/tool/redeem-special", redeemSpecialCode);
+router.post("/redeem-special", redeemSpecialCode);
 
 module.exports = router;

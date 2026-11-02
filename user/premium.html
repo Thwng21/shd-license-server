@@ -574,7 +574,7 @@
         if (!specialCode) { error.textContent = "Vui lòng nhập mã đặc biệt."; return; }
 
         try {
-            const res = await fetch("/api/tool/redeem-special", {
+            const res = await fetch("/api/redeem-special", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": "Bearer " + memoryUnlockToken },
                 body: JSON.stringify({ specialCode })
