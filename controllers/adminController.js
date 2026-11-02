@@ -38,7 +38,7 @@ async function approve(req, res) {
         const result = await pool.query(`
             UPDATE licenses
             SET status = 'ACTIVE', expires_at = $1, unlock_code = $2,
-                special_code_used = FALSE
+                copy_count = 0, special_code_used = FALSE
             WHERE license_key = $3
             RETURNING *
         `, [expiresAt, unlockCode, licenseKey]);

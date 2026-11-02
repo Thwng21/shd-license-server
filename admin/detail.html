@@ -316,7 +316,7 @@
                     <td style="font-weight:bold; color:${isPending ? '#dc2626' : '#16a34a'}">
                         ${Number(l.amount).toLocaleString('vi-VN')}đ
                     </td>
-                    <td><strong style="font-size:14px;">${Math.max(3 - (Number(l.copy_count) || 0), 0)}</strong><span style="color:#94a3b8;"> / 3 còn lại</span></td>
+                    <td><strong style="font-size:14px;">${Math.min(Number(l.copy_count) || 0, 3)}</strong><span style="color:#94a3b8;"> / 3 đã dùng</span></td>
                     <td>
                         ${l.unlock_code ? `<code class="code-cell unlock">${l.unlock_code}</code>` : `<span class="code-empty">Chưa có</span>`}
                     </td>
