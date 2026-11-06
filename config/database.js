@@ -29,6 +29,15 @@ async function testDatabase() {
             );
         `);
 
+        // QR settings must be available even when an older license migration fails.
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS app_settings (
+                key VARCHAR(100) PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+            );
+        `);
+
         // Thêm các cột mới nếu chưa có (bao gồm cột password)
         await pool.query(`
             ALTER TABLE licenses ADD COLUMN IF NOT EXISTS months INTEGER DEFAULT 1;
@@ -45,16 +54,8 @@ async function testDatabase() {
             ON licenses (special_code)
             WHERE special_code IS NOT NULL;
         `);
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS app_settings (
-                key VARCHAR(100) PRIMARY KEY,
-                value TEXT NOT NULL,
-                updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-            );
-        `);
-
     } catch (err) {
-        console.warn("Notice during table migration:", err.message);
+        console.error("Database migration failed:", err.message);
     }
 }
 

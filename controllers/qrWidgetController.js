@@ -40,6 +40,7 @@ async function unlock(req, res) {
         }
         return res.json({ success: true });
     } catch (error) {
+        console.error("QR unlock failed:", error.message);
         return res.status(500).json({ success: false, message: "Không thể xác thực lúc này." });
     }
 }
@@ -49,6 +50,7 @@ async function getSettings(req, res) {
         const storedPassword = await getStoredPassword();
         return res.json({ success: true, configured: Boolean(storedPassword) });
     } catch (error) {
+        console.error("QR settings read failed:", error.message);
         return res.status(500).json({ success: false, message: "Không thể đọc cấu hình QR." });
     }
 }
@@ -68,7 +70,8 @@ async function updatePassword(req, res) {
         );
         return res.json({ success: true, message: "Đã lưu mật khẩu QR." });
     } catch (error) {
-        return res.status(500).json({ success: false, message: "Không thể lưu mật khẩu QR." });
+        console.error("QR password save failed:", error.message);
+        return res.status(500).json({ success: false, message: `Không thể lưu mật khẩu QR: ${error.message}` });
     }
 }
 
