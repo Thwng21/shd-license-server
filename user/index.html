@@ -608,6 +608,12 @@
                 return digits;
             }
 
+            function getQrSize() {
+                const stageStyle = getComputedStyle(stage);
+                const horizontalPadding = parseFloat(stageStyle.paddingLeft) + parseFloat(stageStyle.paddingRight);
+                return Math.max(1, Math.floor(stage.clientWidth - horizontalPadding));
+            }
+
             function renderQr() {
                 const phone = normalizePhoneForQr(input.value);
                 stage.innerHTML = "";
@@ -632,8 +638,8 @@
 
                 new QRCode(stage, {
                     text: `tel:${phone}`,
-                    width: 136,
-                    height: 136,
+                    width: getQrSize(),
+                    height: getQrSize(),
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.M
@@ -642,6 +648,11 @@
             }
 
             input.addEventListener("input", renderQr);
+            if (typeof ResizeObserver !== "undefined") {
+                new ResizeObserver(() => {
+                    if (/^0[1-9]\d{8}$/.test(normalizePhoneForQr(input.value))) renderQr();
+                }).observe(stage);
+            }
             passwordInput.addEventListener("keydown", (event) => {
                 if (event.key === "Enter") unlockQr();
             });
