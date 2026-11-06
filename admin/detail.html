@@ -71,6 +71,15 @@
         .card:nth-child(2)::after { background: #f97316; }
         .card:nth-child(3)::after { background: #16a34a; }
         .card:nth-child(4)::after { background: #94a3b8; }
+        .qr-settings { margin: 0 0 24px; }
+        .qr-settings h2 { font-size: 16px; margin-bottom: 6px; }
+        .qr-settings p { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+        .qr-settings-form { display: flex; align-items: flex-end; gap: 10px; }
+        .qr-settings-form label { display: flex; flex: 1; flex-direction: column; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
+        .qr-settings-form input { width: 100%; padding: 11px 12px; border: 1px solid #dbe2ea; border-radius: 8px; outline: none; font: inherit; }
+        .qr-settings-form input:focus { border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(37, 99, 235, .10); }
+        .qr-settings-form button { padding: 11px 15px; border: 0; border-radius: 8px; color: white; background: var(--blue); cursor: pointer; font-weight: 700; }
+        .qr-settings-state { margin-top: 10px; color: var(--muted); font-size: 12px; }
         .number { color: var(--ink); font-size: 30px; line-height: 1; margin-top: 13px; letter-spacing: 0; }
         .toolbar { padding: 13px; margin-bottom: 14px; background: white; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, .03); }
         .search-box { gap: 8px; }
@@ -102,6 +111,7 @@
             .card { min-height: 82px; padding: 14px; }
             .number { font-size: 25px; }
             .toolbar { padding: 10px; }
+            .qr-settings-form { align-items: stretch; flex-direction: column; }
         }
     </style>
 </head>
@@ -177,6 +187,18 @@
             </div>
         </div>
 
+        <section class="card qr-settings">
+            <h2>Mật khẩu khung QR gọi điện</h2>
+            <p>Người dùng phải nhập mật khẩu này trước khi được nhập số điện thoại. Mật khẩu được lưu dạng mã hóa.</p>
+            <div class="qr-settings-form">
+                <label for="qrWidgetPassword">Mật khẩu mới
+                    <input id="qrWidgetPassword" type="password" minlength="4" placeholder="Ít nhất 4 ký tự" autocomplete="new-password">
+                </label>
+                <button id="saveQrWidgetPassword" type="button" onclick="saveQrWidgetPassword()">Lưu mật khẩu</button>
+            </div>
+            <div id="qrWidgetSettingsState" class="qr-settings-state">Đang tải trạng thái...</div>
+        </section>
+
         <div class="toolbar">
             <div class="search-box">
                 <input id="searchInput" class="search-input" type="text" placeholder="🔎 Tìm Mã Đơn hoặc Số Điện Thoại..." oninput="filterData()">
@@ -222,6 +244,47 @@
 
         function getToken() { return sessionStorage.getItem("admin_token"); }
         function logout() { sessionStorage.removeItem("admin_token"); window.location.href = "index.html"; }
+
+        async function loadQrWidgetSettings() {
+            try {
+                const data = await apiRequest(`${API}/qr-widget-settings`);
+                if (data.success) {
+                    document.getElementById("qrWidgetSettingsState").textContent = data.configured
+                        ? "✓ QR đang được bảo vệ bằng mật khẩu."
+                        : "⚠ Chưa cấu hình mật khẩu QR.";
+                }
+            } catch (error) {
+                document.getElementById("qrWidgetSettingsState").textContent = "Không tải được trạng thái.";
+            }
+        }
+
+        async function saveQrWidgetPassword() {
+            const input = document.getElementById("qrWidgetPassword");
+            const button = document.getElementById("saveQrWidgetPassword");
+            const password = input.value;
+            if (password.length < 4) {
+                alert("Mật khẩu phải có ít nhất 4 ký tự.");
+                input.focus();
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Đang lưu...";
+            try {
+                const data = await apiRequest(`${API}/qr-widget-password`, {
+                    method: "POST",
+                    body: JSON.stringify({ password })
+                });
+                if (!data.success) return alert(data.message || "Không thể lưu mật khẩu.");
+                input.value = "";
+                document.getElementById("qrWidgetSettingsState").textContent = "✓ Đã cập nhật mật khẩu QR.";
+            } catch (error) {
+                alert("Lỗi server khi lưu mật khẩu QR.");
+            } finally {
+                button.disabled = false;
+                button.textContent = "Lưu mật khẩu";
+            }
+        }
 
         async function apiRequest(url, options = {}) {
             const token = getToken();
@@ -399,6 +462,7 @@
 
         // Khởi chạy
         loadData();
+        loadQrWidgetSettings();
     </script>
 </body>
 </html>

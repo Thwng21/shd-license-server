@@ -1,5 +1,6 @@
 const { pool } = require("../config/database");
 const crypto = require("crypto");
+const { getSettings, updatePassword } = require("./qrWidgetController");
 
 const activeTokens = new Set();
 
@@ -100,5 +101,7 @@ async function reject(req, res) {
 
 module.exports = {
     login, verifyToken, getLicenses, approve, updateUnlockCode,
-    createSpecialCode, updateSpecialCode, deleteSpecialCode, reject
+    createSpecialCode, updateSpecialCode, deleteSpecialCode, reject,
+    getQrWidgetSettings: getSettings,
+    updateQrWidgetPassword: updatePassword
 };

@@ -45,6 +45,13 @@ async function testDatabase() {
             ON licenses (special_code)
             WHERE special_code IS NOT NULL;
         `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS app_settings (
+                key VARCHAR(100) PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+            );
+        `);
 
     } catch (err) {
         console.warn("Notice during table migration:", err.message);

@@ -278,12 +278,175 @@
             padding-top: 30px;
         }
 
+        /* ============ PHONE QR WIDGET ============ */
+        .phone-qr-widget {
+            position: fixed;
+            z-index: 20;
+            top: 24px;
+            right: 24px;
+            width: 220px;
+            color: #e5e7eb;
+            background: #12161f;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+            user-select: none;
+            min-width: 220px;
+            min-height: 190px;
+        }
+
+        .phone-qr-widget.is-hidden { display: none; }
+
+        .phone-qr-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 34px;
+            padding: 0 8px 0 12px;
+            color: #fff;
+            background: #1e293b;
+            cursor: grab;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .phone-qr-header:active { cursor: grabbing; }
+
+        .phone-qr-close,
+        .phone-qr-open {
+            border: 0;
+            color: inherit;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .phone-qr-close {
+            width: 24px;
+            height: 24px;
+            color: #94a3b8;
+            font-size: 20px;
+            line-height: 20px;
+        }
+
+        .phone-qr-body { padding: 12px; }
+
+        .phone-qr-lock { display: block; }
+        .phone-qr-unlocked { display: none; }
+        .phone-qr-lock-copy { margin-bottom: 10px; color: #cbd5e1; font-size: 11px; line-height: 15px; }
+        .phone-qr-password-row { display: flex; gap: 6px; }
+        .phone-qr-password-row .phone-qr-input { flex: 1; min-width: 0; }
+        .phone-qr-unlock {
+            height: 34px;
+            padding: 0 9px;
+            border: 0;
+            border-radius: 7px;
+            color: #fff;
+            background: #2563eb;
+            cursor: pointer;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+        .phone-qr-unlock:disabled { opacity: .7; cursor: wait; }
+        .phone-qr-lock-status { min-height: 28px; padding-top: 8px; color: #94a3b8; font-size: 11px; line-height: 14px; }
+
+        .phone-qr-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .phone-qr-input {
+            width: 100%;
+            height: 34px;
+            padding: 0 9px;
+            border: 1px solid #475569;
+            border-radius: 7px;
+            outline: 0;
+            color: #f8fafc;
+            background: #0f172a;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        .phone-qr-input:focus { border-color: #60a5fa; }
+
+        .phone-qr-stage {
+            display: grid;
+            place-items: center;
+            min-height: 158px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px dashed #475569;
+            border-radius: 7px;
+            background: #f8fafc;
+        }
+
+        .phone-qr-stage canvas,
+        .phone-qr-stage img { display: block; max-width: 100%; height: auto; }
+
+        .phone-qr-placeholder {
+            color: #64748b;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .phone-qr-status {
+            min-height: 28px;
+            padding-top: 8px;
+            color: #94a3b8;
+            font-size: 11px;
+            line-height: 14px;
+            text-align: center;
+        }
+
+        .phone-qr-resize {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 18px;
+            height: 18px;
+            cursor: nwse-resize;
+            touch-action: none;
+            background: linear-gradient(135deg, transparent 0 45%, #64748b 45% 55%, transparent 55% 67%, #64748b 67% 77%, transparent 77%);
+        }
+
+        .phone-qr-open {
+            position: fixed;
+            z-index: 19;
+            right: 18px;
+            bottom: 18px;
+            display: none;
+            padding: 9px 12px;
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            color: #dbeafe;
+            background: #172554;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .phone-qr-open.is-visible { display: block; }
+
         /* ============ RESPONSIVE ============ */
         @media (max-width: 900px) {
             .tools-grid { grid-template-columns: 1fr; gap: 16px; }
             .plan-cta-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 32px; }
             .container { padding: 40px 16px; }
+        }
+
+        @media (max-width: 600px) {
+            .phone-qr-widget {
+                top: 12px;
+                right: 12px !important;
+                left: 12px !important;
+                width: auto;
+            }
         }
     </style>
 </head>
@@ -363,6 +526,172 @@
             SHD Tools License System · Made with ❤️
         </div>
     </div>
+
+    <aside class="phone-qr-widget" id="phoneQrWidget" aria-label="Tạo mã QR gọi điện">
+        <div class="phone-qr-header" id="phoneQrDragHandle">
+            <span>☎ Tạo QR gọi điện</span>
+            <button class="phone-qr-close" id="phoneQrClose" type="button" title="Đóng">×</button>
+        </div>
+        <div class="phone-qr-body">
+            <div class="phone-qr-lock" id="phoneQrLock">
+                <div class="phone-qr-lock-copy">Nhập mật khẩu để mở chức năng tạo QR.</div>
+                <label class="phone-qr-label" for="phoneQrPassword">Mật khẩu</label>
+                <div class="phone-qr-password-row">
+                    <input class="phone-qr-input" id="phoneQrPassword" type="password" placeholder="Nhập mật khẩu" autocomplete="off">
+                    <button class="phone-qr-unlock" id="phoneQrUnlock" type="button">Mở</button>
+                </div>
+                <div class="phone-qr-lock-status" id="phoneQrLockStatus" aria-live="polite"></div>
+            </div>
+            <div class="phone-qr-unlocked" id="phoneQrUnlocked">
+                <label class="phone-qr-label" for="phoneQrInput">Số điện thoại</label>
+                <input class="phone-qr-input" id="phoneQrInput" type="tel" inputmode="numeric" maxlength="10" placeholder="0912345678" autocomplete="off">
+                <div class="phone-qr-stage" id="phoneQrStage">
+                    <span class="phone-qr-placeholder">Nhập đủ 10 số để tạo mã</span>
+                </div>
+                <div class="phone-qr-status" id="phoneQrStatus" aria-live="polite">Mã sẽ gọi trực tiếp bằng điện thoại.</div>
+            </div>
+        </div>
+        <div class="phone-qr-resize" id="phoneQrResize" title="Thay đổi kích thước"></div>
+    </aside>
+    <button class="phone-qr-open" id="phoneQrOpen" type="button">☎ Mở QR gọi điện</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        (() => {
+            const widget = document.getElementById("phoneQrWidget");
+            const lock = document.getElementById("phoneQrLock");
+            const unlocked = document.getElementById("phoneQrUnlocked");
+            const passwordInput = document.getElementById("phoneQrPassword");
+            const unlockButton = document.getElementById("phoneQrUnlock");
+            const lockStatus = document.getElementById("phoneQrLockStatus");
+            const input = document.getElementById("phoneQrInput");
+            const stage = document.getElementById("phoneQrStage");
+            const status = document.getElementById("phoneQrStatus");
+            const closeButton = document.getElementById("phoneQrClose");
+            const openButton = document.getElementById("phoneQrOpen");
+            const handle = document.getElementById("phoneQrDragHandle");
+            const resizeHandle = document.getElementById("phoneQrResize");
+
+            function unlockQr() {
+                const password = passwordInput.value;
+                if (!password) {
+                    lockStatus.textContent = "Vui lòng nhập mật khẩu.";
+                    return;
+                }
+
+                unlockButton.disabled = true;
+                lockStatus.textContent = "Đang xác thực...";
+                fetch("/api/qr-widget/unlock", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ password })
+                })
+                    .then(async (response) => ({ response, data: await response.json() }))
+                    .then(({ response, data }) => {
+                        if (!response.ok || !data.success) {
+                            lockStatus.textContent = data.message || "Mật khẩu không đúng.";
+                            return;
+                        }
+                        lock.style.display = "none";
+                        unlocked.style.display = "block";
+                        passwordInput.value = "";
+                        input.focus();
+                    })
+                    .catch(() => { lockStatus.textContent = "Không thể kết nối server."; })
+                    .finally(() => { unlockButton.disabled = false; });
+            }
+
+            function renderQr() {
+                const phone = input.value.replace(/\D/g, "").slice(0, 10);
+                input.value = phone;
+                stage.innerHTML = "";
+
+                if (!phone) {
+                    stage.innerHTML = '<span class="phone-qr-placeholder">Nhập đủ 10 số để tạo mã</span>';
+                    status.textContent = "Mã sẽ gọi trực tiếp bằng điện thoại.";
+                    return;
+                }
+
+                if (!/^0[1-9]\d{8}$/.test(phone)) {
+                    stage.innerHTML = '<span class="phone-qr-placeholder">Số điện thoại chưa hợp lệ</span>';
+                    status.textContent = `Đã nhập ${phone.length}/10 số.`;
+                    return;
+                }
+
+                if (typeof QRCode === "undefined") {
+                    stage.innerHTML = '<span class="phone-qr-placeholder">Không tải được bộ tạo QR</span>';
+                    status.textContent = "Kiểm tra kết nối rồi tải lại trang.";
+                    return;
+                }
+
+                new QRCode(stage, {
+                    text: `tel:${phone}`,
+                    width: 136,
+                    height: 136,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+                status.textContent = `✓ ${phone} · Quét để gọi`;
+            }
+
+            input.addEventListener("input", renderQr);
+            passwordInput.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") unlockQr();
+            });
+            unlockButton.addEventListener("click", unlockQr);
+            closeButton.addEventListener("pointerdown", (event) => event.stopPropagation());
+            closeButton.addEventListener("click", () => {
+                widget.classList.add("is-hidden");
+                openButton.classList.add("is-visible");
+            });
+            openButton.addEventListener("click", () => {
+                widget.classList.remove("is-hidden");
+                openButton.classList.remove("is-visible");
+                input.focus();
+            });
+
+            let drag = null;
+            handle.addEventListener("pointerdown", (event) => {
+                const rect = widget.getBoundingClientRect();
+                drag = { startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top };
+                handle.setPointerCapture(event.pointerId);
+            });
+            handle.addEventListener("pointermove", (event) => {
+                if (!drag) return;
+                const left = Math.min(Math.max(8, drag.left + event.clientX - drag.startX), window.innerWidth - widget.offsetWidth - 8);
+                const top = Math.min(Math.max(8, drag.top + event.clientY - drag.startY), window.innerHeight - widget.offsetHeight - 8);
+                widget.style.left = `${left}px`;
+                widget.style.top = `${top}px`;
+                widget.style.right = "auto";
+            });
+            handle.addEventListener("pointerup", () => { drag = null; });
+            handle.addEventListener("pointercancel", () => { drag = null; });
+
+            let resize = null;
+            resizeHandle.addEventListener("pointerdown", (event) => {
+                event.stopPropagation();
+                const rect = widget.getBoundingClientRect();
+                resize = { startX: event.clientX, startY: event.clientY, width: rect.width, height: rect.height };
+                resizeHandle.setPointerCapture(event.pointerId);
+                event.preventDefault();
+            });
+            resizeHandle.addEventListener("pointermove", (event) => {
+                if (!resize) return;
+                const width = Math.min(Math.max(220, resize.width + event.clientX - resize.startX), Math.max(220, window.innerWidth - 24));
+                const height = Math.min(Math.max(190, resize.height + event.clientY - resize.startY), Math.max(190, window.innerHeight - 24));
+                widget.style.width = `${width}px`;
+                widget.style.height = `${height}px`;
+                widget.style.left = `${Math.min(widget.getBoundingClientRect().left, window.innerWidth - width - 8)}px`;
+                widget.style.top = `${Math.min(widget.getBoundingClientRect().top, window.innerHeight - height - 8)}px`;
+                widget.style.right = "auto";
+            });
+            resizeHandle.addEventListener("pointerup", () => { resize = null; });
+            resizeHandle.addEventListener("pointercancel", () => { resize = null; });
+
+            passwordInput.focus();
+        })();
+    </script>
 </body>
 
 </html>

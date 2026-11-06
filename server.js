@@ -11,6 +11,7 @@ const { testDatabase } = require("./config/database");
 const licenseRoutes = require("./routes/licenseRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const copyRoutes = require("./routes/copyRoutes"); // Thêm route copy
+const qrWidgetRoutes = require("./routes/qrWidgetRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -63,6 +64,7 @@ app.get("/loader.js", (req, res) => {
 app.use("/api", licenseRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api", copyRoutes);
+app.use("/api/qr-widget", qrWidgetRoutes);
 
 // ================================
 // START SERVER
