@@ -432,6 +432,125 @@
 
         .phone-qr-open.is-visible { display: block; }
 
+        /* ===== Danh sách SĐT ===== */
+        .phone-qr-list-wrap { margin-top: 12px; }
+
+        .phone-qr-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .phone-qr-list-header .phone-qr-count {
+            padding: 1px 7px;
+            border-radius: 10px;
+            background: rgba(59,130,246,.15);
+            color: #60a5fa;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .phone-qr-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            border-radius: 7px;
+            background: #0f172a;
+        }
+
+        .phone-qr-list:empty { display: none; }
+
+        .phone-qr-list-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 9px;
+            border-bottom: 1px solid #1e293b;
+            cursor: pointer;
+            font-size: 12px;
+            color: #cbd5e1;
+            transition: background .15s;
+        }
+        .phone-qr-list-item:last-child { border-bottom: 0; }
+        .phone-qr-list-item:hover { background: #172554; }
+
+        .phone-qr-list-item.is-active {
+            background: rgba(37, 99, 235, .25);
+            color: #fff;
+            border-left: 3px solid #3b82f6;
+            padding-left: 6px;
+        }
+
+        .phone-qr-list-item .pqr-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .phone-qr-list-item .pqr-phone {
+            color: #94a3b8;
+            font-variant-numeric: tabular-nums;
+            font-size: 11px;
+        }
+
+        .phone-qr-list-item.is-active .pqr-phone { color: #bfdbfe; }
+
+        .phone-qr-list-item .pqr-del {
+            flex: 0 0 auto;
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border: 0;
+            border-radius: 4px;
+            background: transparent;
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .phone-qr-list-item .pqr-del:hover { color: #f87171; background: rgba(248,113,113,.12); }
+
+        .phone-qr-list-empty {
+            padding: 10px;
+            color: #64748b;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .phone-qr-add-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .phone-qr-add-row .phone-qr-input { flex: 1; min-width: 0; }
+        .phone-qr-add-btn {
+            height: 34px;
+            padding: 0 12px;
+            border: 0;
+            border-radius: 7px;
+            background: #16a34a;
+            color: #fff;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .phone-qr-add-btn:hover { background: #15803d; }
+        .phone-qr-add-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+        .phone-qr-name-input { margin-top: 8px; }
+
         /* ============ RESPONSIVE ============ */
         @media (max-width: 900px) {
             .tools-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -527,12 +646,14 @@
         </div>
     </div>
 
+    <!-- ======================== QR CALL WIDGET ======================== -->
     <aside class="phone-qr-widget" id="phoneQrWidget" aria-label="Tạo mã QR gọi điện">
         <div class="phone-qr-header" id="phoneQrDragHandle">
             <span>☎ Tạo QR gọi điện</span>
             <button class="phone-qr-close" id="phoneQrClose" type="button" title="Đóng">×</button>
         </div>
         <div class="phone-qr-body">
+            <!-- KHÓA MẬT KHẨU -->
             <div class="phone-qr-lock" id="phoneQrLock">
                 <div class="phone-qr-lock-copy">Nhập mật khẩu để mở chức năng tạo QR.</div>
                 <label class="phone-qr-label" for="phoneQrPassword">Mật khẩu</label>
@@ -542,9 +663,26 @@
                 </div>
                 <div class="phone-qr-lock-status" id="phoneQrLockStatus" aria-live="polite"></div>
             </div>
+
+            <!-- NỘI DUNG SAU KHI MỞ KHÓA -->
             <div class="phone-qr-unlocked" id="phoneQrUnlocked">
                 <label class="phone-qr-label" for="phoneQrInput">Số điện thoại</label>
                 <input class="phone-qr-input" id="phoneQrInput" type="tel" inputmode="numeric" maxlength="12" placeholder="0912345678 hoặc 84912345678" autocomplete="off">
+
+                <div class="phone-qr-add-row">
+                    <input class="phone-qr-input" id="phoneQrName" type="text" maxlength="40" placeholder="Tên gợi nhớ (vd: Anh A)" autocomplete="off">
+                    <button class="phone-qr-add-btn" id="phoneQrAddBtn" type="button">+ Thêm</button>
+                </div>
+
+                <div class="phone-qr-list-wrap">
+                    <div class="phone-qr-list-header">
+                        <span>Danh sách đã lưu</span>
+                        <span class="phone-qr-count" id="phoneQrCount">0</span>
+                    </div>
+                    <ul class="phone-qr-list" id="phoneQrList"></ul>
+                    <div class="phone-qr-list-empty" id="phoneQrListEmpty">Chưa có số nào. Nhập tên + số rồi bấm "+ Thêm".</div>
+                </div>
+
                 <div class="phone-qr-stage" id="phoneQrStage">
                     <span class="phone-qr-placeholder">Nhập đủ 10 số để tạo mã</span>
                 </div>
@@ -557,157 +695,286 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        (() => {
-            const widget = document.getElementById("phoneQrWidget");
-            const lock = document.getElementById("phoneQrLock");
-            const unlocked = document.getElementById("phoneQrUnlocked");
-            const passwordInput = document.getElementById("phoneQrPassword");
-            const unlockButton = document.getElementById("phoneQrUnlock");
-            const lockStatus = document.getElementById("phoneQrLockStatus");
-            const input = document.getElementById("phoneQrInput");
-            const stage = document.getElementById("phoneQrStage");
-            const status = document.getElementById("phoneQrStatus");
-            const closeButton = document.getElementById("phoneQrClose");
-            const openButton = document.getElementById("phoneQrOpen");
-            const handle = document.getElementById("phoneQrDragHandle");
-            const resizeHandle = document.getElementById("phoneQrResize");
+    (() => {
+        const widget = document.getElementById("phoneQrWidget");
+        const lock = document.getElementById("phoneQrLock");
+        const unlocked = document.getElementById("phoneQrUnlocked");
+        const passwordInput = document.getElementById("phoneQrPassword");
+        const unlockButton = document.getElementById("phoneQrUnlock");
+        const lockStatus = document.getElementById("phoneQrLockStatus");
+        const input = document.getElementById("phoneQrInput");
+        const nameInput = document.getElementById("phoneQrName");
+        const addBtn = document.getElementById("phoneQrAddBtn");
+        const listEl = document.getElementById("phoneQrList");
+        const listEmpty = document.getElementById("phoneQrListEmpty");
+        const countEl = document.getElementById("phoneQrCount");
+        const stage = document.getElementById("phoneQrStage");
+        const status = document.getElementById("phoneQrStatus");
+        const closeButton = document.getElementById("phoneQrClose");
+        const openButton = document.getElementById("phoneQrOpen");
+        const handle = document.getElementById("phoneQrDragHandle");
+        const resizeHandle = document.getElementById("phoneQrResize");
 
-            function unlockQr() {
-                const password = passwordInput.value;
-                if (!password) {
-                    lockStatus.textContent = "Vui lòng nhập mật khẩu.";
-                    return;
-                }
+        const STORAGE_KEY = "shd_qr_phone_list_v1";
+        let phoneList = [];     // [{ id, name, phone }]
+        let activeId = null;
 
-                unlockButton.disabled = true;
-                lockStatus.textContent = "Đang xác thực...";
-                fetch("/api/qr-widget/unlock", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ password })
+        // ---------- storage ----------
+        function loadList() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                phoneList = raw ? JSON.parse(raw) : [];
+                if (!Array.isArray(phoneList)) phoneList = [];
+            } catch (e) { phoneList = []; }
+        }
+        function saveList() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(phoneList)); } catch (e) {}
+        }
+
+        // ---------- unlock ----------
+        function unlockQr() {
+            const password = passwordInput.value;
+            if (!password) {
+                lockStatus.textContent = "Vui lòng nhập mật khẩu.";
+                return;
+            }
+            unlockButton.disabled = true;
+            lockStatus.textContent = "Đang xác thực...";
+            fetch("/api/qr-widget/unlock", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password })
+            })
+                .then(async (response) => ({ response, data: await response.json() }))
+                .then(({ response, data }) => {
+                    if (!response.ok || !data.success) {
+                        lockStatus.textContent = data.message || "Mật khẩu không đúng.";
+                        return;
+                    }
+                    lock.style.display = "none";
+                    unlocked.style.display = "block";
+                    passwordInput.value = "";
+                    renderList();
+                    input.focus();
                 })
-                    .then(async (response) => ({ response, data: await response.json() }))
-                    .then(({ response, data }) => {
-                        if (!response.ok || !data.success) {
-                            lockStatus.textContent = data.message || "Mật khẩu không đúng.";
-                            return;
-                        }
-                        lock.style.display = "none";
-                        unlocked.style.display = "block";
-                        passwordInput.value = "";
-                        input.focus();
-                    })
-                    .catch(() => { lockStatus.textContent = "Không thể kết nối server."; })
-                    .finally(() => { unlockButton.disabled = false; });
+                .catch(() => { lockStatus.textContent = "Không thể kết nối server."; })
+                .finally(() => { unlockButton.disabled = false; });
+        }
+
+        // ---------- phone helpers ----------
+        function normalizePhoneForQr(value) {
+            const digits = String(value || "").replace(/\D/g, "");
+            if (/^84\d{9}$/.test(digits)) return `0${digits.slice(2)}`;
+            if (/^\d{9}$/.test(digits)) return `0${digits}`;
+            return digits;
+        }
+        function isValidPhone(phone) {
+            return /^0[1-9]\d{8}$/.test(phone);
+        }
+
+        // ---------- QR ----------
+        function getQrSize() {
+            const stageStyle = getComputedStyle(stage);
+            const horizontalPadding = parseFloat(stageStyle.paddingLeft) + parseFloat(stageStyle.paddingRight);
+            return Math.max(1, Math.floor(stage.clientWidth - horizontalPadding));
+        }
+
+        function renderQr() {
+            const phone = normalizePhoneForQr(input.value);
+            stage.innerHTML = "";
+
+            if (!phone) {
+                stage.innerHTML = '<span class="phone-qr-placeholder">Nhập đủ 10 số để tạo mã</span>';
+                status.textContent = "Mã sẽ gọi trực tiếp bằng điện thoại.";
+                return;
+            }
+            if (!isValidPhone(phone)) {
+                stage.innerHTML = '<span class="phone-qr-placeholder">Số điện thoại chưa hợp lệ</span>';
+                status.textContent = `Đã nhập ${phone.length}/10 số.`;
+                return;
+            }
+            if (typeof QRCode === "undefined") {
+                stage.innerHTML = '<span class="phone-qr-placeholder">Không tải được bộ tạo QR</span>';
+                status.textContent = "Kiểm tra kết nối rồi tải lại trang.";
+                return;
             }
 
-            function normalizePhoneForQr(value) {
-                const digits = String(value || "").replace(/\D/g, "");
-                if (/^84\d{9}$/.test(digits)) return `0${digits.slice(2)}`;
-                if (/^\d{9}$/.test(digits)) return `0${digits}`;
-                return digits;
-            }
+            new QRCode(stage, {
+                text: `tel:${phone}`,
+                width: getQrSize(),
+                height: getQrSize(),
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
 
-            function getQrSize() {
-                const stageStyle = getComputedStyle(stage);
-                const horizontalPadding = parseFloat(stageStyle.paddingLeft) + parseFloat(stageStyle.paddingRight);
-                return Math.max(1, Math.floor(stage.clientWidth - horizontalPadding));
-            }
+            const active = phoneList.find(p => p.id === activeId);
+            const label = active && active.phone === phone && active.name ? ` · ${active.name}` : "";
+            status.textContent = `✓ ${phone}${label} · Quét để gọi`;
+        }
 
-            function renderQr() {
-                const phone = normalizePhoneForQr(input.value);
-                stage.innerHTML = "";
+        // ---------- list render ----------
+        function renderList() {
+            listEl.innerHTML = "";
+            countEl.textContent = String(phoneList.length);
+            listEmpty.style.display = phoneList.length ? "none" : "block";
 
-                if (!phone) {
-                    stage.innerHTML = '<span class="phone-qr-placeholder">Nhập đủ 10 số để tạo mã</span>';
-                    status.textContent = "Mã sẽ gọi trực tiếp bằng điện thoại.";
-                    return;
-                }
+            phoneList.forEach(item => {
+                const li = document.createElement("li");
+                li.className = "phone-qr-list-item" + (item.id === activeId ? " is-active" : "");
+                li.dataset.id = item.id;
 
-                if (!/^0[1-9]\d{8}$/.test(phone)) {
-                    stage.innerHTML = '<span class="phone-qr-placeholder">Số điện thoại chưa hợp lệ</span>';
-                    status.textContent = `Đã nhập ${phone.length}/10 số.`;
-                    return;
-                }
+                const nameSpan = document.createElement("span");
+                nameSpan.className = "pqr-name";
+                nameSpan.textContent = item.name || "(Không tên)";
 
-                if (typeof QRCode === "undefined") {
-                    stage.innerHTML = '<span class="phone-qr-placeholder">Không tải được bộ tạo QR</span>';
-                    status.textContent = "Kiểm tra kết nối rồi tải lại trang.";
-                    return;
-                }
+                const phoneSpan = document.createElement("span");
+                phoneSpan.className = "pqr-phone";
+                phoneSpan.textContent = item.phone;
 
-                new QRCode(stage, {
-                    text: `tel:${phone}`,
-                    width: getQrSize(),
-                    height: getQrSize(),
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.M
+                const del = document.createElement("button");
+                del.type = "button";
+                del.className = "pqr-del";
+                del.title = "Xóa";
+                del.textContent = "×";
+                del.addEventListener("click", (ev) => {
+                    ev.stopPropagation();
+                    removeItem(item.id);
                 });
-                status.textContent = `✓ ${phone} · Quét để gọi`;
-            }
 
-            input.addEventListener("input", renderQr);
-            if (typeof ResizeObserver !== "undefined") {
-                new ResizeObserver(() => {
-                    if (/^0[1-9]\d{8}$/.test(normalizePhoneForQr(input.value))) renderQr();
-                }).observe(stage);
-            }
-            passwordInput.addEventListener("keydown", (event) => {
-                if (event.key === "Enter") unlockQr();
+                li.appendChild(nameSpan);
+                li.appendChild(phoneSpan);
+                li.appendChild(del);
+
+                li.addEventListener("click", () => selectItem(item.id));
+
+                listEl.appendChild(li);
             });
-            unlockButton.addEventListener("click", unlockQr);
-            closeButton.addEventListener("pointerdown", (event) => event.stopPropagation());
-            closeButton.addEventListener("click", () => {
-                widget.classList.add("is-hidden");
-                openButton.classList.add("is-visible");
-            });
-            openButton.addEventListener("click", () => {
-                widget.classList.remove("is-hidden");
-                openButton.classList.remove("is-visible");
+        }
+
+        function selectItem(id) {
+            const item = phoneList.find(p => p.id === id);
+            if (!item) return;
+            activeId = id;
+            input.value = item.phone;      // đẩy số vào ô để QR render theo
+            renderQr();
+            renderList();                  // cập nhật highlight
+        }
+
+        function removeItem(id) {
+            phoneList = phoneList.filter(p => p.id !== id);
+            if (activeId === id) activeId = null;
+            saveList();
+            renderList();
+            const current = normalizePhoneForQr(input.value);
+            if (!phoneList.some(p => p.phone === current)) renderQr();
+        }
+
+        function addItem() {
+            const rawPhone = input.value.trim();
+            const phone = normalizePhoneForQr(rawPhone);
+            const name = nameInput.value.trim();
+
+            if (!isValidPhone(phone)) {
+                status.textContent = "Số điện thoại chưa hợp lệ (cần 10 số, bắt đầu bằng 0).";
                 input.focus();
-            });
+                return;
+            }
+            if (phoneList.some(p => p.phone === phone)) {
+                status.textContent = "Số này đã có trong danh sách.";
+                return;
+            }
 
-            let drag = null;
-            handle.addEventListener("pointerdown", (event) => {
-                const rect = widget.getBoundingClientRect();
-                drag = { startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top };
-                handle.setPointerCapture(event.pointerId);
-            });
-            handle.addEventListener("pointermove", (event) => {
-                if (!drag) return;
-                const left = Math.min(Math.max(8, drag.left + event.clientX - drag.startX), window.innerWidth - widget.offsetWidth - 8);
-                const top = Math.min(Math.max(8, drag.top + event.clientY - drag.startY), window.innerHeight - widget.offsetHeight - 8);
-                widget.style.left = `${left}px`;
-                widget.style.top = `${top}px`;
-                widget.style.right = "auto";
-            });
-            handle.addEventListener("pointerup", () => { drag = null; });
-            handle.addEventListener("pointercancel", () => { drag = null; });
+            const item = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, phone };
+            phoneList.unshift(item);
+            activeId = item.id;
+            saveList();
 
-            let resize = null;
-            resizeHandle.addEventListener("pointerdown", (event) => {
-                event.stopPropagation();
-                const rect = widget.getBoundingClientRect();
-                resize = { startX: event.clientX, startY: event.clientY, width: rect.width, height: rect.height };
-                resizeHandle.setPointerCapture(event.pointerId);
-                event.preventDefault();
-            });
-            resizeHandle.addEventListener("pointermove", (event) => {
-                if (!resize) return;
-                const width = Math.min(Math.max(220, resize.width + event.clientX - resize.startX), Math.max(220, window.innerWidth - 24));
-                const height = Math.min(Math.max(190, resize.height + event.clientY - resize.startY), Math.max(190, window.innerHeight - 24));
-                widget.style.width = `${width}px`;
-                widget.style.height = `${height}px`;
-                widget.style.left = `${Math.min(widget.getBoundingClientRect().left, window.innerWidth - width - 8)}px`;
-                widget.style.top = `${Math.min(widget.getBoundingClientRect().top, window.innerHeight - height - 8)}px`;
-                widget.style.right = "auto";
-            });
-            resizeHandle.addEventListener("pointerup", () => { resize = null; });
-            resizeHandle.addEventListener("pointercancel", () => { resize = null; });
+            nameInput.value = "";
+            input.value = phone;
+            renderList();
+            renderQr();
+            status.textContent = `✓ Đã thêm ${name || phone} vào danh sách.`;
+        }
 
-            passwordInput.focus();
-        })();
+        // ---------- events ----------
+        input.addEventListener("input", () => {
+            const current = normalizePhoneForQr(input.value);
+            const match = phoneList.find(p => p.phone === current);
+            activeId = match ? match.id : null;
+            renderList();
+            renderQr();
+        });
+        nameInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") addItem(); });
+        addBtn.addEventListener("click", addItem);
+
+        if (typeof ResizeObserver !== "undefined") {
+            new ResizeObserver(() => {
+                if (isValidPhone(normalizePhoneForQr(input.value))) renderQr();
+            }).observe(stage);
+        }
+
+        passwordInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") unlockQr();
+        });
+        unlockButton.addEventListener("click", unlockQr);
+
+        closeButton.addEventListener("pointerdown", (event) => event.stopPropagation());
+        closeButton.addEventListener("click", () => {
+            widget.classList.add("is-hidden");
+            openButton.classList.add("is-visible");
+        });
+        openButton.addEventListener("click", () => {
+            widget.classList.remove("is-hidden");
+            openButton.classList.remove("is-visible");
+            input.focus();
+        });
+
+        // drag
+        let drag = null;
+        handle.addEventListener("pointerdown", (event) => {
+            const rect = widget.getBoundingClientRect();
+            drag = { startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top };
+            handle.setPointerCapture(event.pointerId);
+        });
+        handle.addEventListener("pointermove", (event) => {
+            if (!drag) return;
+            const left = Math.min(Math.max(8, drag.left + event.clientX - drag.startX), window.innerWidth - widget.offsetWidth - 8);
+            const top = Math.min(Math.max(8, drag.top + event.clientY - drag.startY), window.innerHeight - widget.offsetHeight - 8);
+            widget.style.left = `${left}px`;
+            widget.style.top = `${top}px`;
+            widget.style.right = "auto";
+        });
+        handle.addEventListener("pointerup", () => { drag = null; });
+        handle.addEventListener("pointercancel", () => { drag = null; });
+
+        // resize
+        let resize = null;
+        resizeHandle.addEventListener("pointerdown", (event) => {
+            event.stopPropagation();
+            const rect = widget.getBoundingClientRect();
+            resize = { startX: event.clientX, startY: event.clientY, width: rect.width, height: rect.height };
+            resizeHandle.setPointerCapture(event.pointerId);
+            event.preventDefault();
+        });
+        resizeHandle.addEventListener("pointermove", (event) => {
+            if (!resize) return;
+            const width = Math.min(Math.max(220, resize.width + event.clientX - resize.startX), Math.max(220, window.innerWidth - 24));
+            const height = Math.min(Math.max(190, resize.height + event.clientY - resize.startY), Math.max(190, window.innerHeight - 24));
+            widget.style.width = `${width}px`;
+            widget.style.height = `${height}px`;
+            widget.style.left = `${Math.min(widget.getBoundingClientRect().left, window.innerWidth - width - 8)}px`;
+            widget.style.top = `${Math.min(widget.getBoundingClientRect().top, window.innerHeight - height - 8)}px`;
+            widget.style.right = "auto";
+        });
+        resizeHandle.addEventListener("pointerup", () => { resize = null; });
+        resizeHandle.addEventListener("pointercancel", () => { resize = null; });
+
+        // init
+        loadList();
+        renderList();
+        passwordInput.focus();
+    })();
     </script>
 </body>
 
